@@ -2,9 +2,8 @@ package com.koresuniku.wishmaster_v4.core.dagger.component
 
 import com.koresuniku.wishmaster_v4.core.dagger.module.AppModule
 import com.koresuniku.wishmaster_v4.core.dagger.module.NetModule
-import com.koresuniku.wishmaster_v4.ui.DashboardActivity
+import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import dagger.Component
-import javax.inject.Scope
 import javax.inject.Singleton
 
 /**
