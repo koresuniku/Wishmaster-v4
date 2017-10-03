@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.ui.util.UiVisibilityUtils
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -18,6 +19,7 @@ abstract class BaseDrawerActivity : BaseRxActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupContentView()
+        UiVisibilityUtils.showSystemUI(this)
     }
 
     private fun setupContentView() {

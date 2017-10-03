@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Wishmaster</string>
+
+    <!--Dashboard-->
+    <string name="loading_text">Загрузка…</string>
+    <string name="more_boards_text">Нужно больше любимых борд!</string>
+    <string name="there_is_nothing_text">Здесь ничего нет.\nВпрочем, как и смысла в твоей жизни.</string>
+    <string name="action_add_board">Добавить борду</string>
+    <string name="loading_boards_text">Загрузка борд… \nЭто может занять несколько секунд.</string>
 </resources>

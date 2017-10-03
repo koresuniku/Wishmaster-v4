@@ -24,12 +24,10 @@ class DashboardActivity : BaseDrawerActivity() {
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
 
-    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as WishmasterApplication).getNetComponent().inject(this)
         ButterKnife.bind(this)
-
 
         setSupportActionBar(mToolbar)
     }

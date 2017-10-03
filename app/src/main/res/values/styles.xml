@@ -8,17 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
-        <!-- Support library compatibility -->
-
-        <item name="android:titleTextStyle" >@style/MyActionBarTitleText</item>
-        <!-- Support library compatibility -->
-        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
+    <style name="MakabaToolbarStyle" parent="Base.Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">@color/colorBackground</item>
     </style>
 
-    <!-- ActionBar title text -->
-    <style name="MyActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/black</item>
-    </style>
 
 </resources>
