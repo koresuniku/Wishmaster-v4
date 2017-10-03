@@ -8,9 +8,9 @@ import io.reactivex.disposables.CompositeDisposable
  * Created by koresuniku on 03.10.17.
  */
 
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseRxActivity : AppCompatActivity() {
 
-    internal lateinit var mCompositeDisposable: CompositeDisposable
+    private lateinit var mCompositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
