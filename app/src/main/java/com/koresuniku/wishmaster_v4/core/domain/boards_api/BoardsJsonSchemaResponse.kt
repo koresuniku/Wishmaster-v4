@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.koresuniku.wishmaster.domain.boards_api.model.*
 
-class BoardsJsonSchema {
+class BoardsJsonSchemaResponse {
 
     @SerializedName("Взрослым")
     @Expose

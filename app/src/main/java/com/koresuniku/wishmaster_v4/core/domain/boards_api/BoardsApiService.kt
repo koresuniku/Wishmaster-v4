@@ -8,8 +8,8 @@ import retrofit2.http.Query
 interface BoardsApiService {
 
     @GET("/makaba/mobile.fcgi")
-    fun getBoards(@Query("task") task: String): Call<BoardsJsonSchema>
+    fun getBoards(@Query("task") task: String): Call<BoardsJsonSchemaResponse>
 
     @GET("/makaba/mobile.fcgi")
-    fun getBoardsObservable(@Query("task") task: String): Observable<BoardsJsonSchema>
+    fun getBoardsObservable(@Query("task") task: String): Observable<BoardsJsonSchemaResponse>
 }
