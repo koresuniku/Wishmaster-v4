@@ -5,7 +5,7 @@ package com.koresuniku.wishmaster_v4.core.base
  */
 
 open class BasePresenter<in V: IMvpView> : IPresenter<V> {
-    private var mView: IMvpView? = null
+    var mView: IMvpView? = null
 
     override fun attachView(mvpView: V) {
         this.mView = mvpView

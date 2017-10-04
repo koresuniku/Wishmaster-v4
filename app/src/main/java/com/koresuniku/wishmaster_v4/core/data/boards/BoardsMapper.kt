@@ -11,71 +11,71 @@ object BoardsMapper {
 
     fun map(boardsJsonSchemaResponse: BoardsJsonSchemaResponse): BoardsData {
         val boardsDataResult = BoardsData()
-        val boardListResult = ArrayList<WishmasterBoard>()
-        var wishmasterBoard: WishmasterBoard
+        val boardListResult = ArrayList<BoardModel>()
+        var boardModel: BoardModel
 
         for (adults in boardsJsonSchemaResponse.adults) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(adults.id)
-            wishmasterBoard.setBoardName(adults.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_ADULTS)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(adults.id)
+            boardModel.setBoardName(adults.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_ADULTS)
+            boardListResult.add(boardModel)
         }
         for (creativity in boardsJsonSchemaResponse.creativity) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(creativity.id)
-            wishmasterBoard.setBoardName(creativity.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(creativity.id)
+            boardModel.setBoardName(creativity.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY)
+            boardListResult.add(boardModel)
         }
         for (games in boardsJsonSchemaResponse.games) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(games.id)
-            wishmasterBoard.setBoardName(games.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_GAMES)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(games.id)
+            boardModel.setBoardName(games.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_GAMES)
+            boardListResult.add(boardModel)
         }
         for (japanese in boardsJsonSchemaResponse.japanese) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(japanese.id)
-            wishmasterBoard.setBoardName(japanese.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_JAPANESE)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(japanese.id)
+            boardModel.setBoardName(japanese.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_JAPANESE)
+            boardListResult.add(boardModel)
         }
         for (other in boardsJsonSchemaResponse.other) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(other.id)
-            wishmasterBoard.setBoardName(other.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_OTHER)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(other.id)
+            boardModel.setBoardName(other.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_OTHER)
+            boardListResult.add(boardModel)
         }
         for (politics in boardsJsonSchemaResponse.politics) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(politics.id)
-            wishmasterBoard.setBoardName(politics.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_POLITICS)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(politics.id)
+            boardModel.setBoardName(politics.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_POLITICS)
+            boardListResult.add(boardModel)
         }
         for (subjects in boardsJsonSchemaResponse.subject) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(subjects.id)
-            wishmasterBoard.setBoardName(subjects.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(subjects.id)
+            boardModel.setBoardName(subjects.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS)
+            boardListResult.add(boardModel)
         }
         for (tech in boardsJsonSchemaResponse.tech) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(tech.id)
-            wishmasterBoard.setBoardName(tech.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_TECH)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(tech.id)
+            boardModel.setBoardName(tech.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_TECH)
+            boardListResult.add(boardModel)
         }
         for (users in boardsJsonSchemaResponse.users) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(users.id)
-            wishmasterBoard.setBoardName(users.name)
-            wishmasterBoard.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_USERS)
-            boardListResult.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(users.id)
+            boardModel.setBoardName(users.name)
+            boardModel.setBoardCategory(DatabaseContract.BoardsEntry.CATEGORY_USERS)
+            boardListResult.add(boardModel)
         }
 
         boardsDataResult.setBoardList(boardListResult)

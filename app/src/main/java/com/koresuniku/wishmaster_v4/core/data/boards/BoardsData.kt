@@ -5,11 +5,11 @@ package com.koresuniku.wishmaster_v4.core.data.boards
  */
 
 class BoardsData {
-    private lateinit var boardList: List<WishmasterBoard>
+    private lateinit var boardModelList: List<BoardModel>
 
-    fun getBoardList() = boardList
+    fun getBoardList() = boardModelList
 
-    fun setBoardList(boardList: List<WishmasterBoard>) {
-        this.boardList = boardList
+    fun setBoardList(boardModelList: List<BoardModel>) {
+        this.boardModelList = boardModelList
     }
 }

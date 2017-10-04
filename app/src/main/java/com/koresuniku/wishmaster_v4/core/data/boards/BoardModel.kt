@@ -4,7 +4,7 @@ package com.koresuniku.wishmaster_v4.core.data.boards
  * Created by koresuniku on 04.10.17.
  */
 
-class WishmasterBoard {
+class BoardModel {
     private lateinit var mBoardId: String
     private lateinit var mBoardName: String
     private lateinit var mBoardCategory: String
@@ -26,7 +26,7 @@ class WishmasterBoard {
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is WishmasterBoard) {
+        return if (other is BoardModel) {
             other.getBoardId() == getBoardId()
         } else false
     }

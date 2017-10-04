@@ -12,6 +12,7 @@ import com.koresuniku.wishmaster_v4.core.dvach.Dvach
 
 class WishmasterApplication : Application() {
 
+    private lateinit var mApplication: Application
     private lateinit var mDaggerNetComponent: DaggerNetComponent
 
     override fun onCreate() {

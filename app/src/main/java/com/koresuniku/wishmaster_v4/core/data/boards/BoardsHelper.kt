@@ -20,7 +20,7 @@ object BoardsHelper {
 
     fun getBoardsDataFromDatabase(context: Context): BoardsData {
         val data = BoardsData()
-        val boardList = ArrayList<WishmasterBoard>()
+        val boardList = ArrayList<BoardModel>()
 
         val cursor: Cursor = context.contentResolver.query(
                 DatabaseContract.BoardsEntry.CONTENT_URI,
@@ -33,15 +33,15 @@ object BoardsHelper {
         val columnBoardCategory = cursor.getColumnIndex(
                 DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY)
 
-        var wishmasterBoard: WishmasterBoard
+        var boardModel: BoardModel
 
         cursor.moveToFirst()
         while (cursor.moveToNext()) {
-            wishmasterBoard = WishmasterBoard()
-            wishmasterBoard.setBoardId(cursor.getString(columnBoardId))
-            wishmasterBoard.setBoardName(cursor.getString(columnBoardName))
-            wishmasterBoard.setBoardCategory(cursor.getString(columnBoardCategory))
-            boardList.add(wishmasterBoard)
+            boardModel = BoardModel()
+            boardModel.setBoardId(cursor.getString(columnBoardId))
+            boardModel.setBoardName(cursor.getString(columnBoardName))
+            boardModel.setBoardCategory(cursor.getString(columnBoardCategory))
+            boardList.add(boardModel)
         }
         cursor.close()
 
