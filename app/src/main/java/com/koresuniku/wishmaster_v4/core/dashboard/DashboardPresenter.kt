@@ -1,11 +1,15 @@
 package com.koresuniku.wishmaster_v4.core.dashboard
 
+import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
+import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.application.WishmasterApplication
 import com.koresuniku.wishmaster_v4.core.base.BasePresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -17,6 +21,9 @@ class DashboardPresenter : BasePresenter<DashBoardView>() {
 
     @Inject
     private lateinit var mRetrofit: Retrofit
+
+    @Inject
+    private lateinit var mBoardsApiService: BoardsApiService
 
     private lateinit var mCompositeDisposable: CompositeDisposable
 
@@ -31,7 +38,15 @@ class DashboardPresenter : BasePresenter<DashBoardView>() {
             loadBoardsFromDatabase().subscribe(
                     { boardsData -> e.onNext(boardsData) },
                     { throwable -> throwable.printStackTrace() },
-                    { loadBoardsFromNetwork().subscribe()} )
+                    {
+                        val boardsObservable = mBoardsApiService.getBoardsObservable("get_boards")
+                        mCompositeDisposable.add(boardsObservable.map {
+                            boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
+                            BoardsMapper.map(boardsJsonSchemaResponse)
+                        }.subscribe(
+                                { boardsData ->  e.onNext(boardsData) },
+                                { throwable -> e.onError(throwable) }))
+                    } )
         })
     }
 
@@ -45,10 +60,6 @@ class DashboardPresenter : BasePresenter<DashBoardView>() {
             } else { e.onError(Throwable()) }
             }
         }
-    }
-
-    private fun loadBoardsFromNetwork(): Single<BoardsData> {
-
     }
 
     override fun detachView() {

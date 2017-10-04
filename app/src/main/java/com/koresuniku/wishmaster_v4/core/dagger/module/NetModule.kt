@@ -5,6 +5,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -53,4 +54,9 @@ class NetModule(val mBaseUrl: String) {
                 .client(okHttpClient)
                 .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideBoardsApi(retrofit: Retrofit): BoardsApiService =
+            retrofit.create(BoardsApiService::class.java)
 }

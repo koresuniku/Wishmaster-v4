@@ -15,16 +15,12 @@ import javax.inject.Inject
 import retrofit2.Retrofit
 
 class DashboardActivity : BaseDrawerActivity() {
-
     private val LOG_TAG = DashboardActivity::class.java.simpleName
-
-    @Inject lateinit var retrofit: Retrofit
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (wishmasterApplication as WishmasterApplication).getNetComponent().inject(this)
         ButterKnife.bind(this)
 
         setSupportActionBar(mToolbar)
