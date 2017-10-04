@@ -318,7 +318,7 @@ object BoardsHelper {
     }
 
     fun insertNewBoards(context: Context, inputSchema: BoardsJsonSchema) {
-        val boardsNewIdsSet: HashSet<String?> = HashSet()
+        val boardsNewIdsSet: HashSet<String> = HashSet()
 
         inputSchema.adults.mapTo(boardsNewIdsSet) { it.id }
         inputSchema.creativity.mapTo(boardsNewIdsSet) { it.id }
@@ -341,7 +341,7 @@ object BoardsHelper {
         }
         cursor.close()
 
-        val resultSet: Set<String?> = boardsNewIdsSet.subtract(boardsDatabaseIdsSet)
+        val resultSet: Set<String> = boardsNewIdsSet.subtract(boardsDatabaseIdsSet)
 
         for (newBoardId: String? in resultSet) {
             inputSchema.adults.filter { it.id!! == newBoardId }.forEach {

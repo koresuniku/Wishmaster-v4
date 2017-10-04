@@ -7,9 +7,9 @@ class Subjects {
 
     @SerializedName("id")
     @Expose
-    var id: String? = null
+    lateinit var id: String
     @SerializedName("name")
     @Expose
-    var name: String? = null
+    lateinit var name: String
 
 }
