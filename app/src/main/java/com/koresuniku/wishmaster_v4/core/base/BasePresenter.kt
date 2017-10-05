@@ -7,11 +7,11 @@ package com.koresuniku.wishmaster_v4.core.base
 open class BasePresenter<in V: IMvpView> : IPresenter<V> {
     var mView: IMvpView? = null
 
-    override fun attachView(mvpView: V) {
+    override fun bindView(mvpView: V) {
         this.mView = mvpView
     }
 
-    override fun detachView() {
+    override fun unbindView() {
         this.mView = null
     }
 }

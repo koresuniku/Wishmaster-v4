@@ -5,7 +5,7 @@ package com.koresuniku.wishmaster_v4.core.base
  */
 
 interface IPresenter<in V: IMvpView> {
-    fun attachView(mvpView: V)
+    fun bindView(mvpView: V)
 
-    fun detachView()
+    fun unbindView()
 }

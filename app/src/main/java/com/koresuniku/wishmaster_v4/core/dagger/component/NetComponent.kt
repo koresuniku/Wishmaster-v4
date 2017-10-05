@@ -10,8 +10,10 @@ import javax.inject.Singleton
 /**
  * Created by koresuniku on 03.10.17.
  */
+
 @Singleton
 @Component (modules = arrayOf(AppModule::class, NetModule::class))
 interface NetComponent {
+
     fun inject(presenter: DashboardPresenter)
 }
