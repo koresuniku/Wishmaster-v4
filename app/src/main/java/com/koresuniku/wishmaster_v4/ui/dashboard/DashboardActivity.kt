@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
@@ -40,6 +43,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         setSupportActionBar(mToolbar)
 
         loadBoards()
+//        showLoadingBoards()
     }
 
     private fun loadBoards() {
@@ -49,15 +53,24 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( { boardsData: BoardsData ->
                     Log.d(LOG_TAG, "received board data: " + boardsData.getBoardList().size)
-
-                }, { throwable: Throwable -> throwable.printStackTrace() }))
+                    hideLoading()
+                }, { throwable: Throwable ->
+                    throwable.printStackTrace()
+                    hideLoading()
+                }))
 
     }
 
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
 
     override fun showLoadingBoards() {
-        mYobaImage.startAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.anim_rotate_infinitely))
+        val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
+        mYobaImage.startAnimation(rotationAnimation)
+    }
+
+    private fun hideLoading() {
+        mYobaImage.clearAnimation()
+        mYobaImage.setImageDrawable(null)
+        mLoadingLayout.visibility = View.GONE
     }
 }
