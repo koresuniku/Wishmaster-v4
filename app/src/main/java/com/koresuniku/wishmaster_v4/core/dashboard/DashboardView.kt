@@ -8,4 +8,5 @@ import com.koresuniku.wishmaster_v4.core.base.IMvpView
  */
 
 interface DashboardView : IMvpView {
+    fun showLoadingBoards()
 }

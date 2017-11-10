@@ -34,7 +34,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tab_layout">
-
     </android.support.v4.view.ViewPager>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tab_layout">
+
+        <ImageView
+            android:id="@+id/yoba_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.25"
+            app:srcCompat="@drawable/yoba_standart" />
+
+        <TextView
+            android:id="@+id/loading_boards_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/loading_boards_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/yoba_image"
+            app:layout_constraintVertical_bias="0.16000003" />
+    </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

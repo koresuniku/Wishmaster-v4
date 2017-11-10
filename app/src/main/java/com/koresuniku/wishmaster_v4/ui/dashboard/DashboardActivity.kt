@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 
@@ -23,6 +27,9 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @Inject lateinit var mPresenter: DashboardPresenter
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
+    @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
+    @BindView(R.id.yoba_image) lateinit var mYobaImage: ImageView
+    @BindView(R.id.loading_boards_text) lateinit var mLoadingBoardsText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,4 +55,9 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     }
 
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
+
+    override fun showLoadingBoards() {
+        mYobaImage.startAnimation(AnimationUtils.loadAnimation(
+                this, R.anim.anim_rotate_infinitely))
+    }
 }

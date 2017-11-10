@@ -55,6 +55,7 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
     }
 
     private fun loadBoardsFromNetwork(e: SingleEmitter<BoardsData>) {
+        mView!!.showLoadingBoards()
         val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
         mCompositeDisposable.add(boardsObservable.map {
             boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
