@@ -27,13 +27,15 @@ object BoardsHelper {
             DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY + " TEXT NOT NULL" + ");"
 
 
-    fun getBoardsDataFromDatabase(database: SQLiteDatabase): BoardsData {
+    fun getBoardsDataFromDatabase(database: SQLiteDatabase): BoardsData? {
         val data = BoardsData()
         val boardList = ArrayList<BoardModel>()
 
         val cursor: Cursor = database.query(
                 DatabaseContract.BoardsEntry.TABLE_NAME, mBoardsProjection,
                 null, null, null, null, null)
+
+        if (cursor.count == 0) return null
 
         val columnBoardId = cursor.getColumnIndex(
                 DatabaseContract.BoardsEntry.COLUMN_BOARD_ID)
@@ -45,13 +47,13 @@ object BoardsHelper {
         var boardModel: BoardModel
 
         cursor.moveToFirst()
-        while (cursor.moveToNext()) {
+        do {
             boardModel = BoardModel()
             boardModel.setBoardId(cursor.getString(columnBoardId))
             boardModel.setBoardName(cursor.getString(columnBoardName))
             boardModel.setBoardCategory(cursor.getString(columnBoardCategory))
             boardList.add(boardModel)
-        }
+        } while (cursor.moveToNext())
         cursor.close()
         database.close()
 
@@ -83,7 +85,7 @@ object BoardsHelper {
 
     fun insertSubtractedBoardsFromInputData(database: SQLiteDatabase, inputData: BoardsData) {
         val existingBoardsData = getBoardsDataFromDatabase(database)
-        val resultData = inputData.getBoardList().subtract(existingBoardsData.getBoardList())
+        val resultData = inputData.getBoardList().subtract(existingBoardsData!!.getBoardList())
 
         resultData.forEach {
             insertBoard(database, it.getBoardId(), it.getBoardName(), it.getBoardCategory())
@@ -102,7 +104,7 @@ object BoardsHelper {
 
     fun deleteOldBoards(database: SQLiteDatabase, inputData: BoardsData) {
         val existingBoardsData = getBoardsDataFromDatabase(database)
-        val resultData = existingBoardsData.getBoardList().subtract(inputData.getBoardList())
+        val resultData = existingBoardsData!!.getBoardList().subtract(inputData.getBoardList())
 
         resultData.forEach { deleteBoard(database, it.getBoardId()) }
 

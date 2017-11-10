@@ -10,7 +10,6 @@ import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 /**
@@ -39,15 +38,7 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
             loadBoardsFromDatabase().subscribe(
                     { boardsData: BoardsData -> e.onSuccess(boardsData) },
                     { throwable -> throwable.printStackTrace() },
-                    {
-                        val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
-                        mCompositeDisposable.add(boardsObservable.map {
-                            boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
-                            BoardsMapper.map(boardsJsonSchemaResponse)
-                        }.subscribe(
-                                { boardsData: BoardsData ->  e.onSuccess(boardsData) },
-                                { throwable: Throwable -> e.onError(throwable) }))
-                    } )
+                    { loadBoardsFromNetwork(e) })
         })
     }
 
@@ -56,11 +47,24 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
             if (mView != null) {
                 val boardsDataFromDatabase =
                         BoardsHelper.getBoardsDataFromDatabase(databaseHelper.readableDatabase)
-                if (boardsDataFromDatabase.getBoardList().isEmpty()) { e.onComplete() }
+                if (boardsDataFromDatabase == null) { e.onComplete() }
                 else { Log.d(LOG_TAG, "on database success"); e.onSuccess(boardsDataFromDatabase) }
             } else { Log.d(LOG_TAG, "on database error"); e.onError(Throwable()) }
             }
         }
+    }
+
+    private fun loadBoardsFromNetwork(e: SingleEmitter<BoardsData>) {
+        val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
+        mCompositeDisposable.add(boardsObservable.map {
+            boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
+            BoardsMapper.map(boardsJsonSchemaResponse)
+        }.subscribe(
+                { boardsData: BoardsData ->
+                    BoardsHelper.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
+                    e.onSuccess(boardsData)
+                },
+                { throwable: Throwable -> e.onError(throwable) }))
     }
 
     override fun unbindView() {
