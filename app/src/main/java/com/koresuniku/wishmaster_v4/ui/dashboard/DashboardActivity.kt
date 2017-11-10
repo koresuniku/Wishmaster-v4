@@ -7,21 +7,26 @@ import butterknife.BindView
 import butterknife.ButterKnife
 
 import com.koresuniku.wishmaster_v4.R
-import com.koresuniku.wishmaster_v4.application.WishmasterApplication
+import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
+import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 
 import javax.inject.Inject
 
-import retrofit2.Retrofit
-
-class DashboardActivity : BaseDrawerActivity() {
+class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
+
+    @Inject lateinit var mPresenter: DashboardPresenter
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getWishmasterApplication().getDashBoardComponent().inject(this)
         ButterKnife.bind(this)
+
+        mPresenter.bindView(this)
+        mPresenter.loadBoards()
 
         setSupportActionBar(mToolbar)
     }

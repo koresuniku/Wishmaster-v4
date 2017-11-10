@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created by koresuniku on 03.10.17.
  */
 
-class DashboardPresenter @Inject constructor(): BasePresenter<DashBoardView>() {
+class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
 
     @Inject
     lateinit var mRetrofit: Retrofit
@@ -25,7 +25,7 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashBoardView>() {
 
     private lateinit var mCompositeDisposable: CompositeDisposable
 
-    override fun bindView(mvpView: DashBoardView) {
+    override fun bindView(mvpView: DashboardView) {
         super.bindView(mvpView)
         mvpView.getWishmasterApplication().getNetComponent().inject(this)
         mCompositeDisposable = CompositeDisposable()
