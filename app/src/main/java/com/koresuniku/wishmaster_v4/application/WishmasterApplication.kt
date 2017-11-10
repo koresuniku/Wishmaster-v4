@@ -5,6 +5,7 @@ import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardCompone
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerNetComponent
 import com.koresuniku.wishmaster_v4.core.dagger.module.AppModule
 import com.koresuniku.wishmaster_v4.core.dagger.module.DashboardModule
+import com.koresuniku.wishmaster_v4.core.dagger.module.DatabaseModule
 import com.koresuniku.wishmaster_v4.core.dagger.module.NetModule
 import com.koresuniku.wishmaster_v4.core.dvach.Dvach
 
@@ -26,7 +27,10 @@ class WishmasterApplication : Application() {
                 .build() as DaggerNetComponent
 
         mDaggerDashboardComponent = DaggerDashboardComponent.builder()
+                .appModule(AppModule(this))
                 .dashboardModule(DashboardModule())
+                .databaseModule(DatabaseModule())
+                .netModule(NetModule(Dvach.BASE_URL))
                 .build() as DaggerDashboardComponent
     }
 

@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseRxActivity : AppCompatActivity() {
 
-    private lateinit var mCompositeDisposable: CompositeDisposable
+    protected lateinit var mCompositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

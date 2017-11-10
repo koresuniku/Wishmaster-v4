@@ -1,8 +1,10 @@
 package com.koresuniku.wishmaster_v4.core.dashboard
 
+import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.core.base.BasePresenter
+import com.koresuniku.wishmaster_v4.core.data.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
@@ -16,33 +18,34 @@ import javax.inject.Inject
  */
 
 class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
+    private val LOG_TAG = DashboardPresenter::class.java.simpleName
 
     @Inject
-    lateinit var mRetrofit: Retrofit
+    lateinit var boardsApiService: BoardsApiService
 
     @Inject
-    lateinit var mBoardsApiService: BoardsApiService
+    lateinit var databaseHelper: DatabaseHelper
 
     private lateinit var mCompositeDisposable: CompositeDisposable
 
     override fun bindView(mvpView: DashboardView) {
         super.bindView(mvpView)
-        mvpView.getWishmasterApplication().getNetComponent().inject(this)
+        mvpView.getWishmasterApplication().getDashBoardComponent().inject(this)
         mCompositeDisposable = CompositeDisposable()
     }
 
-    fun loadBoards(): Observable<BoardsData> {
-        return Observable.create( { e ->
+    fun loadBoards(): Single<BoardsData> {
+        return Single.create( { e ->
             loadBoardsFromDatabase().subscribe(
-                    { boardsData: BoardsData -> e.onNext(boardsData) },
+                    { boardsData: BoardsData -> e.onSuccess(boardsData) },
                     { throwable -> throwable.printStackTrace() },
                     {
-                        val boardsObservable = mBoardsApiService.getBoardsObservable("get_boards")
+                        val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
                         mCompositeDisposable.add(boardsObservable.map {
                             boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
                             BoardsMapper.map(boardsJsonSchemaResponse)
                         }.subscribe(
-                                { boardsData: BoardsData ->  e.onNext(boardsData) },
+                                { boardsData: BoardsData ->  e.onSuccess(boardsData) },
                                 { throwable: Throwable -> e.onError(throwable) }))
                     } )
         })
@@ -52,10 +55,10 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
         return Maybe.create { e -> run {
             if (mView != null) {
                 val boardsDataFromDatabase =
-                        BoardsHelper.getBoardsDataFromDatabase(mView!!.getWishmasterApplication())
+                        BoardsHelper.getBoardsDataFromDatabase(databaseHelper.readableDatabase)
                 if (boardsDataFromDatabase.getBoardList().isEmpty()) { e.onComplete() }
-                else { e.onSuccess(boardsDataFromDatabase) }
-            } else { e.onError(Throwable()) }
+                else { Log.d(LOG_TAG, "on database success"); e.onSuccess(boardsDataFromDatabase) }
+            } else { Log.d(LOG_TAG, "on database error"); e.onError(Throwable()) }
             }
         }
     }
