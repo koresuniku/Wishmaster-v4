@@ -10,6 +10,7 @@ import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 /**
@@ -65,7 +66,9 @@ class DashboardPresenter @Inject constructor(): BasePresenter<DashboardView>() {
                     BoardsHelper.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
                     e.onSuccess(boardsData)
                 },
-                { throwable: Throwable -> e.onError(throwable) }))
+                { throwable: Throwable ->
+                    e.onError(throwable)
+                }))
     }
 
     override fun unbindView() {

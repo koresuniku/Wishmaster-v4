@@ -2,14 +2,16 @@ package com.koresuniku.wishmaster_v4.ui.dashboard
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -35,8 +37,10 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.tab_layout) lateinit var mTabLayout: TabLayout
     @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
-    @BindView(R.id.yoba_image) lateinit var mYobaImage: ImageView
+    @BindView(R.id.error_layout) lateinit var mErrorLayout: ViewGroup
+    @BindView(R.id.yoba) lateinit var mYobaImage: ImageView
     @BindView(R.id.dashboard_viewpager) lateinit var mViewPager: DashboardViewPager
+    @BindView(R.id.try_again_button) lateinit var mTryAgainButton: Button
 
     private lateinit var mViewPagerAdapter: DashboardViewPagerAdapter
 
@@ -51,7 +55,6 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         setupTabLayout()
 
         loadBoards()
-//        showLoadingBoards()
     }
 
     private fun loadBoards() {
@@ -65,6 +68,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
                     hideLoading()
+                    showError(throwable)
                 }))
 
     }
@@ -72,6 +76,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
 
     override fun showLoadingBoards() {
+        mLoadingLayout.visibility = View.VISIBLE
         mViewPager.setPagingEnabled(false)
         val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
         mYobaImage.startAnimation(rotationAnimation)
@@ -80,8 +85,20 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private fun hideLoading() {
         mViewPager.setPagingEnabled(true)
         mYobaImage.clearAnimation()
-        mYobaImage.setImageDrawable(null)
         mLoadingLayout.visibility = View.GONE
+    }
+
+    private fun showError(throwable: Throwable) {
+        mErrorLayout.visibility = View.VISIBLE
+        mViewPager.setPagingEnabled(false)
+        val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
+        snackbar.show()
+        mTryAgainButton.setOnClickListener { snackbar.dismiss(); hideError(); showLoadingBoards(); loadBoards() }
+    }
+
+    private fun hideError() {
+        mErrorLayout.visibility = View.GONE
     }
 
     private fun setupTabLayout() {
