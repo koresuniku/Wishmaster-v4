@@ -9,13 +9,14 @@ import android.support.v4.app.FragmentStatePagerAdapter
 */
 
 class DashboardViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-    private val mCOUNT = 3
+    private val mCOUNT = 4
 
     override fun getItem(position: Int): Fragment {
         when (position) {
             0 -> return FavouriteBoardsFragment()
             1 -> return BoardListFragment()
             2 -> return FavouriteThreadsFragment()
+            3 -> return HistoryFragment()
         }
         return Fragment()
     }

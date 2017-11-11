@@ -3,10 +3,7 @@ package com.koresuniku.wishmaster_v4.application
 import android.app.Application
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardComponent
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerNetComponent
-import com.koresuniku.wishmaster_v4.core.dagger.module.AppModule
-import com.koresuniku.wishmaster_v4.core.dagger.module.DashboardModule
-import com.koresuniku.wishmaster_v4.core.dagger.module.DatabaseModule
-import com.koresuniku.wishmaster_v4.core.dagger.module.NetModule
+import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.dvach.Dvach
 
 /**
@@ -31,6 +28,7 @@ class WishmasterApplication : Application() {
                 .dashboardModule(DashboardModule())
                 .databaseModule(DatabaseModule())
                 .netModule(NetModule(Dvach.BASE_URL))
+                .sharedPreferencesModule(SharedPreferencesModule())
                 .build() as DaggerDashboardComponent
     }
 

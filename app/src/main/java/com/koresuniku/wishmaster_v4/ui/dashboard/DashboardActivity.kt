@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.design.widget.TabLayout
@@ -8,15 +9,13 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
-import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesManager
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
@@ -29,7 +28,8 @@ import javax.inject.Inject
 class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
 
-    @Inject lateinit var mPresenter: DashboardPresenter
+    @Inject lateinit var presenter: DashboardPresenter
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.tab_layout) lateinit var mTabLayout: TabLayout
@@ -43,7 +43,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         super.onCreate(savedInstanceState)
         getWishmasterApplication().getDashBoardComponent().inject(this)
         ButterKnife.bind(this)
-        mPresenter.bindView(this)
+        presenter.bindView(this)
 
         setSupportActionBar(mToolbar)
         setupViewPager()
@@ -54,7 +54,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     }
 
     private fun loadBoards() {
-        val loadBoardsSingle = mPresenter.loadBoards().cache()
+        val loadBoardsSingle = presenter.loadBoards().cache()
         mCompositeDisposable.add(loadBoardsSingle
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -87,10 +87,14 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         mTabLayout.getTabAt(0)?.setIcon(R.drawable.ic_favorite_black_24dp)
         mTabLayout.getTabAt(1)?.setIcon(R.drawable.ic_format_list_bulleted_black_24dp)
         mTabLayout.getTabAt(2)?.setIcon(R.drawable.ic_star_black_24dp)
+        mTabLayout.getTabAt(3)?.setIcon(R.drawable.ic_history_black_24dp)
     }
 
     private fun setupViewPager() {
         mViewPagerAdapter = DashboardViewPagerAdapter(supportFragmentManager)
         mViewPager.adapter = mViewPagerAdapter
+        mViewPager.currentItem = sharedPreferences.getInt(
+                SharedPreferencesManager.DASHBOARD_PREFFERED_TAB_POSITION,
+                SharedPreferencesManager.DASHBOARD_PREFFERED_TAB_POSITION_DEFAULT)
     }
 }

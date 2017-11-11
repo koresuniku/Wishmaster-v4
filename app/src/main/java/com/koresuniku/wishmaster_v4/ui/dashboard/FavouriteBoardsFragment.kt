@@ -17,7 +17,7 @@ class FavouriteBoardsFragment : Fragment() {
     private lateinit var mRootView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mRootView = inflater.inflate(R.layout.fragment_favourites, container, false)
+        mRootView = inflater.inflate(R.layout.fragment_favourite_boards, container, false)
 
         return mRootView
     }
