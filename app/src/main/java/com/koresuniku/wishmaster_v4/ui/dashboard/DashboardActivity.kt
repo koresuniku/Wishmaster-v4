@@ -20,6 +20,7 @@ import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
+import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -35,7 +36,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @BindView(R.id.tab_layout) lateinit var mTabLayout: TabLayout
     @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
     @BindView(R.id.yoba_image) lateinit var mYobaImage: ImageView
-    @BindView(R.id.dashboard_viewpager) lateinit var mViewPager: ViewPager
+    @BindView(R.id.dashboard_viewpager) lateinit var mViewPager: DashboardViewPager
 
     private lateinit var mViewPagerAdapter: DashboardViewPagerAdapter
 
@@ -71,11 +72,13 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
 
     override fun showLoadingBoards() {
+        mViewPager.setPagingEnabled(false)
         val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
         mYobaImage.startAnimation(rotationAnimation)
     }
 
     private fun hideLoading() {
+        mViewPager.setPagingEnabled(true)
         mYobaImage.clearAnimation()
         mYobaImage.setImageDrawable(null)
         mLoadingLayout.visibility = View.GONE
