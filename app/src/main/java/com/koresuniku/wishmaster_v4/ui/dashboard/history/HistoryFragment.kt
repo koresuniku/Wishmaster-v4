@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster_v4.ui.dashboard
+package com.koresuniku.wishmaster_v4.ui.dashboard.history
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
 
 /**
- * Created by koresuniku on 10.11.17.
+ * Created by koresuniku on 12.11.17.
  */
 
-class FavouriteBoardsFragment : Fragment() {
-    private val LOG_TAG = FavouriteBoardsFragment::class.java.simpleName
+class HistoryFragment : Fragment() {
+    private val LOG_TAG = HistoryFragment::class.java.simpleName
 
     private lateinit var mRootView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mRootView = inflater.inflate(R.layout.fragment_favourite_boards, container, false)
+        mRootView = inflater.inflate(R.layout.fragment_history, container, false)
 
         return mRootView
     }

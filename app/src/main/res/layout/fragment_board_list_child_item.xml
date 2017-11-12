@@ -11,9 +11,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="32dp"
+        android:layout_marginLeft="24dp"
         android:gravity="left|center"
         android:text="ne stoilo vskryvat etot kod"
-        android:textColor="@color/textColor"/>
+        android:textColor="@color/colorAccent" />
 
 </RelativeLayout>

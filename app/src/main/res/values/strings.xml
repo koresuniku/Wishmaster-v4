@@ -3,7 +3,7 @@
 
     <!--Common-->
     <string name="loading_text">Загрузка…</string>
-    <string name="bljad">Блджад</string>
+    <string name="bljad">Блджад!</string>
 
     <!--Dashboard-->
     <string name="more_boards_text">Нужно больше любимых борд!</string>

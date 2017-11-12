@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.core.dagger.component
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
+import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -18,4 +19,6 @@ interface DashboardComponent {
     fun inject(activity: DashboardActivity)
 
     fun inject(dashboardPresenter: DashboardPresenter)
+
+    fun inject(boardListFragment: BoardListFragment)
 }

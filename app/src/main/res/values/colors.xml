@@ -8,4 +8,5 @@
     <color name="colorBackgroundDark">#e0e0e0</color>
 
     <color name="textColor">@android:color/black</color>
+
 </resources>

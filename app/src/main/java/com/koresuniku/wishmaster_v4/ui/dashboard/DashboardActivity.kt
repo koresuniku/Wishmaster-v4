@@ -2,7 +2,6 @@ package com.koresuniku.wishmaster_v4.ui.dashboard
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -24,6 +23,7 @@ import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
@@ -58,8 +58,8 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     }
 
     private fun loadBoards() {
-        val loadBoardsSingle = presenter.loadBoards().cache()
-        mCompositeDisposable.add(loadBoardsSingle
+        val loadBoardsObservable = presenter.loadBoards()
+        mCompositeDisposable.add(loadBoardsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( { boardsData: BoardsData ->
@@ -70,7 +70,6 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
                     hideLoading()
                     showError(throwable)
                 }))
-
     }
 
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
@@ -114,7 +113,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         mViewPagerAdapter = DashboardViewPagerAdapter(supportFragmentManager)
         mViewPager.adapter = mViewPagerAdapter
         mViewPager.currentItem = sharedPreferences.getInt(
-                SharedPreferencesManager.DASHBOARD_PREFFERED_TAB_POSITION,
-                SharedPreferencesManager.DASHBOARD_PREFFERED_TAB_POSITION_DEFAULT)
+                SharedPreferencesManager.DASHBOARD_PREFERRED_TAB_POSITION,
+                SharedPreferencesManager.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
     }
 }

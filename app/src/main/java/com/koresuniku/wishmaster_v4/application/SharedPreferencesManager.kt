@@ -10,8 +10,8 @@ import android.preference.PreferenceManager
 
 object SharedPreferencesManager {
 
-    val DASHBOARD_PREFFERED_TAB_POSITION = "dashboard_preferred_tab_position"
-    val DASHBOARD_PREFFERED_TAB_POSITION_DEFAULT = 1
+    val DASHBOARD_PREFERRED_TAB_POSITION = "dashboard_preferred_tab_position"
+    val DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT = 1
 
 
 }

@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster_v4.core.data
+package com.koresuniku.wishmaster_v4.core.data.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

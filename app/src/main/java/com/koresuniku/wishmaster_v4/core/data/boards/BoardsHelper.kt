@@ -1,10 +1,10 @@
 package com.koresuniku.wishmaster_v4.core.data.boards
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import com.koresuniku.wishmaster_v4.core.data.DatabaseContract
+import android.util.Log
+import com.koresuniku.wishmaster_v4.core.data.database.DatabaseContract
 import java.util.ArrayList
 
 /**
@@ -55,7 +55,6 @@ object BoardsHelper {
             boardList.add(boardModel)
         } while (cursor.moveToNext())
         cursor.close()
-        database.close()
 
         data.setBoardList(boardList)
         return data
@@ -70,6 +69,7 @@ object BoardsHelper {
     }
 
     fun insertAllBoardsIntoDatabase(database: SQLiteDatabase, data: BoardsData) {
+        Log.d("BoardsHelper", "inserting all boards")
         var values: ContentValues
 
         data.getBoardList().forEach {
@@ -79,8 +79,6 @@ object BoardsHelper {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, it.getBoardCategory())
             database.insert(DatabaseContract.BoardsEntry.TABLE_NAME, null, values)
         }
-
-        database.close()
     }
 
     fun insertSubtractedBoardsFromInputData(database: SQLiteDatabase, inputData: BoardsData) {

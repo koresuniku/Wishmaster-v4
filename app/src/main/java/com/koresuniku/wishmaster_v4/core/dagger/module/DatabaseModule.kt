@@ -1,8 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.dagger.module
 
-import android.app.Application
 import android.content.Context
-import com.koresuniku.wishmaster_v4.core.data.DatabaseHelper
+import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster_v4.core.data
+package com.koresuniku.wishmaster_v4.core.data.database
 
 import android.net.Uri
 import android.provider.BaseColumns
@@ -29,5 +29,15 @@ object DatabaseContract {
         val CATEGORY_SUBJECTS: String = "subjects"
         val CATEGORY_TECH: String = "tech"
         val CATEGORY_USERS: String = "users"
+
+        val CATEGORY_ADULTS_RUSSIAN: String = "Взрослым"
+        val CATEGORY_CREATIVITY_RUSSIAN: String = "Творчество"
+        val CATEGORY_GAMES_RUSSIAN: String = "Игры"
+        val CATEGORY_JAPANESE_RUSSIAN: String = "Японская культура"
+        val CATEGORY_OTHER_RUSSIAN: String = "Разное"
+        val CATEGORY_POLITICS_RUSSIAN: String = "Политика"
+        val CATEGORY_SUBJECTS_RUSSIAN: String = "Тематика"
+        val CATEGORY_TECH_RUSSIAN: String = "Техника и софт"
+        val CATEGORY_USERS_RUSSIAN: String = "Пользовательские"
     }
 }
