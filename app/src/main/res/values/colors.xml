@@ -5,7 +5,7 @@
     <color name="colorAccent">#ff8000</color>
 
     <color name="colorBackground">#f5f5f5</color>
-    <color name="colorBackgroundDark">#e0e0e0</color>
+    <color name="colorBackgroundDark">#c9c9c9</color>
 
     <color name="textColor">@android:color/black</color>
 
