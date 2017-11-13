@@ -11,6 +11,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,7 +23,7 @@ import javax.inject.Inject
  * Created by koresuniku on 10.11.17.
  */
 
-class BoardListFragment : Fragment() {
+class BoardListFragment : Fragment(), BoardListView {
     private val LOG_TAG = BoardListFragment::class.java.simpleName
 
     @Inject lateinit var presenter: DashboardPresenter
@@ -45,18 +46,23 @@ class BoardListFragment : Fragment() {
         ButterKnife.bind(this, mRootView)
 
         mCompositeDisposable = CompositeDisposable()
-        loadBoards()
+        presenter.bindDashboardBoardListView(this)
 
         return mRootView
     }
 
-    private fun loadBoards() {
-        mCompositeDisposable.add(presenter.loadBoards()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(BoardsMapper::mapToArrayLists)
-                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace() }))
+    override fun onBoardDataReceived(boardsData: BoardsData) {
+        val boardLists = BoardsMapper.mapToArrayLists(boardsData)
+        activity.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
+
+//    private fun loadBoards() {
+//        mCompositeDisposable.add(presenter.loadBoards()
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(BoardsMapper::mapToArrayLists)
+//                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
+//    }
 
     private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>) {
         Log.d(LOG_TAG, "board list received")
@@ -67,6 +73,7 @@ class BoardListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        presenter.unbindDashboardBoardListView()
         mCompositeDisposable.clear()
     }
 }

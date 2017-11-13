@@ -9,12 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
+import javax.inject.Inject
 
 /**
  * Created by koresuniku on 12.11.17.
  */
 
-class BoardListAdapter(private val mContext: Context, private val mBoardsLists: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>)
+class BoardListAdapter (private val mContext: Context, private val mBoardsLists: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>)
     : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): Any = mBoardsLists[groupPosition].second

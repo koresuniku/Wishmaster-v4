@@ -75,29 +75,41 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
 
     override fun showLoadingBoards() {
-        mLoadingLayout.visibility = View.VISIBLE
-        mViewPager.setPagingEnabled(false)
-        val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
-        mYobaImage.startAnimation(rotationAnimation)
+        runOnUiThread {
+            mLoadingLayout.visibility = View.VISIBLE
+            mViewPager.setPagingEnabled(false)
+            val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
+            mYobaImage.startAnimation(rotationAnimation)
+        }
     }
 
     private fun hideLoading() {
-        mViewPager.setPagingEnabled(true)
-        mYobaImage.clearAnimation()
-        mLoadingLayout.visibility = View.GONE
+        runOnUiThread {
+            mViewPager.setPagingEnabled(true)
+            mYobaImage.clearAnimation()
+            mLoadingLayout.visibility = View.GONE
+        }
     }
 
     private fun showError(throwable: Throwable) {
-        mErrorLayout.visibility = View.VISIBLE
-        mViewPager.setPagingEnabled(false)
-        val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
-        snackbar.show()
-        mTryAgainButton.setOnClickListener { snackbar.dismiss(); hideError(); showLoadingBoards(); loadBoards() }
+        runOnUiThread {
+            mErrorLayout.visibility = View.VISIBLE
+            mViewPager.setPagingEnabled(false)
+            val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
+            snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
+            snackbar.show()
+            mTryAgainButton.setOnClickListener {
+                snackbar.dismiss()
+                hideError()
+                showLoadingBoards()
+                presenter.reloadBoards()
+                loadBoards()
+            }
+        }
     }
 
     private fun hideError() {
-        mErrorLayout.visibility = View.GONE
+        runOnUiThread { mErrorLayout.visibility = View.GONE }
     }
 
     private fun setupTabLayout() {
@@ -107,6 +119,8 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         mTabLayout.getTabAt(1)?.setIcon(R.drawable.ic_format_list_bulleted_black_24dp)
         mTabLayout.getTabAt(2)?.setIcon(R.drawable.ic_star_black_24dp)
         mTabLayout.getTabAt(3)?.setIcon(R.drawable.ic_history_black_24dp)
+
+        //mTabLayout.scrol
     }
 
     private fun setupViewPager() {
