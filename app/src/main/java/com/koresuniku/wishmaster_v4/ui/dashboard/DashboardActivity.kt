@@ -21,6 +21,7 @@ import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
+import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
 import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observables.ConnectableObservable
@@ -86,6 +87,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private fun hideLoading() {
         runOnUiThread {
             mViewPager.setPagingEnabled(true)
+            ViewUtils.enableTabLayout(mTabLayout)
             mYobaImage.clearAnimation()
             mLoadingLayout.visibility = View.GONE
         }
@@ -95,6 +97,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         runOnUiThread {
             mErrorLayout.visibility = View.VISIBLE
             mViewPager.setPagingEnabled(false)
+            ViewUtils.disableTabLayout(mTabLayout)
             val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
             snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
             snackbar.show()
@@ -120,7 +123,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         mTabLayout.getTabAt(2)?.setIcon(R.drawable.ic_star_black_24dp)
         mTabLayout.getTabAt(3)?.setIcon(R.drawable.ic_history_black_24dp)
 
-        //mTabLayout.scrol
+        ViewUtils.disableTabLayout(mTabLayout)
     }
 
     private fun setupViewPager() {

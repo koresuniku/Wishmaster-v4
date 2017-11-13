@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard.board_list
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -35,37 +37,42 @@ class BoardListFragment : Fragment(), BoardListView {
 
     private lateinit var mCompositeDisposable: CompositeDisposable
 
+    override fun onAttach(context: Activity) {
+        super.onAttach(context)
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = inflater.inflate(R.layout.fragment_board_list, container, false)
-
+        ButterKnife.bind(this, mRootView)
         (activity as DashboardActivity)
                 .getWishmasterApplication()
                 .getDashBoardComponent()
                 .inject(this)
-
-        ButterKnife.bind(this, mRootView)
+        presenter.bindDashboardBoardListView(this)
+        //Log.d(LOG_TAG, "just before binding")
 
         mCompositeDisposable = CompositeDisposable()
-        presenter.bindDashboardBoardListView(this)
+        loadBoards()
 
         return mRootView
     }
 
-    override fun onBoardDataReceived(boardsData: BoardsData) {
+    override fun onBoardsDataReceived(boardsData: BoardsData) {
+        Log.d(LOG_TAG, "board list received")
         val boardLists = BoardsMapper.mapToArrayLists(boardsData)
         activity.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
 
-//    private fun loadBoards() {
-//        mCompositeDisposable.add(presenter.loadBoards()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(BoardsMapper::mapToArrayLists)
-//                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
-//    }
+    private fun loadBoards() {
+        mCompositeDisposable.add(presenter.loadBoards()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(BoardsMapper::mapToArrayLists)
+                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
+    }
 
     private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>) {
-        Log.d(LOG_TAG, "board list received")
         mBoardListAdapter = BoardListAdapter(context, boardsList)
         mBoardList.setAdapter(mBoardListAdapter)
         mBoardList.setGroupIndicator(null)
@@ -75,5 +82,9 @@ class BoardListFragment : Fragment(), BoardListView {
         super.onDestroyView()
         presenter.unbindDashboardBoardListView()
         mCompositeDisposable.clear()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
     }
 }

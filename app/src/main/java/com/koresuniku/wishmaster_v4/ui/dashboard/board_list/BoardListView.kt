@@ -7,5 +7,5 @@ import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
  */
 
 interface BoardListView {
-    fun onBoardDataReceived(boardsData: BoardsData)
+    fun onBoardsDataReceived(boardsData: BoardsData)
 }

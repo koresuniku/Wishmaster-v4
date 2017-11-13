@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.ui.dashboard
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.util.Log
 import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListFragment
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards.FavouriteBoardsFragment
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_threads.FavouriteThreadsFragment
@@ -13,12 +14,17 @@ import com.koresuniku.wishmaster_v4.ui.dashboard.history.HistoryFragment
 */
 
 class DashboardViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val LOG_TAG = DashboardViewPagerAdapter::class.java.simpleName
     private val mCOUNT = 4
+
+    init {
+        Log.d(LOG_TAG, "just before creating adapter")
+    }
 
     override fun getItem(position: Int): Fragment {
         when (position) {
             0 -> return FavouriteBoardsFragment()
-            1 -> return BoardListFragment()
+            1 -> { Log.d(LOG_TAG, "just before creating fragment"); return BoardListFragment() }
             2 -> return FavouriteThreadsFragment()
             3 -> return HistoryFragment()
         }

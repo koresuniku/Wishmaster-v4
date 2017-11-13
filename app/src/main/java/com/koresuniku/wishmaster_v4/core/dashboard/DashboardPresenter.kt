@@ -49,8 +49,9 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
             return Observable.create( { e ->
                 loadBoardsFromDatabase().subscribe(
                         { boardsData: BoardsData ->
-                            e.onNext(boardsData);
-                            mDashboardBoardListView?.onBoardDataReceived(boardsData)
+                            e.onNext(boardsData)
+                            Log.d(LOG_TAG, "just before onNext")
+                            mDashboardBoardListView?.onBoardsDataReceived(boardsData)
                         },
                         { throwable -> throwable.printStackTrace() },
                         { Log.d(LOG_TAG, "loading from network"); loadBoardsFromNetwork(e) })
@@ -79,7 +80,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
                     { boardsData: BoardsData ->
                         BoardsHelper.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
                         e.onNext(boardsData)
-                        mDashboardBoardListView?.onBoardDataReceived(boardsData)
+                        mDashboardBoardListView?.onBoardsDataReceived(boardsData)
                     }, { throwable: Throwable -> e.onError(throwable) }))
         }
 
