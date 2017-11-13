@@ -1,10 +1,7 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard.board_list
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,13 +31,7 @@ class BoardListFragment : Fragment(), BoardListView {
     @BindView(R.id.board_list) lateinit var mBoardList: ExpandableListView
 
     private lateinit var mBoardListAdapter: BoardListAdapter
-
     private lateinit var mCompositeDisposable: CompositeDisposable
-
-    override fun onAttach(context: Activity) {
-        super.onAttach(context)
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = inflater.inflate(R.layout.fragment_board_list, container, false)
@@ -50,7 +41,6 @@ class BoardListFragment : Fragment(), BoardListView {
                 .getDashBoardComponent()
                 .inject(this)
         presenter.bindDashboardBoardListView(this)
-        //Log.d(LOG_TAG, "just before binding")
 
         mCompositeDisposable = CompositeDisposable()
         loadBoards()
@@ -59,13 +49,12 @@ class BoardListFragment : Fragment(), BoardListView {
     }
 
     override fun onBoardsDataReceived(boardsData: BoardsData) {
-        Log.d(LOG_TAG, "board list received")
         val boardLists = BoardsMapper.mapToArrayLists(boardsData)
         activity.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
 
     private fun loadBoards() {
-        mCompositeDisposable.add(presenter.loadBoards()
+        mCompositeDisposable.add(presenter.getLoadBoardsObservable()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(BoardsMapper::mapToArrayLists)
@@ -82,9 +71,5 @@ class BoardListFragment : Fragment(), BoardListView {
         super.onDestroyView()
         presenter.unbindDashboardBoardListView()
         mCompositeDisposable.clear()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 }

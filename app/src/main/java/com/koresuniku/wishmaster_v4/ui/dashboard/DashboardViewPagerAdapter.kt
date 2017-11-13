@@ -14,17 +14,12 @@ import com.koresuniku.wishmaster_v4.ui.dashboard.history.HistoryFragment
 */
 
 class DashboardViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-    private val LOG_TAG = DashboardViewPagerAdapter::class.java.simpleName
     private val mCOUNT = 4
-
-    init {
-        Log.d(LOG_TAG, "just before creating adapter")
-    }
 
     override fun getItem(position: Int): Fragment {
         when (position) {
             0 -> return FavouriteBoardsFragment()
-            1 -> { Log.d(LOG_TAG, "just before creating fragment"); return BoardListFragment() }
+            1 -> return BoardListFragment()
             2 -> return FavouriteThreadsFragment()
             3 -> return HistoryFragment()
         }

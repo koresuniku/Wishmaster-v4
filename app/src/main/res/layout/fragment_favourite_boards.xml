@@ -14,8 +14,9 @@
     </android.support.v7.widget.RecyclerView>
 
     <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:id="@+id/nothing_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/dvach_logo"

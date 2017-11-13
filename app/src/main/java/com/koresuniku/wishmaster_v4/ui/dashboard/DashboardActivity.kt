@@ -24,7 +24,6 @@ import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
 import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
@@ -59,7 +58,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     }
 
     private fun loadBoards() {
-        val loadBoardsObservable = presenter.loadBoards()
+        val loadBoardsObservable = presenter.getLoadBoardsObservable()
         mCompositeDisposable.add(loadBoardsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

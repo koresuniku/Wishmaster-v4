@@ -6,7 +6,7 @@ import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListView
 import io.reactivex.*
@@ -41,16 +41,15 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         this.mDashboardBoardListView = dashboardBoardListView
     }
 
-    fun loadBoards(): Observable<BoardsData> = mLoadBoardObservable
+    fun getLoadBoardsObservable(): Observable<BoardsData> = mLoadBoardObservable
 
-    fun reloadBoards() {  mLoadBoardObservable = getNewLoadBoardsObservable().cache() }
+    fun reloadBoards() { mLoadBoardObservable = getNewLoadBoardsObservable().cache() }
 
         private fun getNewLoadBoardsObservable(): Observable<BoardsData> {
             return Observable.create( { e ->
                 loadBoardsFromDatabase().subscribe(
                         { boardsData: BoardsData ->
                             e.onNext(boardsData)
-                            Log.d(LOG_TAG, "just before onNext")
                             mDashboardBoardListView?.onBoardsDataReceived(boardsData)
                         },
                         { throwable -> throwable.printStackTrace() },
@@ -62,7 +61,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
             return Maybe.create { e -> run {
                 if (mView != null) {
                     val boardsDataFromDatabase =
-                            BoardsHelper.getBoardsDataFromDatabase(databaseHelper.readableDatabase)
+                            BoardsRepository.getBoardsDataFromDatabase(databaseHelper.readableDatabase)
                     if (boardsDataFromDatabase == null) { Log.d(LOG_TAG, "on database complete"); e.onComplete() }
                     else { Log.d(LOG_TAG, "on database success"); e.onSuccess(boardsDataFromDatabase) }
                 } else { Log.d(LOG_TAG, "on database error"); e.onError(Throwable()) }
@@ -78,7 +77,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
                 BoardsMapper.mapResponse(boardsJsonSchemaResponse)
             }.subscribe(
                     { boardsData: BoardsData ->
-                        BoardsHelper.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
+                        BoardsRepository.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
                         e.onNext(boardsData)
                         mDashboardBoardListView?.onBoardsDataReceived(boardsData)
                     }, { throwable: Throwable -> e.onError(throwable) }))

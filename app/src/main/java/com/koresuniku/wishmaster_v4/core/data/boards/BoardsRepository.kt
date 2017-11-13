@@ -11,7 +11,7 @@ import java.util.ArrayList
  * Created by koresuniku on 03.10.17.
  */
 
-object BoardsHelper {
+object BoardsRepository {
 
     private val mBoardsProjection = arrayOf(
             DatabaseContract.BoardsEntry.COLUMN_BOARD_ID,
@@ -69,7 +69,7 @@ object BoardsHelper {
     }
 
     fun insertAllBoardsIntoDatabase(database: SQLiteDatabase, data: BoardsData) {
-        Log.d("BoardsHelper", "inserting all boards")
+        Log.d("BoardsRepository", "inserting all boards")
         var values: ContentValues
 
         data.getBoardList().forEach {

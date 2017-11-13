@@ -3,7 +3,7 @@ package com.koresuniku.wishmaster_v4.core.data.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsHelper
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
 import javax.inject.Inject
 
 /**
@@ -18,7 +18,7 @@ class DatabaseHelper @Inject constructor(context: Context) : SQLiteOpenHelper(co
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(BoardsHelper.CREATE_TABLE_BOARDS_STATEMENT)
+        db.execSQL(BoardsRepository.CREATE_TABLE_BOARDS_STATEMENT)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
