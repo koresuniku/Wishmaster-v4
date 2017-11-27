@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
+import javax.inject.Scope
 import javax.inject.Singleton
 
 /**
@@ -15,7 +16,6 @@ import javax.inject.Singleton
 class SharedPreferencesModule {
 
     @Provides
-    @Singleton
     fun provideSharedPreferences(context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }

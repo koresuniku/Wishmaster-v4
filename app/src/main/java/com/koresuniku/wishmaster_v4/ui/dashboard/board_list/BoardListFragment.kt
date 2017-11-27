@@ -56,8 +56,8 @@ class BoardListFragment : Fragment(), BoardListView {
     private fun loadBoards() {
         mCompositeDisposable.add(presenter.getLoadBoardsObservable()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(BoardsMapper::mapToArrayLists)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
     }
 

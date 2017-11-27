@@ -15,7 +15,8 @@ import javax.inject.Inject
  * Created by koresuniku on 12.11.17.
  */
 
-class BoardListAdapter (private val mContext: Context, private val mBoardsLists: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>)
+class BoardListAdapter (private val mContext: Context,
+                        private val mBoardsLists: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>)
     : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): Any = mBoardsLists[groupPosition].second

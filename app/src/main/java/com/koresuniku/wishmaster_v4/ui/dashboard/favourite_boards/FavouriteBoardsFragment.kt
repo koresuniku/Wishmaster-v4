@@ -12,17 +12,20 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
  * Created by koresuniku on 10.11.17.
  */
 
-class FavouriteBoardsFragment : Fragment(), OnStartDragListener {
+class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoardsView {
     private val LOG_TAG = FavouriteBoardsFragment::class.java.simpleName
 
     @Inject lateinit var presenter: DashboardPresenter
@@ -42,10 +45,12 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener {
                 .getWishmasterApplication()
                 .getDashBoardComponent()
                 .inject(this)
+        presenter.bindFavouriteBoardsView(this)
 
         mCompositeDisposable = CompositeDisposable()
 
         initRecyclerView()
+        loadFavouriteBoardsQueue()
 
         return mRootView
     }
@@ -64,12 +69,26 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener {
         mItemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
+    private fun loadFavouriteBoardsQueue() {
+        mCompositeDisposable.add(presenter.loadFavouriteBoardsQueue()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mRecyclerViewAdapter::setFavouriteBoardsItems))
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         mItemTouchHelper.startDrag(viewHolder)
+    }
+
+    override fun onQueueReceived(favouriteBoardsQueue: FavouriteBoardsQueue) {
+    }
+
+    override fun onNothingReceived() {
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         mCompositeDisposable.clear()
+        presenter.unbindFavouriteBoardsView()
     }
 }

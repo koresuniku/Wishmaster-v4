@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import java.util.*
@@ -26,6 +27,12 @@ class FavouriteBoardsRecyclerViewAdapter(private val mOnStartDragListener: OnSta
         mFavouriteBoards.add(Pair("sdgsdg1", "sdsdga1"))
         mFavouriteBoards.add(Pair("sdgsdg2", "sdsdga2"))
         mFavouriteBoards.add(Pair("sdgsdg3", "sdsdga3"))
+    }
+
+    fun setFavouriteBoardsItems(favouriteBoardsQueue: FavouriteBoardsQueue) {
+        Log.d(LOG_TAG, "yoohoo! $favouriteBoardsQueue")
+        mFavouriteBoards = favouriteBoardsQueue.boards as ArrayList<Pair<String, String>>
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = mFavouriteBoards.size
