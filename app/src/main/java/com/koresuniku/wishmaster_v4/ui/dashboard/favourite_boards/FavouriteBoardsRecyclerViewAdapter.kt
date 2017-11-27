@@ -1,6 +1,8 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
@@ -15,12 +17,24 @@ import kotlin.collections.ArrayList
 
 class FavouriteBoardsRecyclerViewAdapter(private val mOnStartDragListener: OnStartDragListener) :
         RecyclerView.Adapter<FavouriteBoardsRecyclerViewViewHolder>(), ItemTouchHelperAdapter {
+    private val LOG_TAG = FavouriteBoardsRecyclerViewAdapter::class.java.simpleName
 
     private lateinit var mFavouriteBoards: ArrayList<Pair<String, String>>
 
+    init {
+        mFavouriteBoards = ArrayList()
+        mFavouriteBoards.add(Pair("sdgsdg1", "sdsdga1"))
+        mFavouriteBoards.add(Pair("sdgsdg2", "sdsdga2"))
+        mFavouriteBoards.add(Pair("sdgsdg3", "sdsdga3"))
+    }
+
     override fun getItemCount(): Int = mFavouriteBoards.size
 
-    override fun onBindViewHolder(holder: FavouriteBoardsRecyclerViewViewHolder?, position: Int) {
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onBindViewHolder(holder: FavouriteBoardsRecyclerViewViewHolder, position: Int) {
+        val pair = mFavouriteBoards[position]
+        holder.mBoardName.text = pair.first
+        holder.mDragAndDrop.setOnLongClickListener { mOnStartDragListener.onStartDrag(holder); false }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteBoardsRecyclerViewViewHolder {

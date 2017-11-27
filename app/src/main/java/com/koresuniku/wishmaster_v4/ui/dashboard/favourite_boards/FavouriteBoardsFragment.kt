@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
+import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -26,11 +28,12 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener {
     @Inject lateinit var presenter: DashboardPresenter
 
     private lateinit var mRootView: View
-    @BindView(R.id.favourites_recycler_view) lateinit var favouriteRecyclerView: RecyclerView
+    @BindView(R.id.favourites_recycler_view) lateinit var recyclerView: RecyclerView
     @BindView(R.id.nothing_container) lateinit var nothingContainer: ViewGroup
 
     private lateinit var mCompositeDisposable: CompositeDisposable
     private lateinit var mItemTouchHelper: ItemTouchHelper
+    private lateinit var mRecyclerViewAdapter: FavouriteBoardsRecyclerViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = inflater.inflate(R.layout.fragment_favourite_boards, container, false)
@@ -42,7 +45,23 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener {
 
         mCompositeDisposable = CompositeDisposable()
 
+        initRecyclerView()
+
         return mRootView
+    }
+
+    private fun initRecyclerView() {
+        //TODO: receive data from presenter, otherwise set visibility gone
+        nothingContainer.visibility = View.GONE
+
+        mRecyclerViewAdapter = FavouriteBoardsRecyclerViewAdapter(this)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = mRecyclerViewAdapter
+        recyclerView.addItemDecoration(FavouriteBoardsItemDividerDecoration(context))
+
+        val callback = SimpleItemTouchItemCallback(mRecyclerViewAdapter)
+        mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
