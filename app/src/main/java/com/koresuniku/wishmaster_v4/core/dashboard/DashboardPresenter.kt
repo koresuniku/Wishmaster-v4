@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
@@ -13,6 +14,8 @@ import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListView
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards.FavouriteBoardsView
 import io.reactivex.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -26,7 +29,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     @Inject lateinit var databaseHelper: DatabaseHelper
 
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     private lateinit var mLoadBoardObservable: Observable<BoardsData>
 
@@ -97,14 +100,18 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     fun loadFavouriteBoardsQueue(): Maybe<FavouriteBoardsQueue> {
         return Maybe.create { e -> run {
-            val queue = sharedPreferences.getString(
+            compositeDisposable.add(sharedPreferencesStorage.readString(
                     FavouriteBoardsQueue.FAVOURITE_BOARDS_KEY,
                     FavouriteBoardsQueue.FAVOURITE_BOARDS_DEFAULT_VALUE)
-            if (queue == FavouriteBoardsQueue.FAVOURITE_BOARDS_DEFAULT_VALUE) e.onComplete()
-            else {
-                val boardsQueueObject = FavouriteBoardsQueue.getQueueObjectFromPreferences(queue)
-                e.onSuccess(boardsQueueObject)
-            }
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe { queue ->
+                        if (queue == FavouriteBoardsQueue.FAVOURITE_BOARDS_DEFAULT_VALUE) e.onComplete()
+                        else {
+                            val boardsQueueObject = FavouriteBoardsQueue.getQueueObjectFromPreferences(queue)
+                            e.onSuccess(boardsQueueObject)
+                        }
+                    })
         }
         }
     }

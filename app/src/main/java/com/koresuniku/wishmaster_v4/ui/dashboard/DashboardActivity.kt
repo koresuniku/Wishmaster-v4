@@ -16,7 +16,8 @@ import butterknife.BindView
 import butterknife.ButterKnife
 
 import com.koresuniku.wishmaster_v4.R
-import com.koresuniku.wishmaster_v4.application.SharedPreferencesManager
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
@@ -32,7 +33,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
 
     @Inject lateinit var presenter: DashboardPresenter
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.tab_layout) lateinit var mTabLayout: TabLayout
@@ -128,8 +129,11 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private fun setupViewPager() {
         mViewPagerAdapter = DashboardViewPagerAdapter(supportFragmentManager)
         mViewPager.adapter = mViewPagerAdapter
-        mViewPager.currentItem = sharedPreferences.getInt(
-                SharedPreferencesManager.DASHBOARD_PREFERRED_TAB_POSITION,
-                SharedPreferencesManager.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
+        mCompositeDisposable.add(sharedPreferencesStorage.readInt(
+                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION,
+                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe { value -> mViewPager.currentItem = value })
     }
 }

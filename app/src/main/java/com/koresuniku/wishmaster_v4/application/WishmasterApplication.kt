@@ -28,7 +28,6 @@ class WishmasterApplication : Application() {
                 .dashboardModule(DashboardModule())
                 .databaseModule(DatabaseModule())
                 .netModule(NetModule(Dvach.BASE_URL))
-                .sharedPreferencesModule(SharedPreferencesModule())
                 .build() as DaggerDashboardComponent
     }
 
