@@ -57,7 +57,7 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
 
     private fun initRecyclerView() {
         //TODO: receive data from presenter, otherwise set visibility gone
-        nothingContainer.visibility = View.GONE
+        //nothingContainer.visibility = View.GONE
 
         mRecyclerViewAdapter = FavouriteBoardsRecyclerViewAdapter(this)
         recyclerView.layoutManager = LinearLayoutManager(context)

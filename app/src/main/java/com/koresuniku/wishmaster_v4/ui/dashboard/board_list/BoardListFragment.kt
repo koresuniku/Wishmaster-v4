@@ -10,6 +10,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
@@ -49,19 +50,19 @@ class BoardListFragment : Fragment(), BoardListView {
     }
 
     override fun onBoardsDataReceived(boardsData: BoardsData) {
-        val boardLists = BoardsMapper.mapToArrayLists(boardsData)
+        val boardLists = BoardsMapper.mapToBoardsDataByCategory(boardsData)
         activity.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
 
     private fun loadBoards() {
         mCompositeDisposable.add(presenter.getLoadBoardsObservable()
                 .subscribeOn(Schedulers.newThread())
-                .map(BoardsMapper::mapToArrayLists)
+                .map(BoardsMapper::mapToBoardsDataByCategory)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
     }
 
-    private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>) {
+    private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<BoardModel>>>) {
         mBoardListAdapter = BoardListAdapter(context, boardsList)
         mBoardList.setAdapter(mBoardListAdapter)
         mBoardList.setGroupIndicator(null)

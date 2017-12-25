@@ -93,11 +93,6 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
                 }, { throwable: Throwable -> e.onError(throwable) }))
     }
 
-    override fun unbindView() {
-        super.unbindView()
-        databaseHelper.readableDatabase.close()
-    }
-
     fun loadFavouriteBoardsQueue(): Maybe<FavouriteBoardsQueue> {
         return Maybe.create { e -> run {
             compositeDisposable.add(sharedPreferencesStorage.readString(
@@ -122,5 +117,10 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     fun unbindFavouriteBoardsView() {
         this.mFavouriteBoardsView = null
+    }
+
+    override fun unbindView() {
+        super.unbindView()
+        databaseHelper.readableDatabase.close()
     }
 }

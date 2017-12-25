@@ -16,7 +16,8 @@ object BoardsRepository {
     private val mBoardsProjection = arrayOf(
             DatabaseContract.BoardsEntry.COLUMN_BOARD_ID,
             DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME,
-            DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY)
+            DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY,
+            DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION)
 
     fun getBoardsProjection() = mBoardsProjection
 
@@ -25,6 +26,11 @@ object BoardsRepository {
             DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " TEXT NOT NULL, " +
             DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME + " TEXT NOT NULL, " +
             DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY + " TEXT NOT NULL" + ");"
+
+    val FAVOURITE_POSITION_DEFAULT = -1
+    val ALTER_TABLE_ADD_COLUMN_FAVOURITE_POSITION = "ALTER TABLE " + DatabaseContract.BoardsEntry.TABLE_NAME +
+            " ADD COLUMN " + DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION +
+            " INTEGER DEFAULT " + FAVOURITE_POSITION_DEFAULT + ";"
 
 
     fun getBoardsDataFromDatabase(database: SQLiteDatabase): BoardsData? {
@@ -43,6 +49,8 @@ object BoardsRepository {
                 DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME)
         val columnBoardCategory = cursor.getColumnIndex(
                 DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY)
+        val columnFavouritePosition = cursor.getColumnIndex(
+                DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION)
 
         var boardModel: BoardModel
 
@@ -52,6 +60,7 @@ object BoardsRepository {
             boardModel.setBoardId(cursor.getString(columnBoardId))
             boardModel.setBoardName(cursor.getString(columnBoardName))
             boardModel.setBoardCategory(cursor.getString(columnBoardCategory))
+            boardModel.setFavouritePosition(cursor.getInt(columnFavouritePosition))
             boardList.add(boardModel)
         } while (cursor.moveToNext())
         cursor.close()

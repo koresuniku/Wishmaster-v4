@@ -24,9 +24,9 @@ class FavouriteBoardsRecyclerViewAdapter(private val mOnStartDragListener: OnSta
 
     init {
         mFavouriteBoards = ArrayList()
-        mFavouriteBoards.add(Pair("sdgsdg1", "sdsdga1"))
-        mFavouriteBoards.add(Pair("sdgsdg2", "sdsdga2"))
-        mFavouriteBoards.add(Pair("sdgsdg3", "sdsdga3"))
+//        mFavouriteBoards.add(Pair("sdgsdg1", "sdsdga1"))
+//        mFavouriteBoards.add(Pair("sdgsdg2", "sdsdga2"))
+//        mFavouriteBoards.add(Pair("sdgsdg3", "sdsdga3"))
     }
 
     fun setFavouriteBoardsItems(favouriteBoardsQueue: FavouriteBoardsQueue) {

@@ -19,6 +19,7 @@ object DatabaseContract {
         val COLUMN_BOARD_ID = "board_id"
         val COLUMN_BOARD_NAME = "board_name"
         val COLUMN_BOARD_CATEGORY = "board_category"
+        val COLUMN_FAVOURITE_POSITION = "favourite_position"
 
         val CATEGORY_ADULTS: String = "adults"
         val CATEGORY_CREATIVITY: String = "creativity"

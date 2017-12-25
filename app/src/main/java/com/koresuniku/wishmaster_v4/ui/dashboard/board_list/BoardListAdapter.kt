@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 
 class BoardListAdapter (private val mContext: Context,
-                        private val mBoardsLists: ArrayList<Pair<String, ArrayList<Pair<String, String>>>>)
+                        private val mBoardsLists: ArrayList<Pair<String, ArrayList<BoardModel>>>)
     : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): Any = mBoardsLists[groupPosition].second
@@ -45,7 +46,7 @@ class BoardListAdapter (private val mContext: Context,
 
     override fun getChildrenCount(groupPosition: Int): Int = mBoardsLists[groupPosition].second.size
 
-    override fun getChild(groupPosition: Int, childPosition: Int): Any = mBoardsLists[groupPosition].second[childPosition].second
+    override fun getChild(groupPosition: Int, childPosition: Int): Any = mBoardsLists[groupPosition].second[childPosition]
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
@@ -56,8 +57,8 @@ class BoardListAdapter (private val mContext: Context,
                     R.layout.fragment_board_list_child_item, parent, false)
         }
         val childName: TextView? = newConvertView?.findViewById(R.id.child_board_name)
-        val name = "/${mBoardsLists[groupPosition].second[childPosition].first}/ " +
-                "- ${mBoardsLists[groupPosition].second[childPosition].second}"
+        val name = "/${mBoardsLists[groupPosition].second[childPosition].getBoardId()}/ " +
+                "- ${mBoardsLists[groupPosition].second[childPosition].getBoardName()}"
         childName?.text = name
         return newConvertView!!
     }

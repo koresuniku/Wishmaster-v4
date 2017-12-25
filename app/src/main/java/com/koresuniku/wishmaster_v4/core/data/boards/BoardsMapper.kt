@@ -84,23 +84,24 @@ object BoardsMapper {
         return boardsDataResult
     }
 
-    fun mapToArrayLists(boardsData: BoardsData): ArrayList<Pair<String, ArrayList<Pair<String, String>>>> {
-        val resultList = ArrayList<Pair<String, ArrayList<Pair<String, String>>>> ()
+    fun mapToBoardsDataByCategory(boardsData: BoardsData): ArrayList<Pair<String, ArrayList<BoardModel>>> {
+        val resultList = ArrayList<Pair<String, ArrayList<BoardModel>>>()
 
         var currentCategory = boardsData.getBoardList()[0].getBoardCategory()
-        var currentArrayListOfNames = ArrayList<Pair<String, String>>()
-        for (i in 0 until boardsData.getBoardList().size) {
-            val boardModel = boardsData.getBoardList()[i]
-            if (boardModel.getBoardCategory() == currentCategory) {
-                currentArrayListOfNames.add(Pair(boardModel.getBoardId(), boardModel.getBoardName()))
-            } else {
-                Log.d("mapping: ", boardModel.getBoardCategory())
-                resultList.add(Pair(currentCategory, currentArrayListOfNames))
-                currentArrayListOfNames = ArrayList()
-                currentArrayListOfNames.add(Pair(boardModel.getBoardId(), boardModel.getBoardName()))
-                currentCategory = boardModel.getBoardCategory()
-            }
-        }
+        var currentArrayListOfNames = ArrayList<BoardModel>()
+        (0 until boardsData.getBoardList().size)
+                .asSequence()
+                .map { boardsData.getBoardList()[it] }
+                .forEach {
+                    if (it.getBoardCategory() == currentCategory) {
+                        currentArrayListOfNames.add(it)
+                    } else {
+                        resultList.add(Pair(currentCategory, currentArrayListOfNames))
+                        currentArrayListOfNames = ArrayList()
+                        currentArrayListOfNames.add(it)
+                        currentCategory = it.getBoardCategory()
+                    }
+                }
         resultList.add(Pair(currentCategory, currentArrayListOfNames))
 
         return resultList

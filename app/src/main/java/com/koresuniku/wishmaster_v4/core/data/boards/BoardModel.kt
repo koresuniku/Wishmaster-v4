@@ -8,22 +8,20 @@ class BoardModel {
     private lateinit var mBoardId: String
     private lateinit var mBoardName: String
     private lateinit var mBoardCategory: String
+    private var mFavouritePosition = -1
 
     fun getBoardId() = mBoardId
     fun getBoardName() = mBoardName
     fun getBoardCategory() = mBoardCategory
+    fun getFavouritePosition() = mFavouritePosition
 
-    fun setBoardId(boardId: String) {
-        this.mBoardId = boardId
-    }
+    fun setBoardId(boardId: String) { this.mBoardId = boardId }
 
-    fun setBoardName(boardName: String) {
-        this.mBoardName = boardName
-    }
+    fun setBoardName(boardName: String) { this.mBoardName = boardName }
 
-    fun setBoardCategory(boardCategory: String) {
-        this.mBoardCategory = boardCategory
-    }
+    fun setBoardCategory(boardCategory: String) { this.mBoardCategory = boardCategory }
+
+    fun setFavouritePosition(favouritePosition: Int) { this.mFavouritePosition = favouritePosition }
 
     override fun equals(other: Any?): Boolean {
         return if (other is BoardModel) {
