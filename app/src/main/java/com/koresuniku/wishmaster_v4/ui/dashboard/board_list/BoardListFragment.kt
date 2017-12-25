@@ -63,7 +63,7 @@ class BoardListFragment : Fragment(), BoardListView {
     }
 
     private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<BoardModel>>>) {
-        mBoardListAdapter = BoardListAdapter(context, boardsList)
+        mBoardListAdapter = BoardListAdapter(context, boardsList, presenter, mCompositeDisposable)
         mBoardList.setAdapter(mBoardListAdapter)
         mBoardList.setGroupIndicator(null)
     }

@@ -111,6 +111,12 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         }
     }
 
+    fun makeBoardFavourite(boardId: String): Single<Int> {
+        return Single.create { e -> run {
+            e.onSuccess(BoardsRepository.makeBoardFavourite(databaseHelper.writableDatabase, boardId))
+        }}
+    }
+
     fun unbindDashboardBoardListView() {
         this.mDashboardBoardListView = null
     }

@@ -122,4 +122,68 @@ object BoardsRepository {
         database.delete(DatabaseContract.BoardsEntry.TABLE_NAME,
                 DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ", arrayOf(boardId))
     }
+
+    fun makeBoardFavourite(database: SQLiteDatabase, boardId: String): Int {
+        val newPosition: Int
+        val cursor = database.query(DatabaseContract.BoardsEntry.TABLE_NAME, mBoardsProjection,
+                DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ", arrayOf(boardId),
+                null, null, null, null)
+        cursor.moveToFirst()
+        if (cursor.getInt(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION))
+                == BoardsRepository.FAVOURITE_POSITION_DEFAULT) {
+            newPosition = addNewFavouriteBoardToEnd(database, boardId)
+        } else {
+            val currentPosition = cursor.getInt(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION))
+            removeFavouriteBoard(database, boardId, currentPosition)
+            newPosition = BoardsRepository.FAVOURITE_POSITION_DEFAULT
+        }
+
+        cursor.close()
+        database.close()
+
+        return newPosition
+    }
+
+    private fun addNewFavouriteBoardToEnd(database: SQLiteDatabase, boardId: String): Int {
+        val cursor = database.query(DatabaseContract.BoardsEntry.TABLE_NAME, mBoardsProjection,
+                DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION + " =? ",
+                arrayOf(BoardsRepository.FAVOURITE_POSITION_DEFAULT.toString()),
+                null, null, null, null)
+        val newPosition = cursor.count
+        val values = ContentValues()
+        values.put(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION, newPosition)
+
+        database.update(DatabaseContract.BoardsEntry.TABLE_NAME, values,
+                DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                arrayOf(boardId))
+
+        cursor.close()
+        return newPosition
+    }
+
+    private fun removeFavouriteBoard(database: SQLiteDatabase, boardId: String, currentPosition: Int) {
+        val values = ContentValues()
+        values.put(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION, BoardsRepository.FAVOURITE_POSITION_DEFAULT)
+
+        database.update(DatabaseContract.BoardsEntry.TABLE_NAME, values,
+                DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ", arrayOf(boardId))
+
+        val cursor = database.query(DatabaseContract.BoardsEntry.TABLE_NAME, mBoardsProjection,
+                DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " !=? ",
+                arrayOf(BoardsRepository.FAVOURITE_POSITION_DEFAULT.toString()),
+                null, null, null, null)
+        cursor.moveToFirst()
+        do {
+            val position = cursor.getInt(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION))
+            if (position > currentPosition) {
+                val decrementedPositionValues = ContentValues()
+                decrementedPositionValues.put(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION, position - 1)
+                database.update(DatabaseContract.BoardsEntry.TABLE_NAME, decrementedPositionValues,
+                        DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                        arrayOf(cursor.getString(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID))))
+            }
+        } while (cursor.moveToNext())
+
+        cursor.close()
+    }
 }

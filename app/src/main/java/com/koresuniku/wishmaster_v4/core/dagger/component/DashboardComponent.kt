@@ -28,6 +28,4 @@ interface DashboardComponent {
     fun inject(boardListFragment: BoardListFragment)
 
     fun inject(favouriteBoardsFragment: FavouriteBoardsFragment)
-
-//    fun getSharedPreferencesStorage(): SharedPreferencesStorage
 }
