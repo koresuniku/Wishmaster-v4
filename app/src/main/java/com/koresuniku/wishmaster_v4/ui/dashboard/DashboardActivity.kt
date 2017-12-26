@@ -129,6 +129,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private fun setupViewPager() {
         mViewPagerAdapter = DashboardViewPagerAdapter(supportFragmentManager)
         mViewPager.adapter = mViewPagerAdapter
+        mViewPager.offscreenPageLimit = 2
         mCompositeDisposable.add(sharedPreferencesStorage.readInt(
                 SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION,
                 SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)

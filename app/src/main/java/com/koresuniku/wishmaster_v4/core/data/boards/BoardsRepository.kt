@@ -73,7 +73,6 @@ object BoardsRepository {
         val cursor = database.query(DatabaseContract.BoardsEntry.TABLE_NAME,
                 mBoardsProjection, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
                 arrayOf(boardId), null, null, null)
-        cursor.close()
         return cursor
     }
 

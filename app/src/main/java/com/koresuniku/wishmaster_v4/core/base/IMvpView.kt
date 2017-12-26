@@ -9,5 +9,5 @@ import com.koresuniku.wishmaster_v4.application.WishmasterApplication
  */
 
 interface IMvpView {
-    fun getWishmasterApplication(): WishmasterApplication
+
 }

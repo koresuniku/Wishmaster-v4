@@ -1,6 +1,5 @@
 package com.koresuniku.wishmaster_v4.core.dashboard
 
-import android.content.SharedPreferences
 import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
@@ -11,8 +10,6 @@ import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
-import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListView
-import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards.FavouriteBoardsView
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
