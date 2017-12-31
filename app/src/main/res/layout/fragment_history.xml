@@ -13,35 +13,5 @@
 
     </android.support.v7.widget.RecyclerView>
 
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/dvach_logo"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.32999998"
-            app:srcCompat="@drawable/dvach_logo" />
-
-        <TextView
-            android:id="@+id/there_is_nothing_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="@string/there_is_nothing_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dvach_logo"
-            app:layout_constraintVertical_bias="0.13" />
-    </android.support.constraint.ConstraintLayout>
+    <include layout="@layout/nothing_layout" />
 </FrameLayout>
