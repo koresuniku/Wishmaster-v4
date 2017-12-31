@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.core.data.boards
 
+import android.database.Cursor
 import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseContract
@@ -105,5 +106,27 @@ object BoardsMapper {
         resultList.add(Pair(currentCategory, currentArrayListOfNames))
 
         return resultList
+    }
+
+    fun mapCursorToBoardModelList(cursor: Cursor): List<BoardModel> {
+        val boardList = ArrayList<BoardModel>()
+
+        cursor.moveToFirst()
+        if (cursor.count != 0) do {
+            val boardId = cursor.getString(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID))
+            val boardName = cursor.getString(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME))
+            val boardCategory = cursor.getString(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY))
+            val favouritePosition = cursor.getInt(cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION))
+
+            val boardModel = BoardModel()
+            boardModel.setBoardId(boardId)
+            boardModel.setBoardName(boardName)
+            boardModel.setBoardCategory(boardCategory)
+            boardModel.setFavouritePosition(favouritePosition)
+
+            boardList.add(boardModel)
+        } while (cursor.moveToNext())
+
+        return boardList
     }
 }

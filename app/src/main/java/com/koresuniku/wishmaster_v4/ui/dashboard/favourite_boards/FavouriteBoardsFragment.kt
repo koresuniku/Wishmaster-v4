@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.dashboard.FavouriteBoardsView
-import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
@@ -51,7 +52,7 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
         mCompositeDisposable = CompositeDisposable()
 
         initRecyclerView()
-        loadFavouriteBoardsQueue()
+        loadFavouriteBoardsList()
 
         return mRootView
     }
@@ -70,21 +71,27 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
         mItemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun loadFavouriteBoardsQueue() {
-        mCompositeDisposable.add(presenter.loadFavouriteBoardsQueue()
+    private fun loadFavouriteBoardsList() {
+        mCompositeDisposable.add(presenter.loadFavouriteBoardsList()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mRecyclerViewAdapter::setFavouriteBoardsItems))
+                .subscribe( { boardList ->
+                    boardList.forEach { Log.d(LOG_TAG, it.toString() + "\n") }
+                    nothingContainer.visibility = if (boardList.isEmpty()) View.VISIBLE else View.GONE
+                    mRecyclerViewAdapter.bindFavouriteBoardList(boardList)
+                }))
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         mItemTouchHelper.startDrag(viewHolder)
     }
 
-    override fun onQueueReceived(favouriteBoardsQueue: FavouriteBoardsQueue) {
-    }
-
-    override fun onNothingReceived() {
+    override fun onFavouriteBoardListChanged(boardList: List<BoardModel>) {
+        boardList.forEach { Log.d(LOG_TAG, it.toString() + "\n") }
+        activity.runOnUiThread({
+            nothingContainer.visibility = if (boardList.isEmpty()) View.VISIBLE else View.GONE
+            mRecyclerViewAdapter.bindFavouriteBoardList(boardList)
+        })
     }
 
     override fun onDestroyView() {

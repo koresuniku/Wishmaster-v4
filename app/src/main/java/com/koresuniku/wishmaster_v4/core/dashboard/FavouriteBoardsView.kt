@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.dashboard
 
 import com.koresuniku.wishmaster_v4.core.base.IMvpView
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 
 /**
@@ -8,8 +9,5 @@ import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
  */
 
 interface FavouriteBoardsView : IMvpView {
-
-    fun onQueueReceived(favouriteBoardsQueue: FavouriteBoardsQueue)
-
-    fun onNothingReceived()
+    fun onFavouriteBoardListChanged(boardList: List<BoardModel>)
 }

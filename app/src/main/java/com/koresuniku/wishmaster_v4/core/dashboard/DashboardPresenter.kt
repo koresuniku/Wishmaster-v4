@@ -5,11 +5,8 @@ import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.*
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
-import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -111,6 +108,14 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
     fun makeBoardFavourite(boardId: String): Single<Int> {
         return Single.create { e -> run {
             e.onSuccess(BoardsRepository.makeBoardFavourite(databaseHelper.writableDatabase, boardId))
+            mFavouriteBoardsView?.onFavouriteBoardListChanged(
+                    BoardsRepository.getFavouriteBoardListAsc(databaseHelper.readableDatabase))
+        }}
+    }
+
+    fun loadFavouriteBoardsList(): Single<List<BoardModel>> {
+        return Single.create { e -> run {
+            e.onSuccess(BoardsRepository.getFavouriteBoardListAsc(databaseHelper.readableDatabase))
         }}
     }
 

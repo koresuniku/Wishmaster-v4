@@ -8,7 +8,7 @@ class BoardModel {
     private lateinit var mBoardId: String
     private lateinit var mBoardName: String
     private lateinit var mBoardCategory: String
-    private var mFavouritePosition = -1
+    private var mFavouritePosition = BoardsRepository.FAVOURITE_POSITION_DEFAULT
 
     fun getBoardId() = mBoardId
     fun getBoardName() = mBoardName
@@ -27,5 +27,12 @@ class BoardModel {
         return if (other is BoardModel) {
             other.getBoardId() == getBoardId()
         } else false
+    }
+
+    override fun toString(): String {
+        return "boardId: ${getBoardId()}, " +
+                "boardName: ${getBoardName()}, " +
+                "boardCategory: ${getBoardCategory()}, " +
+                "favouritePosition: ${getFavouritePosition()}"
     }
 }

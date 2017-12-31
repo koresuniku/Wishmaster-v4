@@ -6,6 +6,7 @@
 
     <color name="colorBackground">#f5f5f5</color>
     <color name="colorBackgroundDark">#c9c9c9</color>
+    <color name="colorBackgroundLight">#ffffff</color>
 
     <color name="textColor">@android:color/black</color>
 
