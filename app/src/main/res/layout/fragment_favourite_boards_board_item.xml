@@ -9,12 +9,14 @@
 
     <TextView
         android:id="@+id/board_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
+        android:layout_toLeftOf="@+id/drag_and_drop"
         android:clickable="false"
+        android:gravity="left|center"
         android:text="zelenyi slonik"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent" />
