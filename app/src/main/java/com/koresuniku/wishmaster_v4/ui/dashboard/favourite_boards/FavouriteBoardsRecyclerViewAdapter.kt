@@ -2,14 +2,16 @@ package com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards
 
 import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
-import com.koresuniku.wishmaster_v4.core.data.boards.FavouriteBoardsQueue
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -17,7 +19,10 @@ import kotlin.collections.ArrayList
  * Created by koresuniku on 13.11.17.
  */
 
-class FavouriteBoardsRecyclerViewAdapter(private val mOnStartDragListener: OnStartDragListener) :
+class FavouriteBoardsRecyclerViewAdapter(
+        private val mOnStartDragListener: OnStartDragListener,
+        private val mPresenter: DashboardPresenter,
+        private val mCompositeDisposable: CompositeDisposable) :
         RecyclerView.Adapter<FavouriteBoardsRecyclerViewViewHolder>(), ItemTouchHelperAdapter {
     private val LOG_TAG = FavouriteBoardsRecyclerViewAdapter::class.java.simpleName
 
@@ -48,15 +53,29 @@ class FavouriteBoardsRecyclerViewAdapter(private val mOnStartDragListener: OnSta
     }
 
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+//        mFavouriteBoards[fromPosition].setFavouritePosition(toPosition)
+        //mFavouriteBoards[toPosition].setFavouritePosition(fromPosition)
+
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
+                //mFavouriteBoards[i].setFavouritePosition(i + 1)
                 Collections.swap(mFavouriteBoards, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
+                //mFavouriteBoards[i].setFavouritePosition(i - 1)
                 Collections.swap(mFavouriteBoards, i, i - 1)
             }
         }
+
+        mFavouriteBoards.forEachIndexed { index, boardModel -> boardModel.setFavouritePosition(index) }
+
+
+        mCompositeDisposable.add(mPresenter.reorderFavouriteBoardList(mFavouriteBoards)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe())
+
         notifyItemMoved(fromPosition, toPosition)
     }
 

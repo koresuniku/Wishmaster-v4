@@ -33,8 +33,8 @@ object BoardsRepository {
             " INTEGER DEFAULT " + FAVOURITE_POSITION_DEFAULT + ";"
 
 
-    fun getBoardsDataFromDatabase(database: SQLiteDatabase): BoardsData? {
-        val data = BoardsData()
+    fun getBoardsDataFromDatabase(database: SQLiteDatabase): BoardListData? {
+        val data = BoardListData()
         val boardList = ArrayList<BoardModel>()
 
         val cursor: Cursor = database.query(
@@ -76,7 +76,7 @@ object BoardsRepository {
         return cursor
     }
 
-    fun insertAllBoardsIntoDatabase(database: SQLiteDatabase, data: BoardsData) {
+    fun insertAllBoardsIntoDatabase(database: SQLiteDatabase, data: BoardListData) {
         Log.d("BoardsRepository", "inserting all boards")
         var values: ContentValues
 
@@ -89,7 +89,7 @@ object BoardsRepository {
         }
     }
 
-    fun insertSubtractedBoardsFromInputData(database: SQLiteDatabase, inputData: BoardsData) {
+    fun insertSubtractedBoardsFromInputData(database: SQLiteDatabase, inputData: BoardListData) {
         val existingBoardsData = getBoardsDataFromDatabase(database)
         val resultData = inputData.getBoardList().subtract(existingBoardsData!!.getBoardList())
 
@@ -108,7 +108,7 @@ object BoardsRepository {
         database.insert(DatabaseContract.BoardsEntry.TABLE_NAME, null, values)
     }
 
-    fun deleteOldBoards(database: SQLiteDatabase, inputData: BoardsData) {
+    fun deleteOldBoards(database: SQLiteDatabase, inputData: BoardListData) {
         val existingBoardsData = getBoardsDataFromDatabase(database)
         val resultData = existingBoardsData!!.getBoardList().subtract(inputData.getBoardList())
 
@@ -196,7 +196,20 @@ object BoardsRepository {
 
         val boardList = BoardsMapper.mapCursorToBoardModelList(cursor)
         cursor.close()
+        database.close()
 
         return boardList
+    }
+
+    fun reorderBoardList(database: SQLiteDatabase, boardList: List<BoardModel>) {
+        boardList.forEach {
+            val values = ContentValues()
+            values.put(DatabaseContract.BoardsEntry.COLUMN_FAVOURITE_POSITION, it.getFavouritePosition())
+            database.update(
+                    DatabaseContract.BoardsEntry.TABLE_NAME,
+                    values,
+                    DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                    arrayOf(it.getBoardId()))
+        }
     }
 }

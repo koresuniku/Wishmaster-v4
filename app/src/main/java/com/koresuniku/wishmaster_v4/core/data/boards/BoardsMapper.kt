@@ -1,7 +1,6 @@
 package com.koresuniku.wishmaster_v4.core.data.boards
 
 import android.database.Cursor
-import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseContract
 
@@ -11,8 +10,8 @@ import com.koresuniku.wishmaster_v4.core.data.database.DatabaseContract
 
 object BoardsMapper {
 
-    fun mapResponse(boardsJsonSchemaResponse: BoardsJsonSchemaResponse): BoardsData {
-        val boardsDataResult = BoardsData()
+    fun mapResponse(boardsJsonSchemaResponse: BoardsJsonSchemaResponse): BoardListData {
+        val boardsDataResult = BoardListData()
         val boardListResult = ArrayList<BoardModel>()
         var boardModel: BoardModel
 
@@ -85,14 +84,14 @@ object BoardsMapper {
         return boardsDataResult
     }
 
-    fun mapToBoardsDataByCategory(boardsData: BoardsData): ArrayList<Pair<String, ArrayList<BoardModel>>> {
+    fun mapToBoardsDataByCategory(boardListData: BoardListData): ArrayList<Pair<String, ArrayList<BoardModel>>> {
         val resultList = ArrayList<Pair<String, ArrayList<BoardModel>>>()
 
-        var currentCategory = boardsData.getBoardList()[0].getBoardCategory()
+        var currentCategory = boardListData.getBoardList()[0].getBoardCategory()
         var currentArrayListOfNames = ArrayList<BoardModel>()
-        (0 until boardsData.getBoardList().size)
+        (0 until boardListData.getBoardList().size)
                 .asSequence()
-                .map { boardsData.getBoardList()[it] }
+                .map { boardListData.getBoardList()[it] }
                 .forEach {
                     if (it.getBoardCategory() == currentCategory) {
                         currentArrayListOfNames.add(it)

@@ -61,7 +61,8 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
         //TODO: receive data from presenter, otherwise set visibility gone
         //nothingContainer.visibility = View.GONE
 
-        mRecyclerViewAdapter = FavouriteBoardsRecyclerViewAdapter(this)
+        mRecyclerViewAdapter = FavouriteBoardsRecyclerViewAdapter(
+                this, presenter, mCompositeDisposable)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mRecyclerViewAdapter
         recyclerView.addItemDecoration(FavouriteBoardsItemDividerDecoration(context))

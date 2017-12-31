@@ -8,8 +8,6 @@ import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.*
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -25,7 +23,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
-    private lateinit var mLoadBoardObservable: Observable<BoardsData>
+    private lateinit var mLoadBoardObservable: Observable<BoardListData>
 
     private var mDashboardBoardListView: BoardListView? = null
     private var mFavouriteBoardsView: FavouriteBoardsView? = null
@@ -46,23 +44,23 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         this.mFavouriteBoardsView = favouriteBoardsView
     }
 
-    fun getLoadBoardsObservable(): Observable<BoardsData> = mLoadBoardObservable
+    fun getLoadBoardsObservable(): Observable<BoardListData> = mLoadBoardObservable
 
     fun reloadBoards() { mLoadBoardObservable = getNewLoadBoardsObservable().cache() }
 
-    private fun getNewLoadBoardsObservable(): Observable<BoardsData> {
+    private fun getNewLoadBoardsObservable(): Observable<BoardListData> {
         return Observable.create( { e ->
             loadBoardsFromDatabase().subscribe(
-                    { boardsData: BoardsData ->
-                        e.onNext(boardsData)
-                        mDashboardBoardListView?.onBoardsDataReceived(boardsData)
+                    { boardListData: BoardListData ->
+                        e.onNext(boardListData)
+                        mDashboardBoardListView?.onBoardsDataReceived(boardListData)
                     },
                     { throwable -> throwable.printStackTrace() },
                     { Log.d(LOG_TAG, "loading from network"); loadBoardsFromNetwork(e) })
         })
     }
 
-    private fun loadBoardsFromDatabase(): Maybe<BoardsData> {
+    private fun loadBoardsFromDatabase(): Maybe<BoardListData> {
         return Maybe.create { e -> run {
             if (mView != null) {
                 val boardsDataFromDatabase = BoardsRepository.getBoardsDataFromDatabase(databaseHelper.readableDatabase)
@@ -73,36 +71,18 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         }
     }
 
-    private fun loadBoardsFromNetwork(e: ObservableEmitter<BoardsData>) {
+    private fun loadBoardsFromNetwork(e: ObservableEmitter<BoardListData>) {
         mView?.showLoadingBoards()
         val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
         compositeDisposable.add(boardsObservable.map {
             boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
             BoardsMapper.mapResponse(boardsJsonSchemaResponse)
         }.subscribe(
-                { boardsData: BoardsData ->
-                    BoardsRepository.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardsData)
-                    e.onNext(boardsData)
-                    mDashboardBoardListView?.onBoardsDataReceived(boardsData)
+                { boardListData: BoardListData ->
+                    BoardsRepository.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardListData)
+                    e.onNext(boardListData)
+                    mDashboardBoardListView?.onBoardsDataReceived(boardListData)
                 }, { throwable: Throwable -> e.onError(throwable) }))
-    }
-
-    fun loadFavouriteBoardsQueue(): Maybe<FavouriteBoardsQueue> {
-        return Maybe.create { e -> run {
-            compositeDisposable.add(sharedPreferencesStorage.readString(
-                    FavouriteBoardsQueue.FAVOURITE_BOARDS_KEY,
-                    FavouriteBoardsQueue.FAVOURITE_BOARDS_DEFAULT_VALUE)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe { queue ->
-                        if (queue == FavouriteBoardsQueue.FAVOURITE_BOARDS_DEFAULT_VALUE) e.onComplete()
-                        else {
-                            val boardsQueueObject = FavouriteBoardsQueue.getQueueObjectFromPreferences(queue)
-                            e.onSuccess(boardsQueueObject)
-                        }
-                    })
-        }
-        }
     }
 
     fun makeBoardFavourite(boardId: String): Single<Int> {
@@ -117,6 +97,13 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         return Single.create { e -> run {
             e.onSuccess(BoardsRepository.getFavouriteBoardListAsc(databaseHelper.readableDatabase))
         }}
+    }
+
+    fun reorderFavouriteBoardList(boardList: List<BoardModel>): Completable {
+        return Completable.create( { e -> run {
+            BoardsRepository.reorderBoardList(databaseHelper.writableDatabase, boardList)
+            e.onComplete()
+        }})
     }
 
     fun unbindDashboardBoardListView() {

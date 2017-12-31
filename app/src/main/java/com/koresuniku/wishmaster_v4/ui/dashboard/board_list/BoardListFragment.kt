@@ -12,7 +12,7 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.BoardListView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -50,8 +50,8 @@ class BoardListFragment : Fragment(), BoardListView {
         return mRootView
     }
 
-    override fun onBoardsDataReceived(boardsData: BoardsData) {
-        val boardLists = BoardsMapper.mapToBoardsDataByCategory(boardsData)
+    override fun onBoardsDataReceived(boardListData: BoardListData) {
+        val boardLists = BoardsMapper.mapToBoardsDataByCategory(boardListData)
         activity.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
 

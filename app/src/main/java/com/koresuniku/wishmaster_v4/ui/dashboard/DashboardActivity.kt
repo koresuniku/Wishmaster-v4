@@ -1,6 +1,5 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
@@ -20,7 +19,7 @@ import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsData
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
 import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
@@ -63,8 +62,8 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         mCompositeDisposable.add(loadBoardsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( { boardsData: BoardsData ->
-                    Log.d(LOG_TAG, "received board data: " + boardsData.getBoardList().size)
+                .subscribe( { boardListData: BoardListData ->
+                    Log.d(LOG_TAG, "received board data: " + boardListData.getBoardList().size)
                     hideLoading()
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
