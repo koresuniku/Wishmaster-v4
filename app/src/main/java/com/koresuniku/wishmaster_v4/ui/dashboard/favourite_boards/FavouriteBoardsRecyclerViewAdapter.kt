@@ -39,37 +39,30 @@ class FavouriteBoardsRecyclerViewAdapter(
 
     override fun getItemCount(): Int = mFavouriteBoards.size
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onBindViewHolder(holder: FavouriteBoardsRecyclerViewViewHolder, position: Int) {
         val boardModel = mFavouriteBoards[position]
-        holder.mBoardName.text = boardModel.getBoardName()
+        holder.mBoardName.text = "/${boardModel.getBoardId()}/ - ${boardModel.getBoardName()}"
         holder.mDragAndDrop.setOnLongClickListener { mOnStartDragListener.onStartDrag(holder); false }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteBoardsRecyclerViewViewHolder {
-        return FavouriteBoardsRecyclerViewViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                        R.layout.fragment_favourite_boards_board_item, parent, false))
+        return FavouriteBoardsRecyclerViewViewHolder(LayoutInflater.from(parent.context).inflate(
+                R.layout.fragment_favourite_boards_board_item, parent, false))
     }
 
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
-//        mFavouriteBoards[fromPosition].setFavouritePosition(toPosition)
-        //mFavouriteBoards[toPosition].setFavouritePosition(fromPosition)
-
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                //mFavouriteBoards[i].setFavouritePosition(i + 1)
                 Collections.swap(mFavouriteBoards, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                //mFavouriteBoards[i].setFavouritePosition(i - 1)
                 Collections.swap(mFavouriteBoards, i, i - 1)
             }
         }
 
         mFavouriteBoards.forEachIndexed { index, boardModel -> boardModel.setFavouritePosition(index) }
-
 
         mCompositeDisposable.add(mPresenter.reorderFavouriteBoardList(mFavouriteBoards)
                 .subscribeOn(Schedulers.io())
