@@ -7,4 +7,6 @@ import com.koresuniku.wishmaster_v4.core.base.IActivityMvpView
  */
 
 interface ThreadListView : IActivityMvpView {
+    fun getBoardId(): String
+    fun showLoading()
 }

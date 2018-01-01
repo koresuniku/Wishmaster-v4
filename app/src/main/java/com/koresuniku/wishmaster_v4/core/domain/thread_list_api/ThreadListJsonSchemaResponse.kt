@@ -12,13 +12,13 @@ class ThreadListJsonSchemaResponse {
 
     @SerializedName("BoardName")
     @Expose
-    private lateinit var boardName: String
+    lateinit var boardName: String
 
     @SerializedName("default_name")
     @Expose
-    private lateinit var defaultName: String
+    lateinit var defaultName: String
 
     @SerializedName("threads")
     @Expose
-    private lateinit var threads: List<Thread>
+    lateinit var threads: List<Thread>
 }

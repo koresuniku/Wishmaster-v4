@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardListsObject
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,12 +21,12 @@ import io.reactivex.schedulers.Schedulers
  */
 
 class BoardListAdapter (private val mContext: Context,
-                        private val mBoardsLists: ArrayList<Pair<String, ArrayList<BoardModel>>>,
+                        private val mBoardsListsObject: BoardListsObject,
                         private val mPresenter: DashboardPresenter,
                         private val mCompositeDisposable: CompositeDisposable)
     : BaseExpandableListAdapter() {
 
-    override fun getGroup(groupPosition: Int): Any = mBoardsLists[groupPosition].second
+    override fun getGroup(groupPosition: Int): Any = mBoardsListsObject.boardLists[groupPosition].second
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean = true
 
@@ -38,7 +39,7 @@ class BoardListAdapter (private val mContext: Context,
                     R.layout.fragment_board_list_group_item, parent, false)
         }
         val groupName: TextView? = newConvertView?.findViewById(R.id.group_board_name)
-        groupName?.text = mBoardsLists[groupPosition].first
+        groupName?.text = mBoardsListsObject.boardLists[groupPosition].first
 
         val indicator: ImageView? = newConvertView?.findViewById(R.id.group_item_indicator)
         if (isExpanded) {
@@ -49,9 +50,9 @@ class BoardListAdapter (private val mContext: Context,
         return newConvertView!!
     }
 
-    override fun getChildrenCount(groupPosition: Int): Int = mBoardsLists[groupPosition].second.size
+    override fun getChildrenCount(groupPosition: Int): Int = mBoardsListsObject.boardLists[groupPosition].second.size
 
-    override fun getChild(groupPosition: Int, childPosition: Int): Any = mBoardsLists[groupPosition].second[childPosition]
+    override fun getChild(groupPosition: Int, childPosition: Int): Any = mBoardsListsObject.boardLists[groupPosition].second[childPosition]
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
@@ -64,7 +65,7 @@ class BoardListAdapter (private val mContext: Context,
         val childName: TextView? = newConvertView?.findViewById(R.id.child_board_name)
         val makeFavouriteButton: ImageView? = newConvertView?.findViewById(R.id.make_favourite_button)
 
-        val boardModel = mBoardsLists[groupPosition].second[childPosition]
+        val boardModel = mBoardsListsObject.boardLists[groupPosition].second[childPosition]
 
         val name = "/${boardModel.getBoardId()}/ - ${boardModel.getBoardName()}"
         childName?.text = name
@@ -92,5 +93,5 @@ class BoardListAdapter (private val mContext: Context,
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long = childPosition.toLong()
 
-    override fun getGroupCount(): Int = mBoardsLists.size
+    override fun getGroupCount(): Int = mBoardsListsObject.boardLists.size
 }

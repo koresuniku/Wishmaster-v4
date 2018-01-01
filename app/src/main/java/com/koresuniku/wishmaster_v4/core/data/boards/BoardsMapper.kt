@@ -84,7 +84,7 @@ object BoardsMapper {
         return boardsDataResult
     }
 
-    fun mapToBoardsDataByCategory(boardListData: BoardListData): ArrayList<Pair<String, ArrayList<BoardModel>>> {
+    fun mapToBoardsDataByCategory(boardListData: BoardListData): BoardListsObject {
         val resultList = ArrayList<Pair<String, ArrayList<BoardModel>>>()
 
         var currentCategory = boardListData.getBoardList()[0].getBoardCategory()
@@ -104,7 +104,7 @@ object BoardsMapper {
                 }
         resultList.add(Pair(currentCategory, currentArrayListOfNames))
 
-        return resultList
+        return BoardListsObject(resultList)
     }
 
     fun mapCursorToBoardModelList(cursor: Cursor): List<BoardModel> {

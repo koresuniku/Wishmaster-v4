@@ -11,29 +11,29 @@ class File {
 
     @SerializedName("height")
     @Expose
-    private lateinit var height: String
+    lateinit var height: String
 
     @SerializedName("width")
     @Expose
-    private lateinit var width: String
+    lateinit var width: String
 
     @SerializedName("path")
     @Expose
-    private lateinit var path: String
+    lateinit var path: String
 
     @SerializedName("thumbnail")
     @Expose
-    private lateinit var thumbnail: String
+    lateinit var thumbnail: String
 
     @SerializedName("size")
     @Expose
-    private lateinit var size: String
+    lateinit var size: String
 
     @SerializedName("displayname")
     @Expose
-    private lateinit var displayName: String
+    lateinit var displayName: String
 
     @SerializedName("duration")
     @Expose
-    private lateinit var duration: String
+    lateinit var duration: String
 }

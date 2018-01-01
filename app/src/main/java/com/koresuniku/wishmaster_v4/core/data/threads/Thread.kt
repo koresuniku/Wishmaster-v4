@@ -12,38 +12,38 @@ class Thread {
 
     @SerializedName("comment")
     @Expose
-    private lateinit var comment: String
+    lateinit var comment: String
 
     @SerializedName("date")
     @Expose
-    private lateinit var date: String
+    lateinit var date: String
 
     @SerializedName("files")
     @Expose
-    private lateinit var files: List<File>
+    lateinit var files: List<File>
 
     @SerializedName("name")
     @Expose
-    private lateinit var name: String
+    lateinit var name: String
 
     @SerializedName("num")
     @Expose
-    private lateinit var num: String
+    lateinit var num: String
 
     @SerializedName("files_count")
     @Expose
-    private lateinit var filesCount: String
+    lateinit var filesCount: String
 
     @SerializedName("posts_count")
     @Expose
-    private lateinit var postsCount: String
+    lateinit var postsCount: String
 
     @SerializedName("trip")
     @Expose
-    private lateinit var trip: String
+    lateinit var trip: String
 
     @SerializedName("subject")
     @Expose
-    private lateinit var subject: String
+    lateinit var subject: String
 
 }

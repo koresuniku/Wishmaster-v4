@@ -1,7 +1,9 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard.board_list
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +11,15 @@ import android.widget.ExpandableListView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.core.dashboard.BoardListView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardListsObject
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
+import com.koresuniku.wishmaster_v4.ui.thread_list.ThreadListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -63,10 +68,20 @@ class BoardListFragment : Fragment(), BoardListView {
                 .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
     }
 
-    private fun setupBoardListAdapter(boardsList: ArrayList<Pair<String, ArrayList<BoardModel>>>) {
-        mBoardListAdapter = BoardListAdapter(context, boardsList, presenter, mCompositeDisposable)
+    private fun setupBoardListAdapter(boardListsObject: BoardListsObject) {
+        mBoardListAdapter = BoardListAdapter(context, boardListsObject, presenter, mCompositeDisposable)
         mBoardList.setAdapter(mBoardListAdapter)
         mBoardList.setGroupIndicator(null)
+        mBoardList.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+            launchThreadListActivity(boardListsObject.boardLists[groupPosition].second[childPosition].getBoardId())
+            false
+        }
+    }
+
+    private fun launchThreadListActivity(boardId: String) {
+        val intent = Intent(activity, ThreadListActivity::class.java)
+        intent.putExtra(IntentKeystore.BOARD_ID_CODE, boardId)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {

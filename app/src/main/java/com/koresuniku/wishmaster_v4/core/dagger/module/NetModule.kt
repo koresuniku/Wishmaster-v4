@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
+import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -59,4 +60,9 @@ class NetModule(val mBaseUrl: String) {
     @Singleton
     fun provideBoardsApi(retrofit: Retrofit): BoardsApiService =
             retrofit.create(BoardsApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideThreadListApi(retrofit: Retrofit): ThreadListApiService =
+            retrofit.create(ThreadListApiService::class.java)
 }

@@ -19,9 +19,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
     private val LOG_TAG = DashboardPresenter::class.java.simpleName
 
     @Inject lateinit var boardsApiService: BoardsApiService
-
     @Inject lateinit var databaseHelper: DatabaseHelper
-
     @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     private lateinit var mLoadBoardObservable: Observable<BoardListData>

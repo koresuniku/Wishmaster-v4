@@ -28,13 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
-import android.support.v4.view.MenuItemCompat.getActionView
-import android.support.v7.app.ActionBar
 import android.support.v7.widget.SearchView
-import android.widget.EditText
-
-
-
 
 class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
@@ -80,7 +74,6 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
                 searchViewMenuItem.collapseActionView()
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean = false
         })
 
