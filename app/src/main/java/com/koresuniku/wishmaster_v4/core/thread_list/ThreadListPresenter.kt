@@ -6,8 +6,10 @@ import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadsMapper
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
-import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaResponse
+import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
+import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -34,22 +36,42 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         return Single.create({ e -> kotlin.run {
             mView?.showLoading()
             compositeDisposable.add(loadThreadListDirectly()
-                    .subscribe({ schema: ThreadListJsonSchemaResponse ->
-                        if (schema.threads.isEmpty()) {
-                            Log.d(LOG_TAG, "schema threads is empty!")
-                        } else e.onSuccess(ThreadsMapper.mapResponseToThreadListData(schema))
+                    .subscribe({ schemaCatalog: ThreadListJsonSchemaCatalogResponse ->
+                        if (schemaCatalog.threads.isEmpty()) {
+                            Log.d(LOG_TAG, "schemaCatalog threads is empty!")
+                            compositeDisposable.add(loadThreadListByPages()
+                                    .subscribe(
+                                            { schemaByPages -> e.onSuccess(ThreadsMapper.mapPageResponseToThreadListData(schemaByPages)) },
+                                            { t -> e.onError(t) }))
+                        } else e.onSuccess(ThreadsMapper.mapCatalogResponseToThreadListData(schemaCatalog))
                     }, { t -> e.onError(t) }))
         }})
     }
 
-    private fun loadThreadListDirectly(): Single<ThreadListJsonSchemaResponse> {
+    private fun loadThreadListDirectly(): Single<ThreadListJsonSchemaCatalogResponse> {
         return Single.create({ e -> kotlin.run {
-            mView?.let { compositeDisposable.add(
-                    threadListApiService.getThreadsObservable(it.getBoardId())
-                            .subscribe(
-                                    { schema -> e.onSuccess(schema) },
-                                    { t -> t.printStackTrace(); e.onError(t) } ))
+            mView?.let { compositeDisposable.add(threadListApiService.getThreadsObservable(it.getBoardId())
+                    .subscribe({ schema -> e.onSuccess(schema) }, { t -> t.printStackTrace(); e.onError(t) }))
             }
+        }})
+    }
+
+    private fun loadThreadListByPages(): Single<ThreadListJsonSchemaPageResponse> {
+        return Single.create({ e -> kotlin.run { mView?.let {
+            val boardId = it.getBoardId()
+            val indexResponse = threadListApiService.getThreadsByPageCall(boardId, "index").execute()
+            indexResponse.body()?.let {
+                Log.d(LOG_TAG, "raw pages: ${it.pages}")
+                it.threads = arrayListOf()
+                //Абу, почини API!
+                for (i in 1 until it.pages.size - 1) {
+                    val nextPageResponse = threadListApiService.getThreadsByPageCall(boardId, i.toString()).execute()
+                    Log.d(LOG_TAG, "inside pages count: $i, threads: ${nextPageResponse.body()?.threads?.size}")
+                    it.threads.addAll(nextPageResponse.body()?.threads ?: emptyList())
+                }
+                e.onSuccess(it)
+            }
+        }
         }})
     }
 }

@@ -10,8 +10,7 @@ import android.widget.TextView
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListsObject
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
+import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

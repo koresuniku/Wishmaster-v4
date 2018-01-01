@@ -8,13 +8,16 @@ class ThreadListData {
 
     private lateinit var boardName: String
     private lateinit var defaultName: String
-    private lateinit var threadList: List<Thread>
+    private lateinit var threadList: MutableList<Thread>
+    private var pagesCount: Int = 0
 
     fun getThreadList() = threadList
     fun getBoardName() = boardName
     fun getDefaultName() = defaultName
+    fun getPagesCount() = pagesCount
 
-    fun setBoardList(threadList: List<Thread>) { this.threadList = threadList }
+    fun setBoardList(threadList: MutableList<Thread>) { this.threadList = threadList }
     fun setBoardName(boardName: String) { this.boardName = boardName }
     fun setDefaultName(defaultName: String) { this.defaultName = defaultName }
+    fun setPagesCount(pagesCount: Int) { this.pagesCount = pagesCount }
 }

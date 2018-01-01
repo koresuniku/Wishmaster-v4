@@ -65,7 +65,7 @@ class BoardListFragment : Fragment(), BoardListView {
                 .subscribeOn(Schedulers.newThread())
                 .map(BoardsMapper::mapToBoardsDataByCategory)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace(); }))
+                .subscribe(this::setupBoardListAdapter, { e -> e.printStackTrace() }))
     }
 
     private fun setupBoardListAdapter(boardListsObject: BoardListsObject) {

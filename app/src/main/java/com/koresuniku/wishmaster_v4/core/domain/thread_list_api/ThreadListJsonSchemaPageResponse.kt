@@ -8,7 +8,7 @@ import com.koresuniku.wishmaster_v4.core.data.threads.Thread
  * Created by koresuniku on 01.01.18.
  */
 
-class ThreadListJsonSchemaResponse {
+class ThreadListJsonSchemaPageResponse {
 
     @SerializedName("BoardName")
     @Expose
@@ -20,5 +20,9 @@ class ThreadListJsonSchemaResponse {
 
     @SerializedName("threads")
     @Expose
-    lateinit var threads: List<Thread>
+    lateinit var threads: MutableList<Thread>
+
+    @SerializedName("pages")
+    @Expose
+    lateinit var pages: MutableList<Int>
 }

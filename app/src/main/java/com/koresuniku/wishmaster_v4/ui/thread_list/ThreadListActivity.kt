@@ -41,7 +41,9 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         mCompositeDisposable.add(presenter.loadThreadList()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ threadListData -> Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}" )}, {})
+                .subscribe(
+                        { threadListData -> Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}" )},
+                        { e -> e.printStackTrace() })
         )
     }
 

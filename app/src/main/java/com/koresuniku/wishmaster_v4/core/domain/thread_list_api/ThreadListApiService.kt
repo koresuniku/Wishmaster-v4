@@ -4,7 +4,6 @@ import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 /**
  * Created by koresuniku on 01.01.18.
@@ -13,8 +12,14 @@ import retrofit2.http.Query
 interface ThreadListApiService {
 
     @GET("/{id}/catalog.json")
-    fun getThreadsObservable(@Path("id") boardId: String): Observable<ThreadListJsonSchemaResponse>
+    fun getThreadsCall(@Path("id") boardId: String): Call<ThreadListJsonSchemaCatalogResponse>
 
     @GET("/{id}/{page}.json")
-    fun getThreadsByPageObservable(@Path("id") boardId: String, @Path("page") page: String): Observable<ThreadListJsonSchemaResponse>
+    fun getThreadsByPageCall(@Path("id") boardId: String, @Path("page") page: String): Call<ThreadListJsonSchemaPageResponse>
+
+    @GET("/{id}/catalog.json")
+    fun getThreadsObservable(@Path("id") boardId: String): Observable<ThreadListJsonSchemaCatalogResponse>
+
+    @GET("/{id}/{page}.json")
+    fun getThreadsByPageObservable(@Path("id") boardId: String, @Path("page") page: String): Observable<ThreadListJsonSchemaCatalogResponse>
 }

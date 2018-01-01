@@ -2,11 +2,11 @@ package com.koresuniku.wishmaster_v4.core.dashboard
 
 import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
-import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchemaResponse
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.*
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
+import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
 import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject

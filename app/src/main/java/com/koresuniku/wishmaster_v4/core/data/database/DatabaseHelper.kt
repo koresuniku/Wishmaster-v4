@@ -3,8 +3,7 @@ package com.koresuniku.wishmaster_v4.core.data.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardsRepository
+import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
 import javax.inject.Inject
 
 /**

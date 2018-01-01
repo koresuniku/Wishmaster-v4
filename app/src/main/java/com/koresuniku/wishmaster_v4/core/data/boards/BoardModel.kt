@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.data.boards
 
+import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
+
 /**
  * Created by koresuniku on 04.10.17.
  */
