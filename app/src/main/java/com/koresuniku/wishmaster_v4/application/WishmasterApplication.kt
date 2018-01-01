@@ -2,9 +2,9 @@ package com.koresuniku.wishmaster_v4.application
 
 import android.app.Application
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardComponent
-import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerNetComponent
+import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerThreadListComponent
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
-import com.koresuniku.wishmaster_v4.core.dvach.Dvach
+import com.koresuniku.wishmaster_v4.core.domain.Dvach
 
 /**
  * Created by koresuniku on 03.10.17.
@@ -12,26 +12,27 @@ import com.koresuniku.wishmaster_v4.core.dvach.Dvach
 
 class WishmasterApplication : Application() {
 
-    private lateinit var mDaggerNetComponent: DaggerNetComponent
     private lateinit var mDaggerDashboardComponent: DaggerDashboardComponent
+    private lateinit var mDaggerThreadListComponent: DaggerThreadListComponent
 
     override fun onCreate() {
         super.onCreate()
-
-        mDaggerNetComponent = DaggerNetComponent.builder()
-                .appModule(AppModule(this))
-                .netModule(NetModule(Dvach.BASE_URL))
-                .build() as DaggerNetComponent
-
         mDaggerDashboardComponent = DaggerDashboardComponent.builder()
                 .appModule(AppModule(this))
                 .dashboardModule(DashboardModule())
                 .databaseModule(DatabaseModule())
                 .netModule(NetModule(Dvach.BASE_URL))
                 .build() as DaggerDashboardComponent
+
+        mDaggerThreadListComponent = DaggerThreadListComponent.builder()
+                .appModule(AppModule(this))
+                .threadListModule(ThreadListModule())
+                .databaseModule(DatabaseModule())
+                .netModule(NetModule(Dvach.BASE_URL))
+                .build() as DaggerThreadListComponent
     }
 
-    fun getNetComponent() = mDaggerNetComponent
-
     fun getDashBoardComponent() = mDaggerDashboardComponent
+
+    fun getThreadListComponent() = mDaggerThreadListComponent
 }

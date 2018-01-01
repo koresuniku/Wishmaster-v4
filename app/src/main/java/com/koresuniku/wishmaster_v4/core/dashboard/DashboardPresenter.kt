@@ -8,6 +8,7 @@ import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.*
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import io.reactivex.*
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -56,7 +57,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
                         mDashboardBoardListView?.onBoardsDataReceived(boardListData)
                     },
                     { throwable -> throwable.printStackTrace() },
-                    { Log.d(LOG_TAG, "loading from network"); loadBoardsFromNetwork(e) })
+                    { loadBoardsFromNetwork(e) })
         })
     }
 
@@ -74,11 +75,10 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
     private fun loadBoardsFromNetwork(e: ObservableEmitter<BoardListData>) {
         mView?.showLoadingBoards()
         val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
-        compositeDisposable.add(boardsObservable.map {
-            boardsJsonSchemaResponse: BoardsJsonSchemaResponse ->
-            BoardsMapper.mapResponse(boardsJsonSchemaResponse)
-        }.subscribe(
-                { boardListData: BoardListData ->
+        compositeDisposable.add(boardsObservable
+                .subscribeOn(Schedulers.io())
+                .map(BoardsMapper::mapResponse)
+                .subscribe({ boardListData: BoardListData ->
                     BoardsRepository.insertAllBoardsIntoDatabase(databaseHelper.writableDatabase, boardListData)
                     e.onNext(boardListData)
                     mDashboardBoardListView?.onBoardsDataReceived(boardListData)

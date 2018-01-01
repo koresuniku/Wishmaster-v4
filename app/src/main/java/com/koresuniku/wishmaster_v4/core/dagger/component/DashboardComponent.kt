@@ -17,8 +17,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component (modules = arrayOf(AppModule::class, DashboardModule::class,
-        DatabaseModule::class, NetModule::class))
+@Component (modules = [(AppModule::class), (DashboardModule::class), (DatabaseModule::class), (NetModule::class)])
 interface DashboardComponent {
 
     fun inject(activity: DashboardActivity)
