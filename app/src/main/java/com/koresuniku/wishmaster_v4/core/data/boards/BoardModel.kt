@@ -18,17 +18,13 @@ class BoardModel {
     fun getFavouritePosition() = mFavouritePosition
 
     fun setBoardId(boardId: String) { this.mBoardId = boardId }
-
     fun setBoardName(boardName: String) { this.mBoardName = boardName }
-
     fun setBoardCategory(boardCategory: String) { this.mBoardCategory = boardCategory }
-
     fun setFavouritePosition(favouritePosition: Int) { this.mFavouritePosition = favouritePosition }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is BoardModel) {
-            other.getBoardId() == getBoardId()
-        } else false
+        return if (other is BoardModel) other.getBoardId() == getBoardId()
+        else false
     }
 
     override fun toString(): String {

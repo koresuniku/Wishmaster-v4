@@ -9,7 +9,6 @@ import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiSer
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
 import io.reactivex.Single
-import java.util.*
 import javax.inject.Inject
 
 /**

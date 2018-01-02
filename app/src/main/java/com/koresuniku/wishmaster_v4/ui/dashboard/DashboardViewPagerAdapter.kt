@@ -3,7 +3,6 @@ package com.koresuniku.wishmaster_v4.ui.dashboard
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.util.Log
 import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListFragment
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards.FavouriteBoardsFragment
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_threads.FavouriteThreadsFragment
@@ -14,7 +13,7 @@ import com.koresuniku.wishmaster_v4.ui.dashboard.history.HistoryFragment
 */
 
 class DashboardViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-    private val mCOUNT = 4
+    private val COUNT = 4
 
     override fun getItem(position: Int): Fragment {
         when (position) {
@@ -26,7 +25,7 @@ class DashboardViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter
         return Fragment()
     }
 
-    override fun getCount(): Int = mCOUNT
+    override fun getCount(): Int = COUNT
 
 
 }

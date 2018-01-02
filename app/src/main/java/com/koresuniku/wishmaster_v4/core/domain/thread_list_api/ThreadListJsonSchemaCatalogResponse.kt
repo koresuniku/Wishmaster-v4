@@ -21,8 +21,4 @@ class ThreadListJsonSchemaCatalogResponse {
     @SerializedName("threads")
     @Expose
     lateinit var threads: MutableList<Thread>
-
-//    @SerializedName("pages")
-//    @Expose
-//    lateinit var pages: List<Int>
 }
