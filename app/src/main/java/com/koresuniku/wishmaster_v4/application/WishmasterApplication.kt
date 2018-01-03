@@ -24,6 +24,7 @@ class WishmasterApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         mDaggerDashboardComponent = DaggerDashboardComponent.builder()
                 .appModule(AppModule(this))
                 .dashboardModule(DashboardModule())
@@ -40,6 +41,5 @@ class WishmasterApplication : Application() {
     }
 
     fun getDashBoardComponent() = mDaggerDashboardComponent
-
     fun getThreadListComponent() = mDaggerThreadListComponent
 }
