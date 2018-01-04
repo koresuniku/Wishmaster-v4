@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
+import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster_v4.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,8 +43,9 @@ class FavouriteBoardsRecyclerViewAdapter(
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onBindViewHolder(holder: FavouriteBoardsRecyclerViewViewHolder, position: Int) {
         val boardModel = mFavouriteBoards[position]
-        holder.mBoardName.text = "/${boardModel.getBoardId()}/ - ${boardModel.getBoardName()}"
+        holder.mBoardName.text = WishmasterTextUtils.obtainBoardIdDashName(boardModel)
         holder.mDragAndDrop.setOnLongClickListener { mOnStartDragListener.onStartDrag(holder); false }
+        holder.itemView.setOnClickListener { mPresenter.shouldLaunchThreadListActivity(boardModel.getBoardId()) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteBoardsRecyclerViewViewHolder {

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="slide_anim_duration">300</integer>
+    <integer name="slide_anim_duration">350</integer>
+    <integer name="slide_back_anim_duration">275</integer>
+    <integer name="loading_fade_duration">150</integer>
 </resources>

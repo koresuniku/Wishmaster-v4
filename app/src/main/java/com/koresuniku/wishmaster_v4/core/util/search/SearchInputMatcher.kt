@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster_v4.core.util
+package com.koresuniku.wishmaster_v4.core.util.search
 
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
 import java.util.regex.Pattern

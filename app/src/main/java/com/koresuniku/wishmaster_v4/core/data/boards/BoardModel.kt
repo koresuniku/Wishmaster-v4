@@ -1,12 +1,13 @@
 package com.koresuniku.wishmaster_v4.core.data.boards
 
 import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
+import java.io.Serializable
 
 /**
  * Created by koresuniku on 04.10.17.
  */
 
-class BoardModel {
+class BoardModel : Serializable {
     private lateinit var mBoardId: String
     private lateinit var mBoardName: String
     private lateinit var mBoardCategory: String

@@ -7,7 +7,7 @@ import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.*
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.database.repository.BoardsRepository
-import com.koresuniku.wishmaster_v4.core.util.SearchInputMatcher
+import com.koresuniku.wishmaster_v4.core.util.search.SearchInputMatcher
 import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -109,6 +109,8 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
         val response = SearchInputMatcher.matchInput(input)
         if (response.responseCode == SearchInputMatcher.BOARD_CODE) mView?.launchThreadListActivity(response.data)
     }
+
+    fun shouldLaunchThreadListActivity(boardId: String) { mView?.launchThreadListActivity(boardId) }
 
     fun unbindDashboardBoardListView() {
         this.mDashboardBoardListView = null

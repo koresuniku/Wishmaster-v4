@@ -3,7 +3,6 @@ package com.koresuniku.wishmaster_v4.ui.dashboard.board_list
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.core.dashboard.BoardListView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListsObject
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
@@ -73,16 +71,9 @@ class BoardListFragment : Fragment(), BoardListView {
         mBoardList.setAdapter(mBoardListAdapter)
         mBoardList.setGroupIndicator(null)
         mBoardList.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-            launchThreadListActivity(boardListsObject.boardLists[groupPosition].second[childPosition].getBoardId())
+            presenter.shouldLaunchThreadListActivity(boardListsObject.boardLists[groupPosition].second[childPosition].getBoardId())
             false
         }
-    }
-
-    private fun launchThreadListActivity(boardId: String) {
-        val intent = Intent(activity, ThreadListActivity::class.java)
-        intent.putExtra(IntentKeystore.BOARD_ID_CODE, boardId)
-        startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
     }
 
     override fun onDestroyView() {
