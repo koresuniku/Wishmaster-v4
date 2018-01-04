@@ -84,6 +84,11 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.unbindView()
+    }
+
     private fun loadBoards() {
         val loadBoardsObservable = presenter.getLoadBoardsObservable()
         mCompositeDisposable.add(loadBoardsObservable
@@ -101,7 +106,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
 
     @LayoutRes override fun provideContentLayoutResource(): Int = R.layout.activity_dashboard
 
-    override fun showLoadingBoards() {
+    override fun showLoading() {
         runOnUiThread {
             mLoadingLayout.visibility = View.VISIBLE
             mViewPager.setPagingEnabled(false)
@@ -130,7 +135,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
             mTryAgainButton.setOnClickListener {
                 snackbar.dismiss()
                 hideError()
-                showLoadingBoards()
+                showLoading()
                 presenter.reloadBoards()
                 loadBoards()
             }

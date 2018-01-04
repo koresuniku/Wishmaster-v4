@@ -2,12 +2,14 @@ package com.koresuniku.wishmaster_v4.core.thread_list
 
 import android.util.Log
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
+import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadsMapper
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -21,9 +23,14 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     @Inject lateinit var threadListApiService: ThreadListApiService
     @Inject lateinit var databaseHelper: DatabaseHelper
 
+    private lateinit var mLoadThreadListSingle: Single<ThreadListData>
+
     override fun bindView(mvpView: ThreadListView) {
         super.bindView(mvpView)
         mvpView.getWishmasterApplication().getThreadListComponent().inject(this)
+
+        mLoadThreadListSingle = getNewLoadThreadListSingle()
+        mLoadThreadListSingle = mLoadThreadListSingle.cache()
     }
 
     override fun unbindView() {
@@ -31,7 +38,11 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         databaseHelper.readableDatabase.close()
     }
 
-    fun loadThreadList(): Single<ThreadListData> {
+    fun getLoadThreadsSingle(): Single<ThreadListData> = mLoadThreadListSingle
+
+    fun reloadThreads() { mLoadThreadListSingle = getNewLoadThreadListSingle().cache() }
+
+    private fun getNewLoadThreadListSingle(): Single<ThreadListData> {
         return Single.create({ e -> kotlin.run {
             mView?.showLoading()
             compositeDisposable.add(loadThreadListDirectly()

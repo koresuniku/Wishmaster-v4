@@ -1,12 +1,19 @@
 package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
+import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
-import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListView
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
@@ -24,6 +31,13 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     @Inject lateinit var presenter: ThreadListPresenter
     @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
+
+    @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
+    @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
+    @BindView(R.id.yoba) lateinit var mYobaImage: ImageView
+    @BindView(R.id.error_layout) lateinit var mErrorLayout: ViewGroup
+    @BindView(R.id.try_again_button) lateinit var mTryAgainButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getWishmasterApplication().getThreadListComponent().inject(this)
@@ -33,21 +47,61 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         loadThreads()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.unbindView()
+    }
+
     override fun getBoardId(): String = intent.getStringExtra(IntentKeystore.BOARD_ID_CODE)
 
     override fun provideContentLayoutResource(): Int = R.layout.activity_thread_list
 
     private fun loadThreads() {
-        mCompositeDisposable.add(presenter.loadThreadList()
+        presenter.reloadThreads()
+        mCompositeDisposable.add(presenter.getLoadThreadsSingle()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { threadListData -> Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}" )},
-                        { e -> e.printStackTrace() })
+                        { threadListData ->
+                            Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}")
+                            Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0].comment}")
+                            hideLoading()
+                        }, { e -> e.printStackTrace(); hideLoading(); showError(e) })
         )
     }
 
     override fun showLoading() {
+        runOnUiThread {
+            mLoadingLayout.visibility = View.VISIBLE
+            val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
+            mYobaImage.startAnimation(rotationAnimation)
+        }
+    }
 
+    private fun hideLoading() {
+        runOnUiThread {
+            mYobaImage.clearAnimation()
+            mLoadingLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showError(throwable: Throwable) {
+        runOnUiThread {
+            mErrorLayout.visibility = View.VISIBLE
+            val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
+            snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
+            snackbar.show()
+            mTryAgainButton.setOnClickListener {
+                snackbar.dismiss()
+                hideError()
+                showLoading()
+                //presenter.reloadBoards()
+                loadThreads()
+            }
+        }
+    }
+
+    private fun hideError() {
+        runOnUiThread { mErrorLayout.visibility = View.GONE }
     }
 }

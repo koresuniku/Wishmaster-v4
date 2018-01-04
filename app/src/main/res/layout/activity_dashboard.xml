@@ -14,7 +14,7 @@
         android:elevation="2dp"
         android:theme="@style/DefaultToolbarStyle"
         app:title="@string/app_name"
-        app:titleTextAppearance="@style/Toolbar.TitleText"></android.support.v7.widget.Toolbar>
+        app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
@@ -88,7 +88,7 @@
             app:srcCompat="@drawable/pepe_default" />
 
         <TextView
-            android:id="@+id/failed_to_load_boards"
+            android:id="@+id/failed_to_load_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -111,7 +111,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/failed_to_load_boards"
+            app:layout_constraintTop_toBottomOf="@+id/failed_to_load_label"
             app:layout_constraintVertical_bias="0.19" />
     </android.support.constraint.ConstraintLayout>
 

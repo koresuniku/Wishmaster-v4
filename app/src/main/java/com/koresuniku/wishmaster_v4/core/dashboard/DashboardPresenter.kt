@@ -72,7 +72,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
     }
 
     private fun loadBoardsFromNetwork(e: ObservableEmitter<BoardListData>) {
-        mView?.showLoadingBoards()
+        mView?.showLoading()
         val boardsObservable = boardsApiService.getBoardsObservable("get_boards")
         compositeDisposable.add(boardsObservable
                 .subscribeOn(Schedulers.io())
