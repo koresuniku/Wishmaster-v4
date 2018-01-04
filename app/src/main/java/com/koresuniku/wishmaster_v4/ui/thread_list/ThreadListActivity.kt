@@ -44,12 +44,14 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         ButterKnife.bind(this)
         presenter.bindView(this)
 
+        showLoading(true)
         loadThreads()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
         presenter.unbindView()
+        overridePendingTransition(R.anim.slide_in_back, R.anim.slide_out_back)
     }
 
     override fun getBoardId(): String = intent.getStringExtra(IntentKeystore.BOARD_ID_CODE)
@@ -64,18 +66,18 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
                 .subscribe(
                         { threadListData ->
                             Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}")
-                            Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0].comment}")
+                            //Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0].comment}")
                             hideLoading()
                         }, { e -> e.printStackTrace(); hideLoading(); showError(e) })
         )
     }
 
-    override fun showLoading() {
-        runOnUiThread {
-            mLoadingLayout.visibility = View.VISIBLE
-            val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
-            mYobaImage.startAnimation(rotationAnimation)
-        }
+    private fun showLoading(delay: Boolean) {
+        mLoadingLayout.visibility = View.VISIBLE
+        val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
+        mYobaImage.postDelayed(
+                { mYobaImage.startAnimation(rotationAnimation) },
+                if (delay) resources.getInteger(R.integer.slide_anim_duration).toLong() else 0)
     }
 
     private fun hideLoading() {
@@ -94,8 +96,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
             mTryAgainButton.setOnClickListener {
                 snackbar.dismiss()
                 hideError()
-                showLoading()
-                //presenter.reloadBoards()
+                showLoading(false)
                 loadThreads()
             }
         }

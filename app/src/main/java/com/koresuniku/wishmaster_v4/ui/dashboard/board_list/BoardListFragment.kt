@@ -82,6 +82,7 @@ class BoardListFragment : Fragment(), BoardListView {
         val intent = Intent(activity, ThreadListActivity::class.java)
         intent.putExtra(IntentKeystore.BOARD_ID_CODE, boardId)
         startActivity(intent)
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
     }
 
     override fun onDestroyView() {

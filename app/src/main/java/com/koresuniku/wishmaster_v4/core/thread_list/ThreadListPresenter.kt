@@ -44,7 +44,6 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
 
     private fun getNewLoadThreadListSingle(): Single<ThreadListData> {
         return Single.create({ e -> kotlin.run {
-            mView?.showLoading()
             compositeDisposable.add(loadThreadListDirectly()
                     .subscribe({ schemaCatalog: ThreadListJsonSchemaCatalogResponse ->
                         if (schemaCatalog.threads.isEmpty()) {

@@ -170,9 +170,10 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
     }
 
     override fun launchThreadListActivity(boardId: String) {
-        Log.d(LOG_TAG, "received boarID: $boardId")
+        Log.d(LOG_TAG, "received boardId: $boardId")
         val intent = Intent(this, ThreadListActivity::class.java)
         intent.putExtra(IntentKeystore.BOARD_ID_CODE, boardId)
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
     }
 }
