@@ -49,8 +49,12 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
 
     private fun loadThreadListDirectly(): Single<ThreadListJsonSchemaCatalogResponse> {
         return Single.create({ e -> kotlin.run {
-            mView?.let { compositeDisposable.add(threadListApiService.getThreadsObservable(it.getBoardId())
-                    .subscribe({ schema -> e.onSuccess(schema) }, { t -> t.printStackTrace(); e.onError(t) }))
+            mView?.let { compositeDisposable.add(
+                    threadListApiService.getThreadsObservable(it.getBoardId())
+                    .subscribe(
+                            { schema -> e.onSuccess(schema) },
+                            { throwable: Throwable -> e.onError(throwable) }
+                    ))
             }
         }})
     }

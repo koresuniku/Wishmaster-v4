@@ -10,4 +10,5 @@ import com.koresuniku.wishmaster_v4.core.base.IMvpView
 
 interface DashboardView : IActivityMvpView {
     fun showLoadingBoards()
+    fun launchThreadListActivity(boardId: String)
 }

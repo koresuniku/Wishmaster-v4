@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
@@ -29,6 +30,8 @@ import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
 import android.support.v7.widget.SearchView
+import com.koresuniku.wishmaster_v4.application.IntentKeystore
+import com.koresuniku.wishmaster_v4.ui.thread_list.ThreadListActivity
 
 class DashboardActivity : BaseDrawerActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
@@ -72,6 +75,7 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchViewMenuItem.collapseActionView()
+                query?.let { presenter.processSearchInput(it) }
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean = false
@@ -158,5 +162,12 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe { value -> mViewPager.currentItem = value })
+    }
+
+    override fun launchThreadListActivity(boardId: String) {
+        Log.d(LOG_TAG, "received boarID: $boardId")
+        val intent = Intent(this, ThreadListActivity::class.java)
+        intent.putExtra(IntentKeystore.BOARD_ID_CODE, boardId)
+        startActivity(intent)
     }
 }

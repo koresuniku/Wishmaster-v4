@@ -9,30 +9,31 @@ import java.util.regex.Pattern
 
 object SearchInputMatcher {
 
+    val UNKNOWN_CODE = -1
     val BOARD_CODE = 0
     val THREAD_CODE = 1
     val POST_CODE = 2
 
     fun matchInput(input: String): SearchInputResponse {
-        var result = checkIfBoard(input).code
-        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(result)
+        var result = checkIfBoard(input).data
+        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(BOARD_CODE, result)
 
-        result = checkIfThread(input).code
-        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(result)
+        result = checkIfThread(input).data
+        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(THREAD_CODE, result)
 
-        result = checkIfPost(input).code
-        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(result)
+        result = checkIfPost(input).data
+        if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(POST_CODE, result)
 
-        return SearchInputResponse(SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
     }
 
     private fun checkIfBoard(input: String): SearchInputResponse {
         val pattern = Pattern.compile("/*[a-zA-Z0-9]+/*")
         val matcher = pattern.matcher(input)
         return if (matcher.matches()) {
-            val boardCode = input.replace(Regex("/+"), "")
-            SearchInputResponse(boardCode)
-        } else SearchInputResponse(SearchInputResponse.UNKNOWN_ADDRESS)
+            val boardData = input.replace(Regex("/+"), "")
+            SearchInputResponse(BOARD_CODE, boardData)
+        } else SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
     }
 
     private fun checkIfThread(input: String): SearchInputResponse {
@@ -40,14 +41,14 @@ object SearchInputMatcher {
             val pattern = Pattern.compile("^https?://$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html$")
             val matcher = pattern.matcher(input)
             if (matcher.matches()) {
-                val threadCode = input
+                val threadData = input
                         .replace(Regex("^https?://$it/+[a-zA-Z0-9]+/+res/+"), "")
                         .replace(Regex("\\.html"), "")
                         .replace(Regex("/+"), "")
-                return SearchInputResponse(threadCode)
+                return SearchInputResponse(THREAD_CODE, threadData)
             }
         }
-        return SearchInputResponse(SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
     }
 
     private fun checkIfPost(input: String): SearchInputResponse {
@@ -55,14 +56,14 @@ object SearchInputMatcher {
             val pattern = Pattern.compile("^https?://$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html#[0-9]+$")
             val matcher = pattern.matcher(input)
             if (matcher.matches()) {
-                val postCode = input
+                val postData = input
                         .replace(Regex("^https?://$it/+[a-zA-Z0-9]+/+res/+"), "")
                         .replace(Regex("\\.html[0-9]+\$"), "")
                         .replace(Regex("/+"), "")
-                return SearchInputResponse(postCode)
+                return SearchInputResponse(POST_CODE, postData)
             }
         }
-        return SearchInputResponse(SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
     }
 
 }
