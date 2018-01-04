@@ -1,12 +1,15 @@
 package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
@@ -76,7 +79,6 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     private fun setupToolbar() {
         setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.loading_text)
     }
 
     private fun setupTitle(boardName: String) {
@@ -99,29 +101,37 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     }
 
     private fun showLoading(delay: Boolean) {
-        mLoadingLayout.visibility = View.VISIBLE
-        val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
-        mYobaImage.postDelayed(
-                { mYobaImage.startAnimation(rotationAnimation) },
-                if (delay) resources.getInteger(R.integer.slide_anim_duration).toLong() else 0)
+        runOnUiThread {
+            mLoadingLayout.visibility = View.VISIBLE
+
+            supportActionBar?.title = getString(R.string.loading_text)
+            val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
+            Handler().postDelayed(
+                    { mYobaImage.startAnimation(rotationAnimation) },
+                    if (delay) resources.getInteger(R.integer.slide_anim_duration).toLong() else 0)
+        }
     }
 
     private fun hideLoading() {
         runOnUiThread {
-            mLoadingLayout
-                    .animate()
-                    .alpha(0f)
-                    .setDuration(resources.getInteger(R.integer.loading_fade_duration).toLong())
-                    .start()
-            mLoadingLayout.postDelayed(
-                    { mYobaImage.clearAnimation(); mLoadingLayout.visibility = View.GONE },
-                    resources.getInteger(R.integer.loading_fade_duration).toLong())
+            val alpha = AlphaAnimation(1f, 0f)
+            alpha.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    mYobaImage.clearAnimation()
+                    mLoadingLayout.visibility = View.GONE
+                }
+            })
+            alpha.duration = resources.getInteger(R.integer.loading_fade_duration).toLong()
+            mLoadingLayout.startAnimation(alpha)
         }
     }
 
     private fun showError(throwable: Throwable) {
         runOnUiThread {
             mErrorLayout.visibility = View.VISIBLE
+            supportActionBar?.title = getString(R.string.error)
             val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
             snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
             snackbar.show()
