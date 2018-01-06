@@ -107,7 +107,12 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     fun processSearchInput(input: String) {
         val response = SearchInputMatcher.matchInput(input)
-        if (response.responseCode == SearchInputMatcher.BOARD_CODE) mView?.launchThreadListActivity(response.data)
+        if (response.responseCode == SearchInputMatcher.UNKNOWN_CODE) {
+            Log.d(LOG_TAG, "unknown")
+            mView?.showUnknownInput()
+        } else if (response.responseCode == SearchInputMatcher.BOARD_CODE) {
+            mView?.launchThreadListActivity(response.data)
+        }
     }
 
     fun shouldLaunchThreadListActivity(boardId: String) { mView?.launchThreadListActivity(boardId) }

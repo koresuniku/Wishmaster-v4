@@ -38,11 +38,11 @@ object SearchInputMatcher {
 
     private fun checkIfThread(input: String): SearchInputResponse {
         Dvach.MIRRORS.forEach {
-            val pattern = Pattern.compile("^https?://$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html$")
+            val pattern = Pattern.compile("^(https?://)?(www\\.)?$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html$")
             val matcher = pattern.matcher(input)
             if (matcher.matches()) {
                 val threadData = input
-                        .replace(Regex("^https?://$it/+[a-zA-Z0-9]+/+res/+"), "")
+                        .replace(Regex("^(https?://)?(www\\.)?$it/+[a-zA-Z0-9]+/+res/+"), "")
                         .replace(Regex("\\.html"), "")
                         .replace(Regex("/+"), "")
                 return SearchInputResponse(THREAD_CODE, threadData)
@@ -53,11 +53,11 @@ object SearchInputMatcher {
 
     private fun checkIfPost(input: String): SearchInputResponse {
         Dvach.MIRRORS.forEach {
-            val pattern = Pattern.compile("^https?://$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html#[0-9]+$")
+            val pattern = Pattern.compile("^(https?://)?(www\\.)?$it/+[a-zA-Z0-9]+/+res/+[0-9]+\\.html#[0-9]+$")
             val matcher = pattern.matcher(input)
             if (matcher.matches()) {
                 val postData = input
-                        .replace(Regex("^https?://$it/+[a-zA-Z0-9]+/+res/+"), "")
+                        .replace(Regex("^(https?://)?(www\\.)?$it/+[a-zA-Z0-9]+/+res/+"), "")
                         .replace(Regex("\\.html[0-9]+\$"), "")
                         .replace(Regex("/+"), "")
                 return SearchInputResponse(POST_CODE, postData)

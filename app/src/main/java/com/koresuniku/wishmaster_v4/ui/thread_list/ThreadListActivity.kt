@@ -103,7 +103,6 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     private fun showLoading(delay: Boolean) {
         runOnUiThread {
             mLoadingLayout.visibility = View.VISIBLE
-
             supportActionBar?.title = getString(R.string.loading_text)
             val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
             Handler().postDelayed(

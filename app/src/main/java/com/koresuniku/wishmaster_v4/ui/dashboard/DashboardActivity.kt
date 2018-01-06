@@ -177,4 +177,10 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
     }
+
+    override fun showUnknownInput() {
+        val snackbar = Snackbar.make(mErrorLayout, getString(R.string.unknown_address), Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
+        snackbar.show()
+    }
 }
