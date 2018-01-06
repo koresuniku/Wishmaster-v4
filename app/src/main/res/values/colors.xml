@@ -9,6 +9,7 @@
     <color name="colorBackgroundLight">#fafafa</color>
 
     <color name="colorText">@android:color/black</color>
+    <color name="colorTextSecondary">#757575</color>
     <color name="colorSubject">#212e60</color>
 
 </resources>
