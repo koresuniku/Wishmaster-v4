@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.ui.thread_list
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
@@ -37,12 +38,14 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     @Inject lateinit var presenter: ThreadListPresenter
     @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
-
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
     @BindView(R.id.yoba) lateinit var mYobaImage: ImageView
     @BindView(R.id.error_layout) lateinit var mErrorLayout: ViewGroup
     @BindView(R.id.try_again_button) lateinit var mTryAgainButton: Button
+    @BindView(R.id.thread_list) lateinit var mThreadListRecyclerView: RecyclerView
+
+    private lateinit var mThreadListRecyclerViewAdapter: ThreadListRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         presenter.bindView(this)
 
         setupToolbar()
+        setupRecyclerView()
 
         showLoading(true)
         loadThreads()
@@ -59,6 +63,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     override fun onBackPressed() {
         super.onBackPressed()
         presenter.unbindView()
+        presenter.unbindThreadListAdapterView()
         overridePendingTransition(R.anim.slide_in_back, R.anim.slide_out_back)
     }
 
@@ -83,6 +88,12 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
 
     private fun setupTitle(boardName: String) {
         supportActionBar?.title = WishmasterTextUtils.obtainBoardIdDashName(getBoardId(), boardName)
+    }
+
+    private fun setupRecyclerView() {
+        mThreadListRecyclerViewAdapter = ThreadListRecyclerViewAdapter(presenter)
+        mThreadListRecyclerView.adapter = mThreadListRecyclerViewAdapter
+        presenter.bindThreadListAdapterView(mThreadListRecyclerViewAdapter)
     }
 
     private fun loadThreads() {
@@ -131,11 +142,11 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         runOnUiThread {
             mErrorLayout.visibility = View.VISIBLE
             supportActionBar?.title = getString(R.string.error)
-            val snackbar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
-            snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
-            snackbar.show()
+            val snackBar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
+            snackBar.setAction(R.string.bljad, { snackBar.dismiss() })
+            snackBar.show()
             mTryAgainButton.setOnClickListener {
-                snackbar.dismiss()
+                snackBar.dismiss()
                 hideError()
                 showLoading(false)
                 loadThreads()
@@ -145,5 +156,11 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
 
     private fun hideError() {
         runOnUiThread { mErrorLayout.visibility = View.GONE }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.unbindThreadListAdapterView()
+        presenter.unbindView()
     }
 }

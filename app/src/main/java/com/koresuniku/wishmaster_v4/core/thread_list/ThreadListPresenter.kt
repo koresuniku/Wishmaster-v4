@@ -24,6 +24,8 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     @Inject lateinit var databaseHelper: DatabaseHelper
 
     private lateinit var mLoadThreadListSingle: Single<ThreadListData>
+    private var mRecentThreadListData: ThreadListData? = null
+    private var mThreadListAdapterView: ThreadListAdapterView? = null
 
     override fun bindView(mvpView: ThreadListView) {
         super.bindView(mvpView)
@@ -33,9 +35,8 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         mLoadThreadListSingle = mLoadThreadListSingle.cache()
     }
 
-    override fun unbindView() {
-        super.unbindView()
-        databaseHelper.readableDatabase.close()
+    fun bindThreadListAdapterView(threadListAdapterView: ThreadListAdapterView) {
+        this.mThreadListAdapterView = threadListAdapterView
     }
 
     fun getLoadThreadsSingle(): Single<ThreadListData> = mLoadThreadListSingle
@@ -50,9 +51,21 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                             Log.d(LOG_TAG, "schemaCatalog threads is empty!")
                             compositeDisposable.add(loadThreadListByPages()
                                     .subscribe(
-                                            { schemaByPages -> e.onSuccess(ThreadsMapper.mapPageResponseToThreadListData(schemaByPages)) },
+                                            { schemaByPages -> kotlin.run {
+                                                mRecentThreadListData = ThreadsMapper.mapPageResponseToThreadListData(schemaByPages)
+                                                mRecentThreadListData?.let {
+                                                    e.onSuccess(it)
+                                                    mThreadListAdapterView?.onThreadListDataChanged(it)
+                                                }
+                                            } },
                                             { t -> e.onError(t) }))
-                        } else e.onSuccess(ThreadsMapper.mapCatalogResponseToThreadListData(schemaCatalog))
+                        } else {
+                            mRecentThreadListData = ThreadsMapper.mapCatalogResponseToThreadListData(schemaCatalog)
+                            mRecentThreadListData?.let {
+                                e.onSuccess(it)
+                                mThreadListAdapterView?.onThreadListDataChanged(it)
+                            }
+                        }
                     }, { t -> e.onError(t) }))
         }})
     }
@@ -87,4 +100,33 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         }
         }})
     }
+
+    fun getThreadListDataSize(): Int {
+        return mRecentThreadListData?.getThreadList()?.size ?: 0
+    }
+
+    companion object {
+        val ERROR_CODE = -1
+        val NO_IMAGES_CODE = 0
+        val SINGLE_IMAGE_CODE = 1
+        val MULTIPLE_IMAGES_CODE = 2
+    }
+
+    fun getThreadItemType(position: Int): Int {
+        mRecentThreadListData?.let {
+            return when (it.getThreadList()[position].files.size) {
+                0 -> NO_IMAGES_CODE
+                1 -> SINGLE_IMAGE_CODE
+                else -> MULTIPLE_IMAGES_CODE
+            }
+        }
+        return ERROR_CODE
+    }
+
+    override fun unbindView() {
+        super.unbindView()
+        databaseHelper.readableDatabase.close()
+    }
+
+    fun unbindThreadListAdapterView() { this.mThreadListAdapterView = null }
 }

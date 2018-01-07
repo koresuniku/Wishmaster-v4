@@ -183,4 +183,9 @@ class DashboardActivity : BaseDrawerActivity(), DashboardView {
         snackbar.setAction(R.string.bljad, { snackbar.dismiss() })
         snackbar.show()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.unbindView()
+    }
 }

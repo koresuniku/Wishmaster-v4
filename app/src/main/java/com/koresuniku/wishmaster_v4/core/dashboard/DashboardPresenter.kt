@@ -117,13 +117,9 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     fun shouldLaunchThreadListActivity(boardId: String) { mView?.launchThreadListActivity(boardId) }
 
-    fun unbindDashboardBoardListView() {
-        this.mDashboardBoardListView = null
-    }
+    fun unbindDashboardBoardListView() { this.mDashboardBoardListView = null }
 
-    fun unbindFavouriteBoardsView() {
-        this.mFavouriteBoardsView = null
-    }
+    fun unbindFavouriteBoardsView() { this.mFavouriteBoardsView = null }
 
     override fun unbindView() {
         super.unbindView()

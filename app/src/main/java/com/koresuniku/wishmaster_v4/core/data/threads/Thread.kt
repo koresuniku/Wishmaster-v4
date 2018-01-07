@@ -30,14 +30,6 @@ class Thread {
     @Expose
     lateinit var num: String
 
-    @SerializedName("files_count")
-    @Expose
-    lateinit var filesCount: String
-
-    @SerializedName("posts_count")
-    @Expose
-    lateinit var postsCount: String
-
     @SerializedName("trip")
     @Expose
     lateinit var trip: String
