@@ -25,6 +25,7 @@ import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
+import com.koresuniku.wishmaster_v4.ui.view.widget.WrapContentLinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -94,7 +95,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     private fun setupRecyclerView() {
         mThreadListRecyclerViewAdapter = ThreadListRecyclerViewAdapter(this, presenter)
         mThreadListRecyclerView.adapter = mThreadListRecyclerViewAdapter
-        mThreadListRecyclerView.layoutManager = LinearLayoutManager(this)
+        mThreadListRecyclerView.layoutManager = WrapContentLinearLayoutManager(this)
         mThreadListRecyclerView.addItemDecoration(ThreadItemDividerDecoration(this))
         presenter.bindThreadListAdapterView(mThreadListRecyclerViewAdapter)
     }
@@ -169,12 +170,6 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     private fun showThreadList() {
         runOnUiThread {
             val alpha = AlphaAnimation(0f, 1f)
-            alpha.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {}
-            })
-            //alpha.startOffset = resources.getInteger(R.integer.loading_fade_duration).toLong()
             alpha.duration = resources.getInteger(R.integer.showing_list_duration).toLong()
             mThreadListRecyclerView.startAnimation(alpha)
         }
