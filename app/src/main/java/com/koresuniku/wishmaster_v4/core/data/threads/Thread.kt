@@ -20,7 +20,7 @@ class Thread {
 
     @SerializedName("files")
     @Expose
-    lateinit var files: List<File>
+    var files: List<File>? = null
 
     @SerializedName("name")
     @Expose

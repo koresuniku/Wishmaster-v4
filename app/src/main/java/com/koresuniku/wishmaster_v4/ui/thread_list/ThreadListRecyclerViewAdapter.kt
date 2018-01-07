@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.ui.thread_list
 
+import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,15 +10,23 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListAdapterView
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 /**
  * Created by koresuniku on 07.01.18.
  */
 
-class ThreadListRecyclerViewAdapter(val presenter: ThreadListPresenter) :
-        RecyclerView.Adapter<ThreadItemViewHolder>(), ThreadListAdapterView {
+class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolder>(), ThreadListAdapterView {
     private val LOG_TAG = ThreadListRecyclerViewAdapter::class.java.simpleName
+
+    private lateinit var activity: WeakReference<Activity>
+    private lateinit var presenter: ThreadListPresenter
+
+    constructor(activity: Activity, presenter: ThreadListPresenter) : this() {
+        this.activity = WeakReference(activity)
+        this.presenter = presenter
+    }
 
     override fun onBindViewHolder(holder: ThreadItemViewHolder?, position: Int) {
     }
@@ -38,7 +47,7 @@ class ThreadListRecyclerViewAdapter(val presenter: ThreadListPresenter) :
     }
 
     override fun onThreadListDataChanged(threadListData: ThreadListData) {
-        notifyDataSetChanged()
+        activity.get()?.runOnUiThread({notifyDataSetChanged()})
         Log.d(LOG_TAG, "threadListData received")
     }
 

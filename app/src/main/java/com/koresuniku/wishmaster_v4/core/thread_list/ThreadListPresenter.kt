@@ -114,19 +114,26 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
 
     fun getThreadItemType(position: Int): Int {
         mRecentThreadListData?.let {
-            return when (it.getThreadList()[position].files.size) {
-                0 -> NO_IMAGES_CODE
-                1 -> SINGLE_IMAGE_CODE
-                else -> MULTIPLE_IMAGES_CODE
+            it.getThreadList()[position].files?.let {
+                return when (it.size) {
+                    0 -> NO_IMAGES_CODE
+                    1 -> SINGLE_IMAGE_CODE
+                    else -> MULTIPLE_IMAGES_CODE
+                }
             }
+            return NO_IMAGES_CODE
         }
         return ERROR_CODE
     }
 
     override fun unbindView() {
         super.unbindView()
+        reloadThreads()
+        this.mRecentThreadListData = null
         databaseHelper.readableDatabase.close()
     }
 
-    fun unbindThreadListAdapterView() { this.mThreadListAdapterView = null }
+    fun unbindThreadListAdapterView() {
+        this.mThreadListAdapterView = null
+    }
 }

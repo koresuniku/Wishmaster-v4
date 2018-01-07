@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.ui.thread_list
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -57,7 +58,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         setupRecyclerView()
 
         showLoading(true)
-        loadThreads()
+        loadThreads(true)
     }
 
     override fun onBackPressed() {
@@ -91,12 +92,14 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
     }
 
     private fun setupRecyclerView() {
-        mThreadListRecyclerViewAdapter = ThreadListRecyclerViewAdapter(presenter)
+        mThreadListRecyclerViewAdapter = ThreadListRecyclerViewAdapter(this, presenter)
         mThreadListRecyclerView.adapter = mThreadListRecyclerViewAdapter
+        mThreadListRecyclerView.layoutManager = LinearLayoutManager(this)
+        mThreadListRecyclerView.addItemDecoration(ThreadItemDividerDecoration(this))
         presenter.bindThreadListAdapterView(mThreadListRecyclerViewAdapter)
     }
 
-    private fun loadThreads() {
+    private fun loadThreads(first: Boolean) {
         presenter.reloadThreads()
         mCompositeDisposable.add(presenter.getLoadThreadsSingle()
                 .subscribeOn(Schedulers.newThread())
@@ -107,6 +110,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
                             Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0]}")
                             hideLoading()
                             setupTitle(threadListData.getBoardName())
+                            if (first) showThreadList()
                         }, { e -> e.printStackTrace(); hideLoading(); showError(e) })
         )
     }
@@ -140,6 +144,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
 
     private fun showError(throwable: Throwable) {
         runOnUiThread {
+            mThreadListRecyclerView.visibility = View.GONE
             mErrorLayout.visibility = View.VISIBLE
             supportActionBar?.title = getString(R.string.error)
             val snackBar = Snackbar.make(mErrorLayout, throwable.message.toString(), Snackbar.LENGTH_INDEFINITE)
@@ -149,13 +154,30 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
                 snackBar.dismiss()
                 hideError()
                 showLoading(false)
-                loadThreads()
+                loadThreads(false)
             }
         }
     }
 
     private fun hideError() {
-        runOnUiThread { mErrorLayout.visibility = View.GONE }
+        runOnUiThread {
+            mErrorLayout.visibility = View.GONE
+            mThreadListRecyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showThreadList() {
+        runOnUiThread {
+            val alpha = AlphaAnimation(0f, 1f)
+            alpha.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {}
+            })
+            //alpha.startOffset = resources.getInteger(R.integer.loading_fade_duration).toLong()
+            alpha.duration = resources.getInteger(R.integer.showing_list_duration).toLong()
+            mThreadListRecyclerView.startAnimation(alpha)
+        }
     }
 
     override fun onDestroy() {

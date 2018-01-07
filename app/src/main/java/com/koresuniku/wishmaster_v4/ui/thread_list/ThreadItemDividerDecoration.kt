@@ -1,34 +1,29 @@
-package com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards
+package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.koresuniku.wishmaster_v4.R
 
 /**
- * Created by koresuniku on 13.11.17.
+ * Created by koresuniku on 07.01.18.
  */
 
-class FavouriteBoardsItemDividerDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class ThreadItemDividerDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val mDivider: Drawable = context.resources.getDrawable(R.drawable.line_divider)
+    private val mDivider: Drawable = context.resources.getDrawable(R.drawable.empty_divider)
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
         val left = parent.paddingLeft
         val right = (parent.width - parent.paddingRight)
 
-
         val childCount = parent.childCount
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
-
             val params = child.layoutParams as RecyclerView.LayoutParams
-
             val top = child.bottom + params.bottomMargin
             val bottom = top + mDivider.intrinsicHeight
 
@@ -40,9 +35,7 @@ class FavouriteBoardsItemDividerDecoration(context: Context) : RecyclerView.Item
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
         super.getItemOffsets(outRect, view, parent, state)
 
-        if (parent.getChildAdapterPosition(view) == 0) {
-            return
-        }
+        if (parent.getChildAdapterPosition(view) == 0) return
 
         outRect.top = mDivider.intrinsicHeight
     }
