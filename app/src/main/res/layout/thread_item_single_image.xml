@@ -11,6 +11,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
         android:background="@color/colorBackgroundLight">
 
         <TextView
@@ -30,28 +31,38 @@
         <!--android:layout_alignTop="@+id/comment">-->
 
         <!--<ImageView-->
-            <!--android:id="@+id/image"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content" />-->
+        <!--android:id="@+id/image"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
 
         <!--<TextView-->
-            <!--android:id="@+id/summary_1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/image"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:text="1488*288\n666kb, JPG" />-->
-    <!--</RelativeLayout>-->
-        <include layout="@layout/image_layout" />
+        <!--android:id="@+id/summary_1"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/image"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:text="1488*288\n666kb, JPG" />-->
+        <!--</RelativeLayout>-->
 
-        <TextView
-            android:id="@+id/comment"
+        <FrameLayout
+            android:id="@+id/image_comment_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/subject"
-            android:lines="6"
-            android:text="@string/le_batya"
-            android:textColor="@color/colorText" />
+            android:layout_below="@+id/subject">
+
+            <include
+                layout="@layout/image_layout"
+                android:layout_gravity="top|left" />
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/subject"
+                android:maxLines="6"
+                android:text="@string/le_batya"
+                android:textColor="@color/colorText" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/resume"
@@ -59,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/comment"
+            android:layout_below="@+id/image_comment_container"
             android:text="1488 posts, 228 images"
             android:textColor="@color/colorTextSecondary"
             android:textSize="12sp"

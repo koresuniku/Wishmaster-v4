@@ -1,6 +1,9 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
+import android.text.Html
+import android.text.SpannableString
 import android.util.Log
+import android.widget.TextView
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
@@ -9,6 +12,7 @@ import com.koresuniku.wishmaster_v4.core.data.threads.ThreadsMapper
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
+import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -95,10 +99,21 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                     Log.d(LOG_TAG, "inside pages count: $i, threads: ${nextPageResponse.body()?.threads?.size}")
                     it.threads.addAll(nextPageResponse.body()?.threads ?: emptyList())
                 }
+                it.threads.forEachIndexed { index, thread ->  Log.d(LOG_TAG, "$index -> ${thread.comment}") }
                 e.onSuccess(it)
             }
         }
         }})
+    }
+
+    fun bindThreadItemViewByPosition(view: ThreadItemView, position: Int) {
+            mRecentThreadListData?.getThreadList()?.let {
+                val thread = it[position]
+                mView?.let {
+                    view.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
+                    view.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
+                }
+            }
     }
 
     fun getThreadListDataSize(): Int {

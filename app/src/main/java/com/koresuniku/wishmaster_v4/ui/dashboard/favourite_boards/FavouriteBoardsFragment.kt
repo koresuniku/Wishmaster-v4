@@ -62,7 +62,7 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
                 this, presenter, mCompositeDisposable)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mRecyclerViewAdapter
-        recyclerView.addItemDecoration(FavouriteBoardsItemDividerDecoration(context))
+        context?.let { recyclerView.addItemDecoration(FavouriteBoardsItemDividerDecoration(it)) }
 
         val callback = SimpleItemTouchItemCallback(mRecyclerViewAdapter)
         mItemTouchHelper = ItemTouchHelper(callback)
@@ -86,7 +86,7 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
 
     override fun onFavouriteBoardListChanged(boardList: List<BoardModel>) {
         boardList.forEach { Log.d(LOG_TAG, it.toString() + "\n") }
-        activity.runOnUiThread({
+        activity?.runOnUiThread({
             nothingContainer.visibility = if (boardList.isEmpty()) View.VISIBLE else View.GONE
             mRecyclerViewAdapter.bindFavouriteBoardList(boardList)
         })

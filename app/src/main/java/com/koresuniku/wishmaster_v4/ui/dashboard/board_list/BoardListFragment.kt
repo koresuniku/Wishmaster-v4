@@ -55,7 +55,7 @@ class BoardListFragment : Fragment(), BoardListView {
 
     override fun onBoardsDataReceived(boardListData: BoardListData) {
         val boardLists = BoardsMapper.mapToBoardsDataByCategory(boardListData)
-        activity.runOnUiThread { setupBoardListAdapter(boardLists) }
+        activity?.runOnUiThread { setupBoardListAdapter(boardLists) }
     }
 
     private fun loadBoards() {
@@ -67,12 +67,14 @@ class BoardListFragment : Fragment(), BoardListView {
     }
 
     private fun setupBoardListAdapter(boardListsObject: BoardListsObject) {
-        mBoardListAdapter = BoardListAdapter(context, boardListsObject, presenter, mCompositeDisposable)
-        mBoardList.setAdapter(mBoardListAdapter)
-        mBoardList.setGroupIndicator(null)
-        mBoardList.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-            presenter.shouldLaunchThreadListActivity(boardListsObject.boardLists[groupPosition].second[childPosition].getBoardId())
-            false
+        context?.let {
+            mBoardListAdapter = BoardListAdapter(it, boardListsObject, presenter, mCompositeDisposable)
+            mBoardList.setAdapter(mBoardListAdapter)
+            mBoardList.setGroupIndicator(null)
+            mBoardList.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                presenter.shouldLaunchThreadListActivity(boardListsObject.boardLists[groupPosition].second[childPosition].getBoardId())
+                false
+            }
         }
     }
 

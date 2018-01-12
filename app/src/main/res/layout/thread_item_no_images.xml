@@ -12,6 +12,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
         android:background="@color/colorBackgroundLight">
 
         <TextView
@@ -30,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/subject"
-            android:lines="6"
+            android:maxLines="6"
             android:text="@string/le_batya"
             android:textColor="@color/colorText" />
 

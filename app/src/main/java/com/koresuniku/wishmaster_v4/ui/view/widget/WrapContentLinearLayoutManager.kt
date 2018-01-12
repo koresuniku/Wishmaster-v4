@@ -18,4 +18,6 @@ class WrapContentLinearLayoutManager(context: Context) : LinearLayoutManager(con
         }
 
     }
+
+    override fun supportsPredictiveItemAnimations(): Boolean = false
 }

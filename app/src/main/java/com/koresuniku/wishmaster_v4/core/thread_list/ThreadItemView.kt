@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
+import android.text.Spannable
+import android.text.Spanned
 import com.koresuniku.wishmaster_v4.core.base.IMvpView
 
 /**
@@ -7,5 +9,6 @@ import com.koresuniku.wishmaster_v4.core.base.IMvpView
  */
 
 interface ThreadItemView : IMvpView {
-
+    fun setSubject(subject: Spanned)
+    fun setComment(comment: Spanned)
 }

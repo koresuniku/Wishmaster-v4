@@ -29,6 +29,7 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     }
 
     override fun onBindViewHolder(holder: ThreadItemViewHolder?, position: Int) {
+        holder?.let { presenter.bindThreadItemViewByPosition(it, position) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ThreadItemViewHolder {
@@ -47,7 +48,9 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     }
 
     override fun onThreadListDataChanged(threadListData: ThreadListData) {
-        activity.get()?.runOnUiThread({notifyItemRangeInserted(0, threadListData.getThreadList().size)})
+        activity.get()?.runOnUiThread({
+            notifyItemRangeInserted(0, threadListData.getThreadList().size)
+        })
         Log.d(LOG_TAG, "threadListData received")
     }
 
