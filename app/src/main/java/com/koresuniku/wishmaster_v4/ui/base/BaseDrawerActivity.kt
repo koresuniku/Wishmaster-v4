@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.ui.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
@@ -15,7 +16,7 @@ import com.koresuniku.wishmaster_v4.ui.util.UiUtils
  * Created by koresuniku on 03.10.17.
  */
 
-abstract class BaseDrawerActivity : BaseRxActivity(), IActivityMvpView {
+abstract class BaseDrawerActivity : BaseRxActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,5 +35,4 @@ abstract class BaseDrawerActivity : BaseRxActivity(), IActivityMvpView {
 
     @LayoutRes abstract fun provideContentLayoutResource(): Int
 
-    override fun getWishmasterApplication(): WishmasterApplication = application as WishmasterApplication
 }

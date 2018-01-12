@@ -32,9 +32,10 @@ import javax.inject.Inject
 import android.support.v7.widget.SearchView
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
+import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
 import com.koresuniku.wishmaster_v4.ui.thread_list.ThreadListActivity
 
-class DashboardActivity : BaseDrawerActivity(), DashboardView {
+class DashboardActivity : BaseWishmasterActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
 
     @Inject lateinit var presenter: DashboardPresenter

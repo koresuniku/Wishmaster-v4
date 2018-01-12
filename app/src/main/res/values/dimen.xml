@@ -2,6 +2,6 @@
 <resources>
     <integer name="slide_anim_duration">350</integer>
     <integer name="slide_back_anim_duration">275</integer>
-    <integer name="loading_fade_duration">150</integer>
+    <integer name="loading_fade_duration">50</integer>
     <integer name="showing_list_duration">250</integer>
 </resources>

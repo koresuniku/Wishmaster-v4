@@ -25,6 +25,7 @@ import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
+import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
 import com.koresuniku.wishmaster_v4.ui.view.widget.WrapContentLinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -34,7 +35,7 @@ import javax.inject.Inject
  * Created by koresuniku on 01.01.18.
  */
 
-class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
+class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     private val LOG_TAG = ThreadListActivity::class.java.simpleName
 
     @Inject lateinit var presenter: ThreadListPresenter
@@ -120,6 +121,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
         runOnUiThread {
             mLoadingLayout.visibility = View.VISIBLE
             supportActionBar?.title = getString(R.string.loading_text)
+            mYobaImage.setLayerType(View.LAYER_TYPE_HARDWARE, null)
             val rotationAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate_infinitely)
             Handler().postDelayed(
                     { mYobaImage.startAnimation(rotationAnimation) },
@@ -135,6 +137,7 @@ class ThreadListActivity : BaseDrawerActivity(), ThreadListView {
                 override fun onAnimationStart(animation: Animation?) {}
                 override fun onAnimationEnd(animation: Animation?) {
                     mYobaImage.clearAnimation()
+                    mYobaImage.setLayerType(View.LAYER_TYPE_NONE, null)
                     mLoadingLayout.visibility = View.GONE
                 }
             })

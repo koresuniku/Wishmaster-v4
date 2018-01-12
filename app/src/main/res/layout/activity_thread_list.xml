@@ -14,11 +14,12 @@
         app:titleTextAppearance="@style/Toolbar.TitleText" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/transtema_old" />
 
     <android.support.v7.widget.RecyclerView

@@ -24,16 +24,19 @@ object SearchInputMatcher {
         result = checkIfPost(input).data
         if (result != SearchInputResponse.UNKNOWN_ADDRESS) return SearchInputResponse(POST_CODE, result)
 
-        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse.unknownResponse()
     }
 
     private fun checkIfBoard(input: String): SearchInputResponse {
-        val pattern = Pattern.compile("/*[a-zA-Z0-9]+/*")
-        val matcher = pattern.matcher(input)
-        return if (matcher.matches()) {
-            val boardData = input.replace(Regex("/+"), "")
-            SearchInputResponse(BOARD_CODE, boardData)
-        } else SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
+        Dvach.MIRRORS.forEach {
+            val pattern = Pattern.compile("(^(https?://)?(www\\.)?$it/+)?/*[a-zA-Z0-9]+/*")
+            val matcher = pattern.matcher(input)
+            return if (matcher.matches()) {
+                val boardData = input.replace(Regex("/+"), "")
+                SearchInputResponse(BOARD_CODE, boardData)
+            } else SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
+        }
+        return SearchInputResponse.unknownResponse()
     }
 
     private fun checkIfThread(input: String): SearchInputResponse {
@@ -48,7 +51,7 @@ object SearchInputMatcher {
                 return SearchInputResponse(THREAD_CODE, threadData)
             }
         }
-        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse.unknownResponse()
     }
 
     private fun checkIfPost(input: String): SearchInputResponse {
@@ -63,7 +66,7 @@ object SearchInputMatcher {
                 return SearchInputResponse(POST_CODE, postData)
             }
         }
-        return SearchInputResponse(UNKNOWN_CODE, SearchInputResponse.UNKNOWN_ADDRESS)
+        return SearchInputResponse.unknownResponse()
     }
 
 }
