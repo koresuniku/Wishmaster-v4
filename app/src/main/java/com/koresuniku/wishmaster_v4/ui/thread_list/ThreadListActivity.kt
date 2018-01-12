@@ -20,11 +20,9 @@ import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
-import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
 import com.koresuniku.wishmaster_v4.ui.view.widget.WrapContentLinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,6 +45,7 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     @BindView(R.id.error_layout) lateinit var mErrorLayout: ViewGroup
     @BindView(R.id.try_again_button) lateinit var mTryAgainButton: Button
     @BindView(R.id.thread_list) lateinit var mThreadListRecyclerView: RecyclerView
+    @BindView(R.id.background) lateinit var mBackground: ImageView
 
     private lateinit var mThreadListRecyclerViewAdapter: ThreadListRecyclerViewAdapter
 
@@ -56,6 +55,7 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
         ButterKnife.bind(this)
         presenter.bindView(this)
 
+        setupBackground()
         setupToolbar()
         setupRecyclerView()
 
@@ -83,6 +83,10 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     override fun getBoardId(): String = intent.getStringExtra(IntentKeystore.BOARD_ID_CODE)
 
     override fun provideContentLayoutResource(): Int = R.layout.activity_thread_list
+
+    private fun setupBackground() {
+        BoardsBackgrounds.backgrounds[getBoardId()]?.let { mBackground.setImageResource(it) }
+    }
 
     private fun setupToolbar() {
         setSupportActionBar(mToolbar)

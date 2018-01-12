@@ -19,8 +19,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/transtema_old" />
+        android:scaleType="centerCrop" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/thread_list"

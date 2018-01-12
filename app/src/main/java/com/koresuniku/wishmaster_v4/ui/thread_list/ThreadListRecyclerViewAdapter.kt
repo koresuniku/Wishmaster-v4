@@ -47,7 +47,7 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     }
 
     override fun onThreadListDataChanged(threadListData: ThreadListData) {
-        activity.get()?.runOnUiThread({notifyDataSetChanged()})
+        activity.get()?.runOnUiThread({notifyItemRangeInserted(0, threadListData.getThreadList().size)})
         Log.d(LOG_TAG, "threadListData received")
     }
 
