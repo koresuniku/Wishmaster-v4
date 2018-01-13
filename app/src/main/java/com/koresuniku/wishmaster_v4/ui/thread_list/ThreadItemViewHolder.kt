@@ -1,7 +1,6 @@
 package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.support.v7.widget.RecyclerView
-import android.text.Spannable
 import android.text.Spanned
 import android.view.View
 import android.widget.TextView
@@ -18,6 +17,7 @@ class ThreadItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
 
     @BindView(R.id.subject) lateinit var mSubject: TextView
     @BindView(R.id.comment) lateinit var mComment: TextView
+    @BindView(R.id.resume) lateinit var mResume: TextView
 
     init { ButterKnife.bind(this, itemView) }
 
@@ -32,5 +32,9 @@ class ThreadItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
 
     override fun setComment(comment: Spanned) {
         mComment.text = comment
+    }
+
+    override fun setResumeInfo(resume: String) {
+        mResume.text = resume
     }
 }

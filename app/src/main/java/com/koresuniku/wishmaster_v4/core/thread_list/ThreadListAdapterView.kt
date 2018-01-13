@@ -8,5 +8,5 @@ import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
  */
 
 interface ThreadListAdapterView : IMvpView {
-    fun onThreadListDataChanged(threadListData: ThreadListData)
+    fun onThreadListDataChanged(newThreadListData: ThreadListData)
 }

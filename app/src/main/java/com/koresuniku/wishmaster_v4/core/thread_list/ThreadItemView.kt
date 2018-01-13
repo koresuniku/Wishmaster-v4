@@ -11,4 +11,5 @@ import com.koresuniku.wishmaster_v4.core.base.IMvpView
 interface ThreadItemView : IMvpView {
     fun setSubject(subject: Spanned)
     fun setComment(comment: Spanned)
+    fun setResumeInfo(resume: String)
 }

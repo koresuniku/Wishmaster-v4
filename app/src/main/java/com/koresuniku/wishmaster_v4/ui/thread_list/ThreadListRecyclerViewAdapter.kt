@@ -47,9 +47,12 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
         }
     }
 
-    override fun onThreadListDataChanged(threadListData: ThreadListData) {
+    override fun onThreadListDataChanged(newThreadListData: ThreadListData) {
         activity.get()?.runOnUiThread({
-            notifyItemRangeInserted(0, threadListData.getThreadList().size)
+            //notifyItemRangeRemoved(0, oldThreadListData.getThreadList().size)
+            //notifyItemRangeInserted(0, newThreadListData.getThreadList().size)
+            notifyDataSetChanged()
+            //notifyItemRangeChanged(0, newThreadListData.getThreadList().size)
         })
         Log.d(LOG_TAG, "threadListData received")
     }
@@ -57,4 +60,10 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     override fun getItemViewType(position: Int): Int = presenter.getThreadItemType(position)
 
     override fun getItemCount(): Int = presenter.getThreadListDataSize()
+
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun setHasStableIds(hasStableIds: Boolean) {
+        super.setHasStableIds(false)
+    }
 }

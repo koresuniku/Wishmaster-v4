@@ -24,7 +24,7 @@ import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
-import com.koresuniku.wishmaster_v4.ui.view.widget.WrapContentLinearLayoutManager
+import com.koresuniku.wishmaster_v4.ui.view.widget.LinearLayoutManagerWrapper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -100,7 +100,8 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     private fun setupRecyclerView() {
         mThreadListRecyclerViewAdapter = ThreadListRecyclerViewAdapter(this, presenter)
         mThreadListRecyclerView.adapter = mThreadListRecyclerViewAdapter
-        mThreadListRecyclerView.layoutManager = WrapContentLinearLayoutManager(this)
+        mThreadListRecyclerView.layoutManager = LinearLayoutManagerWrapper(
+                this, LinearLayoutManager.VERTICAL, false)
         mThreadListRecyclerView.addItemDecoration(ThreadItemDividerDecoration(this))
         presenter.bindThreadListAdapterView(mThreadListRecyclerViewAdapter)
     }
@@ -112,8 +113,8 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { threadListData ->
-                            Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}")
-                            Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0]}")
+                            Log.d(LOG_TAG, "data size: ${threadListData.getThreadList()?.size}")
+                            //Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0]}")
                             hideLoading()
                             setupTitle(threadListData.getBoardName())
                             if (first) showThreadList()

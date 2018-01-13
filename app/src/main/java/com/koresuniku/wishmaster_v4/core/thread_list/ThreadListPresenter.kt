@@ -1,11 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
-import android.text.Html
-import android.text.SpannableString
 import android.util.Log
-import android.widget.TextView
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadsMapper
@@ -13,7 +9,6 @@ import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiSer
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
-import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -28,7 +23,7 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     @Inject lateinit var databaseHelper: DatabaseHelper
 
     private lateinit var mLoadThreadListSingle: Single<ThreadListData>
-    private var mRecentThreadListData: ThreadListData? = null
+    private var mActualThreadListData: ThreadListData? = null
     private var mThreadListAdapterView: ThreadListAdapterView? = null
 
     override fun bindView(mvpView: ThreadListView) {
@@ -56,16 +51,18 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                             compositeDisposable.add(loadThreadListByPages()
                                     .subscribe(
                                             { schemaByPages -> kotlin.run {
-                                                mRecentThreadListData = ThreadsMapper.mapPageResponseToThreadListData(schemaByPages)
-                                                mRecentThreadListData?.let {
+                                                //val oldThreadListData = mActualThreadListData ?: ThreadListData.emptyData()
+                                                mActualThreadListData = ThreadsMapper.mapPageResponseToThreadListData(schemaByPages)
+                                                mActualThreadListData?.let {
                                                     e.onSuccess(it)
                                                     mThreadListAdapterView?.onThreadListDataChanged(it)
                                                 }
                                             } },
                                             { t -> e.onError(t) }))
                         } else {
-                            mRecentThreadListData = ThreadsMapper.mapCatalogResponseToThreadListData(schemaCatalog)
-                            mRecentThreadListData?.let {
+                            ///val oldThreadListData = mActualThreadListData ?: ThreadListData.emptyData()
+                            mActualThreadListData = ThreadsMapper.mapCatalogResponseToThreadListData(schemaCatalog)
+                            mActualThreadListData?.let {
                                 e.onSuccess(it)
                                 mThreadListAdapterView?.onThreadListDataChanged(it)
                             }
@@ -99,7 +96,6 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                     Log.d(LOG_TAG, "inside pages count: $i, threads: ${nextPageResponse.body()?.threads?.size}")
                     it.threads.addAll(nextPageResponse.body()?.threads ?: emptyList())
                 }
-                it.threads.forEachIndexed { index, thread ->  Log.d(LOG_TAG, "$index -> ${thread.comment}") }
                 e.onSuccess(it)
             }
         }
@@ -107,17 +103,18 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     }
 
     fun bindThreadItemViewByPosition(view: ThreadItemView, position: Int) {
-            mRecentThreadListData?.getThreadList()?.let {
+            mActualThreadListData?.getThreadList()?.let {
                 val thread = it[position]
                 mView?.let {
                     view.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
                     view.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
+                    view.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
                 }
             }
     }
 
     fun getThreadListDataSize(): Int {
-        return mRecentThreadListData?.getThreadList()?.size ?: 0
+        return mActualThreadListData?.getThreadList()?.size ?: 0
     }
 
     companion object {
@@ -128,7 +125,7 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     }
 
     fun getThreadItemType(position: Int): Int {
-        mRecentThreadListData?.let {
+        mActualThreadListData?.let {
             it.getThreadList()[position].files?.let {
                 return when (it.size) {
                     0 -> NO_IMAGES_CODE
@@ -144,11 +141,12 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     override fun unbindView() {
         super.unbindView()
         reloadThreads()
-        this.mRecentThreadListData = null
+        this.mActualThreadListData = ThreadListData.emptyData()
         databaseHelper.readableDatabase.close()
     }
 
     fun unbindThreadListAdapterView() {
         this.mThreadListAdapterView = null
+        mThreadListAdapterView?.onThreadListDataChanged(ThreadListData.emptyData())
     }
 }

@@ -42,4 +42,12 @@ class Thread {
     @SerializedName("posts")
     @Expose
     var posts: MutableList<Post>? = null
+
+    @SerializedName("posts_count")
+    @Expose
+    var postsCount: Int = 0
+
+    @SerializedName("files_count")
+    @Expose
+    var filesCount: Int = 0
 }

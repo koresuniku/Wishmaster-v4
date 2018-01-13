@@ -5,7 +5,6 @@ package com.koresuniku.wishmaster_v4.core.data.threads
  */
 
 class ThreadListData {
-
     private lateinit var boardName: String
     private lateinit var defaultName: String
     private lateinit var threadList: MutableList<Thread>
@@ -20,4 +19,18 @@ class ThreadListData {
     fun setBoardName(boardName: String) { this.boardName = boardName }
     fun setDefaultName(defaultName: String) { this.defaultName = defaultName }
     fun setPagesCount(pagesCount: Int) { this.pagesCount = pagesCount }
+
+    companion object {
+
+        fun emptyData(): ThreadListData {
+            val data = ThreadListData()
+
+            data.setBoardName(String())
+            data.setDefaultName(String())
+            data.setPagesCount(0)
+            data.setBoardList(arrayListOf())
+
+            return data
+        }
+    }
 }
