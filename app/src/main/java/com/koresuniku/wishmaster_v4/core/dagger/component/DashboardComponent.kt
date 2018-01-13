@@ -1,15 +1,11 @@
 package com.koresuniku.wishmaster_v4.core.dagger.component
 
-import android.content.SharedPreferences
-import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
-import com.koresuniku.wishmaster_v4.application.WishmasterApplication
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import com.koresuniku.wishmaster_v4.ui.dashboard.board_list.BoardListFragment
 import com.koresuniku.wishmaster_v4.ui.dashboard.favourite_boards.FavouriteBoardsFragment
 import dagger.Component
-import dagger.Provides
 import javax.inject.Singleton
 
 /**
