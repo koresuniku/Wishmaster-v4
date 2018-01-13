@@ -1,12 +1,14 @@
 package com.koresuniku.wishmaster_v4.ui.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import com.koresuniku.wishmaster_v4.R
 
 /**
  * Created by koresuniku on 03.10.17.
@@ -33,11 +35,6 @@ object UiUtils {
     }
 
     var isSystemUiShown: Boolean = true
-
-//    interface UiVisibilityChangedCallback {
-//        fun onUiVisibilityChanged(isShown: Boolean, delegateToOtherFragments: Boolean)
-//        fun getActivity(): Activity
-//    }
 
     fun showSystemUI(activity: Activity) {
         if (DeviceUtils.sdkIsKitkatOrHigher()) {
@@ -76,20 +73,12 @@ object UiUtils {
         }
     }
 
-//    fun changeSystemUiVisibility(callback: UiVisibilityChangedCallback) {
-//        if (DeviceUtils.sdkIsKitkatOrHigher()) {
-//            if (isSystemUiShown) hideSystemUI(callback.getActivity())
-//            else showSystemUI(callback.getActivity())
-//            callback.onUiVisibilityChanged(isSystemUiShown, true)
-//        }
-//    }
-
     fun setBarsTranslucent(activity: Activity, translucent: Boolean) {
         setStatusBarTranslucent(activity, translucent)
         setNavigationBarTranslucent(activity, translucent)
     }
 
-    fun setStatusBarTranslucent(activity: Activity, translucent: Boolean) {
+    private fun setStatusBarTranslucent(activity: Activity, translucent: Boolean) {
         if (translucent) {
             // activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -99,7 +88,7 @@ object UiUtils {
         }
     }
 
-    fun setNavigationBarTranslucent(activity: Activity, translucent: Boolean) {
+    private fun setNavigationBarTranslucent(activity: Activity, translucent: Boolean) {
         if (translucent) {
             //activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
@@ -107,6 +96,12 @@ object UiUtils {
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
+    }
+
+    fun getDefaultImageWidthInPx(screenWidth: Int, context: Context): Int {
+        val sideMargin = convertDpToPixel(
+                context.resources.getDimension(R.dimen.thread_post_side_margin_default))
+        return (screenWidth - (5 * sideMargin) / 4).toInt()
     }
 
 }
