@@ -14,5 +14,6 @@ object SharedPreferencesKeystore {
     val DASHBOARD_PREFERRED_TAB_POSITION = "dashboard_preferred_tab_position"
     val DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT = 1
 
-
+    val DEFAULT_IMAGE_WIDTH_IN_PX = "default_image_width_in_px"
+    val DEFAULT_IMAGE_WIDTH_IN_PX_DEFAULT = 0
 }

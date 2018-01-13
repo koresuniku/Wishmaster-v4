@@ -136,18 +136,9 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
 
     private fun hideLoading() {
         runOnUiThread {
-            val alpha = AlphaAnimation(1f, 0f)
-            alpha.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {
-                    mYobaImage.clearAnimation()
-                    mYobaImage.setLayerType(View.LAYER_TYPE_NONE, null)
-                    mLoadingLayout.visibility = View.GONE
-                }
-            })
-            alpha.duration = resources.getInteger(R.integer.loading_fade_duration).toLong()
-            mLoadingLayout.startAnimation(alpha)
+            mYobaImage.clearAnimation()
+            mYobaImage.setLayerType(View.LAYER_TYPE_NONE, null)
+            mLoadingLayout.visibility = View.GONE
         }
     }
 

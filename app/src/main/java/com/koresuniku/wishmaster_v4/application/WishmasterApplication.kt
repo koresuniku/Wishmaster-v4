@@ -9,6 +9,9 @@ import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardCompone
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerThreadListComponent
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
+import com.koresuniku.wishmaster_v4.ui.util.DeviceUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import javax.inject.Inject
@@ -35,6 +38,7 @@ class WishmasterApplication : Application() {
     private lateinit var mDatabaseModule: DatabaseModule
 
     @Inject lateinit var mOkHttpClient: OkHttpClient
+    @Inject lateinit var mSharedPreferencesStorage: SharedPreferencesStorage
 
     override fun onCreate() {
         super.onCreate()
@@ -46,6 +50,7 @@ class WishmasterApplication : Application() {
         mDaggerApplicationComponent = DaggerApplicationComponent.builder()
                 .appModule(mAppModule)
                 .netModule(mNetModule)
+                .sharedPreferencesModule(SharedPreferencesModule())
                 .build() as DaggerApplicationComponent
         mDaggerApplicationComponent.inject(this)
 
@@ -63,9 +68,12 @@ class WishmasterApplication : Application() {
                 .netModule(mNetModule)
                 .build() as DaggerThreadListComponent
 
-        Glide.get(this).register(GlideUrl::class.java,
+        Glide.get(this).register(
+                GlideUrl::class.java,
                 InputStream::class.java,
                 OkHttpUrlLoader.Factory(mOkHttpClient))
+
+        SharedPreferencesInteractor.onApplicationCreate(mSharedPreferencesStorage, this)
     }
 
     fun getDashBoardComponent() = mDaggerDashboardComponent

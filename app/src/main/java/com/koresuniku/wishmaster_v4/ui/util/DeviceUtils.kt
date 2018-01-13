@@ -49,4 +49,6 @@ object DeviceUtils {
 
         return width
     }
+
+    fun getMaximumDisplayWidthInPx(context: Context): Int = context.resources.displayMetrics.widthPixels
 }

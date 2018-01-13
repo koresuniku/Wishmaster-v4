@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.core.dagger.component
 import com.koresuniku.wishmaster_v4.application.WishmasterApplication
 import com.koresuniku.wishmaster_v4.core.dagger.module.AppModule
 import com.koresuniku.wishmaster_v4.core.dagger.module.NetModule
+import com.koresuniku.wishmaster_v4.core.dagger.module.SharedPreferencesModule
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,7 +12,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component (modules = [(AppModule::class), (NetModule::class)])
+@Component (modules = [(AppModule::class), (NetModule::class), (SharedPreferencesModule::class)])
 interface ApplicationComponent {
 
     fun inject(application: WishmasterApplication)
