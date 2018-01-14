@@ -9,11 +9,21 @@ import android.preference.PreferenceManager
  */
 
 object SharedPreferencesKeystore {
+    //Main preferences name
     val SHARED_PREFERENCES_NAME = "sharedPreferences"
 
-    val DASHBOARD_PREFERRED_TAB_POSITION = "dashboard_preferred_tab_position"
+    //Dashboard
+    val DASHBOARD_PREFERRED_TAB_POSITION_KEY = "dashboard_preferred_tab_position"
     val DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT = 1
 
-    val DEFAULT_IMAGE_WIDTH_IN_PX = "default_image_width_in_px"
-    val DEFAULT_IMAGE_WIDTH_IN_PX_DEFAULT = 0
+    //Images
+    val DEFAULT_IMAGE_WIDTH_IN_DP_KEY = "default_image_width_in_dp"
+    val DEFAULT_IMAGE_WIDTH_IN_DP_DEFAULT = 0
+
+    val MINIMUM_IMAGE_HEIGHT_IN_DP_KEY = "minimum_image_height_in_dp"
+    val MINIMUM_IMAGE_HEIGHT_IN_DP_DEFAULT = 20
+
+    val MAXIMUM_IMAGE_HEIGHT_IN_DP_KEY = "maximum_image_height_in_dp"
+    val MAXIMUM_IMAGE_HEIGHT_IN_DP_DEFAULT = 150
+
 }

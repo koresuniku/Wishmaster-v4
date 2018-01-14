@@ -9,9 +9,6 @@ import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardCompone
 import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerThreadListComponent
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
-import com.koresuniku.wishmaster_v4.ui.util.DeviceUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import javax.inject.Inject
@@ -36,9 +33,10 @@ class WishmasterApplication : Application() {
     private lateinit var mAppModule: AppModule
     private lateinit var mNetModule: NetModule
     private lateinit var mDatabaseModule: DatabaseModule
+    private lateinit var mSharedPreferencesModule: SharedPreferencesModule
 
-    @Inject lateinit var mOkHttpClient: OkHttpClient
-    @Inject lateinit var mSharedPreferencesStorage: SharedPreferencesStorage
+    @Inject lateinit var okHttpClient: OkHttpClient
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     override fun onCreate() {
         super.onCreate()
@@ -46,11 +44,12 @@ class WishmasterApplication : Application() {
         mAppModule = AppModule(this)
         mNetModule = NetModule(Dvach.BASE_URL)
         mDatabaseModule = DatabaseModule()
+        mSharedPreferencesModule = SharedPreferencesModule()
 
         mDaggerApplicationComponent = DaggerApplicationComponent.builder()
                 .appModule(mAppModule)
                 .netModule(mNetModule)
-                .sharedPreferencesModule(SharedPreferencesModule())
+                .sharedPreferencesModule(mSharedPreferencesModule)
                 .build() as DaggerApplicationComponent
         mDaggerApplicationComponent.inject(this)
 
@@ -66,14 +65,15 @@ class WishmasterApplication : Application() {
                 .threadListModule(ThreadListModule())
                 .databaseModule(mDatabaseModule)
                 .netModule(mNetModule)
+                .sharedPreferencesModule(mSharedPreferencesModule)
                 .build() as DaggerThreadListComponent
 
         Glide.get(this).register(
                 GlideUrl::class.java,
                 InputStream::class.java,
-                OkHttpUrlLoader.Factory(mOkHttpClient))
+                OkHttpUrlLoader.Factory(okHttpClient))
 
-        SharedPreferencesInteractor.onApplicationCreate(mSharedPreferencesStorage, this)
+        SharedPreferencesInteractor.onApplicationCreate(sharedPreferencesStorage, this)
     }
 
     fun getDashBoardComponent() = mDaggerDashboardComponent

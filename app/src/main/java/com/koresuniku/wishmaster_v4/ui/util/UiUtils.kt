@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -98,10 +99,10 @@ object UiUtils {
         }
     }
 
-    fun getDefaultImageWidthInPx(screenWidth: Int, context: Context): Int {
-        val sideMargin = convertDpToPixel(
-                context.resources.getDimension(R.dimen.thread_post_side_margin_default))
-        return (screenWidth - (5 * sideMargin) / 4).toInt()
+    fun getDefaultImageWidthInDp(screenWidth: Int, context: Context): Int {
+        val sideMargin = context.resources.getDimension(R.dimen.thread_post_side_margin_default)
+        Log.d("UIU", "screenWidth: $screenWidth, sideMargin: $sideMargin")
+        return convertPixelsToDp(((screenWidth - (5 * sideMargin)) / 4)).toInt()
     }
 
 }

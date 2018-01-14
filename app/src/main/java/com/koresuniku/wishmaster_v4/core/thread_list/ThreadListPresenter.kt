@@ -1,6 +1,8 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
 import android.util.Log
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
@@ -8,8 +10,12 @@ import com.koresuniku.wishmaster_v4.core.data.threads.ThreadsMapper
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaCatalogResponse
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
+import com.koresuniku.wishmaster_v4.core.gallery.WishmasterImageUtils
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -21,6 +27,7 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
 
     @Inject lateinit var threadListApiService: ThreadListApiService
     @Inject lateinit var databaseHelper: DatabaseHelper
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     private lateinit var mLoadThreadListSingle: Single<ThreadListData>
     private var mActualThreadListData: ThreadListData? = null
@@ -109,8 +116,31 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                     view.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
                     view.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
                     view.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
+                    thread.files?.let {
+                    when (getThreadItemType(position)) {
+                        SINGLE_IMAGE_CODE ->
+                            compositeDisposable.add(WishmasterImageUtils
+                                    .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
+                                    .subscribeOn(Schedulers.computation())
+                                    .subscribe(view::setSingleImage))
+                        MULTIPLE_IMAGES_CODE ->
+                            compositeDisposable.add(WishmasterImageUtils
+                                .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
+                                .subscribeOn(Schedulers.computation())
+                                .subscribe(view::setMultipleImages))
+                        else -> {}
+                    }
+                    }
                 }
             }
+    }
+
+    private fun getDefaultImageWidthObservable(): Observable<Int> {
+        return sharedPreferencesStorage.readInt(
+                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_KEY,
+                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_DEFAULT)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getThreadListDataSize(): Int {

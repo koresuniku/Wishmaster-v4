@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster_v4.application
 
+import android.content.Context
 import io.reactivex.Observable
 
 /**
@@ -15,4 +16,5 @@ interface SharedPreferencesStorage {
     fun writeInt(key: String, value: Int)
 
     fun readInt(key: String, defaultValue: Int): Observable<Int>
+
 }

@@ -51,6 +51,7 @@
             android:layout_below="@+id/subject">
 
             <include
+                android:id="@+id/image_layout"
                 layout="@layout/image_layout"
                 android:layout_gravity="top|left" />
 

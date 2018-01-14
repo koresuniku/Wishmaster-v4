@@ -22,7 +22,6 @@ import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardView
 import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
-import com.koresuniku.wishmaster_v4.ui.base.BaseDrawerActivity
 import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
 import com.koresuniku.wishmaster_v4.ui.view.widget.DashboardViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,7 +30,6 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import android.support.v7.widget.SearchView
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
-import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
 import com.koresuniku.wishmaster_v4.ui.thread_list.ThreadListActivity
 
@@ -164,7 +162,7 @@ class DashboardActivity : BaseWishmasterActivity(), DashboardView {
         mViewPager.adapter = mViewPagerAdapter
         mViewPager.offscreenPageLimit = 2
         mCompositeDisposable.add(sharedPreferencesStorage.readInt(
-                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION,
+                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_KEY,
                 SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
