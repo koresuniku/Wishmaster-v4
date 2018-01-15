@@ -6,6 +6,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
+import com.koresuniku.wishmaster_v4.core.domain.Dvach
+import com.koresuniku.wishmaster_v4.core.domain.client.HostSelectionInterceptor
+import com.koresuniku.wishmaster_v4.core.domain.client.RetrofitHolder
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListApiService
 import dagger.Module
 import dagger.Provides
@@ -39,22 +42,25 @@ class NetModule(val mBaseUrl: String) {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(cache: Cache): OkHttpClient {
+    fun provideHostSelectionInterceptor(): HostSelectionInterceptor = HostSelectionInterceptor()
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(cache: Cache, hostSelectionInterceptor: HostSelectionInterceptor): OkHttpClient {
+        //if (hostSelectionInterceptor.getHost().isNullOrEmpty()) hostSelectionInterceptor.setHost(Dvach.BASE_URL)
         val client = OkHttpClient.Builder()
         client.cache(cache)
+        //client.addInterceptor(hostSelectionInterceptor)
         return client.build()
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(mBaseUrl)
-                .client(okHttpClient)
-                .build()
-    }
+    fun provideRetrofitHolder(gson: Gson, okHttpClient: OkHttpClient): RetrofitHolder = RetrofitHolder(gson, okHttpClient)
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(retrofitHolder: RetrofitHolder): Retrofit = retrofitHolder.getRetrofit()
 
     @Provides
     @Singleton

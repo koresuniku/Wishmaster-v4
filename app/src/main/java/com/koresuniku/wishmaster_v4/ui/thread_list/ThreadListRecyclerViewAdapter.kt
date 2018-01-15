@@ -10,6 +10,7 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.data.threads.ThreadListData
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListAdapterView
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadListPresenter
+import retrofit2.Retrofit
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -19,6 +20,8 @@ import javax.inject.Inject
 
 class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolder>(), ThreadListAdapterView {
     private val LOG_TAG = ThreadListRecyclerViewAdapter::class.java.simpleName
+
+    @Inject lateinit var retrofit: Retrofit
 
     private lateinit var activity: WeakReference<Activity>
     private lateinit var presenter: ThreadListPresenter
@@ -48,22 +51,11 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     }
 
     override fun onThreadListDataChanged(newThreadListData: ThreadListData) {
-        activity.get()?.runOnUiThread({
-            //notifyItemRangeRemoved(0, oldThreadListData.getThreadList().size)
-            //notifyItemRangeInserted(0, newThreadListData.getThreadList().size)
-            notifyDataSetChanged()
-            //notifyItemRangeChanged(0, newThreadListData.getThreadList().size)
-        })
+        activity.get()?.runOnUiThread({ notifyDataSetChanged() })
         Log.d(LOG_TAG, "threadListData received")
     }
 
     override fun getItemViewType(position: Int): Int = presenter.getThreadItemType(position)
-
     override fun getItemCount(): Int = presenter.getThreadListDataSize()
-
     override fun getItemId(position: Int): Long = position.toLong()
-
-    override fun setHasStableIds(hasStableIds: Boolean) {
-        super.setHasStableIds(false)
-    }
 }

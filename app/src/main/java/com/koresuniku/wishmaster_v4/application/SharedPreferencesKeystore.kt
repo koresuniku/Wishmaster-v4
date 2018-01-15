@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.koresuniku.wishmaster_v4.core.domain.Dvach
 
 /**
  * Created by koresuniku on 12.11.17.
@@ -11,6 +12,10 @@ import android.preference.PreferenceManager
 object SharedPreferencesKeystore {
     //Main preferences name
     val SHARED_PREFERENCES_NAME = "sharedPreferences"
+
+    //Base URL
+    val BASE_URL_KEY = "base_url_key"
+    val BASE_URL_DEFAULT = Dvach.BASE_URL
 
     //Dashboard
     val DASHBOARD_PREFERRED_TAB_POSITION_KEY = "dashboard_preferred_tab_position"

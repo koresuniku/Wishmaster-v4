@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import com.koresuniku.wishmaster_v4.R
+import kotlin.math.roundToInt
 
 /**
  * Created by koresuniku on 03.10.17.
@@ -25,13 +26,13 @@ object UiUtils {
 
     fun convertPixelsToDp(px: Float): Float {
         val metrics = Resources.getSystem().displayMetrics
-        val dp = px / (metrics.densityDpi / 160f)
+        val dp = Math.floor((px / (metrics.densityDpi / 160f)).toDouble())
         return Math.round(dp).toFloat()
     }
 
     fun convertDpToPixel(dp: Float): Float {
         val metrics = Resources.getSystem().displayMetrics
-        val px = dp * (metrics.densityDpi / 160f)
+        val px = Math.floor((dp * (metrics.densityDpi / 160f)).toDouble())
         return Math.round(px).toFloat()
     }
 
@@ -102,7 +103,11 @@ object UiUtils {
     fun getDefaultImageWidthInDp(screenWidth: Int, context: Context): Int {
         val sideMargin = context.resources.getDimension(R.dimen.thread_post_side_margin_default)
         Log.d("UIU", "screenWidth: $screenWidth, sideMargin: $sideMargin")
-        return convertPixelsToDp(((screenWidth - (5 * sideMargin)) / 4)).toInt()
+        val rawFloat = (screenWidth - (5 * sideMargin)) / 4
+        Log.d("UIU", "rawFloat: $rawFloat")
+        val afterConvert = convertPixelsToDp(Math.ceil(rawFloat.toDouble()).toFloat()).toInt()
+        Log.d("UIU", "after: $afterConvert")
+        return convertPixelsToDp(Math.ceil(rawFloat.toDouble()).toFloat()).toInt()
     }
 
 }

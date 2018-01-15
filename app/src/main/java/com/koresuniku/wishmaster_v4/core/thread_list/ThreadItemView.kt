@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.core.thread_list
 import android.text.Spannable
 import android.text.Spanned
 import com.koresuniku.wishmaster_v4.core.base.IMvpView
+import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
 
 /**
@@ -13,6 +14,6 @@ interface ThreadItemView : IMvpView {
     fun setSubject(subject: Spanned)
     fun setComment(comment: Spanned)
     fun setResumeInfo(resume: String)
-    fun setSingleImage(configuration: ImageLayoutConfiguration)
-    fun setMultipleImages(configuration: ImageLayoutConfiguration)
+    fun setSingleImage(file: File, configuration: ImageLayoutConfiguration)
+    fun setMultipleImages(files: List<File>, configuration: ImageLayoutConfiguration)
 }

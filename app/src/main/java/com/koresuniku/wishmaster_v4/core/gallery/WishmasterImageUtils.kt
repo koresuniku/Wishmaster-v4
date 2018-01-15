@@ -1,6 +1,11 @@
 package com.koresuniku.wishmaster_v4.core.gallery
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.data.threads.File
@@ -89,4 +94,15 @@ object WishmasterImageUtils {
     }
 
     private data class ImageSharedPreferencesConfiguration(val width: Int, val min: Int, val max: Int)
+
+    fun loadImageThumbnail(context: Context, image: ImageView, file: File) {
+        image.setImageBitmap(null)
+        if (image.animation != null) image.animation.cancel()
+        image.setBackgroundColor(context.resources.getColor(R.color.colorBackgroundDark))
+
+//        Glide.with(context)
+//                .load(Uri.parse(Dvach.DVACH_BASE_URL + file.getThumbnail()))
+//                .crossFade(200).placeholder(image.drawable)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(image)
+    }
 }

@@ -1,7 +1,6 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
 import android.util.Log
-import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
@@ -12,7 +11,6 @@ import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSc
 import com.koresuniku.wishmaster_v4.core.domain.thread_list_api.ThreadListJsonSchemaPageResponse
 import com.koresuniku.wishmaster_v4.core.gallery.WishmasterImageUtils
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -36,6 +34,8 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     override fun bindView(mvpView: ThreadListView) {
         super.bindView(mvpView)
         mvpView.getWishmasterApplication().getThreadListComponent().inject(this)
+
+        mActualThreadListData = ThreadListData.emptyData()
 
         mLoadThreadListSingle = getNewLoadThreadListSingle()
         mLoadThreadListSingle = mLoadThreadListSingle.cache()
@@ -109,25 +109,27 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         }})
     }
 
-    fun bindThreadItemViewByPosition(view: ThreadItemView, position: Int) {
-            mActualThreadListData?.getThreadList()?.let {
-                val thread = it[position]
-                mView?.let {
-                    view.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
-                    view.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
-                    view.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
-                    thread.files?.let {
+    fun bindThreadItemViewByPosition(threadItemView: ThreadItemView, position: Int) {
+        mActualThreadListData?.getThreadList()?.let {
+            val thread = it[position]
+            mView?.let {
+                threadItemView.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
+                threadItemView.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
+                threadItemView.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
+                thread.files?.let {
                     when (getThreadItemType(position)) {
                         SINGLE_IMAGE_CODE ->
                             compositeDisposable.add(WishmasterImageUtils
                                     .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
                                     .subscribeOn(Schedulers.computation())
-                                    .subscribe(view::setSingleImage))
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({config -> threadItemView.setSingleImage(it[0], config)}))
                         MULTIPLE_IMAGES_CODE ->
                             compositeDisposable.add(WishmasterImageUtils
-                                .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
-                                .subscribeOn(Schedulers.computation())
-                                .subscribe(view::setMultipleImages))
+                                    .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
+                                    .subscribeOn(Schedulers.computation())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({config -> threadItemView.setMultipleImages(it, config)}))
                         else -> {}
                     }
                     }
@@ -135,17 +137,7 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
             }
     }
 
-    private fun getDefaultImageWidthObservable(): Observable<Int> {
-        return sharedPreferencesStorage.readInt(
-                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_KEY,
-                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_DEFAULT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    fun getThreadListDataSize(): Int {
-        return mActualThreadListData?.getThreadList()?.size ?: 0
-    }
+    fun getThreadListDataSize() = mActualThreadListData?.getThreadList()?.size ?: 0
 
     companion object {
         val ERROR_CODE = -1
@@ -171,12 +163,10 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
     override fun unbindView() {
         super.unbindView()
         reloadThreads()
-        this.mActualThreadListData = ThreadListData.emptyData()
         databaseHelper.readableDatabase.close()
     }
 
     fun unbindThreadListAdapterView() {
         this.mThreadListAdapterView = null
-        mThreadListAdapterView?.onThreadListDataChanged(ThreadListData.emptyData())
     }
 }

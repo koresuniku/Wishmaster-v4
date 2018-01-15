@@ -5,13 +5,16 @@ import android.text.Spanned
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridView
+import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster_v4.R
+import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadItemView
-import com.koresuniku.wishmaster_v4.ui.util.UiUtils
+import com.koresuniku.wishmaster_v4.ui.dashboard.gallery.preview.PreviewImageGridAdapter
 
 /**
  * Created by koresuniku on 07.01.18.
@@ -36,15 +39,23 @@ class ThreadItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
     }
 
     override fun setComment(comment: Spanned) { mComment.text = comment }
-
     override fun setResumeInfo(resume: String) { mResume.text = resume }
 
-    override fun setSingleImage(configuration: ImageLayoutConfiguration) {
+    override fun setSingleImage(file: File, configuration: ImageLayoutConfiguration) {
         Log.d(LOG_TAG, configuration.toString())
-        //val imageLayout = itemView.findViewById<ViewGroup>(R.id.image_layout)
-        //imageLayout.layoutParams.width = UiUtils.convertDpToPixel(width.toFloat()).toInt()
+        val imageLayout = itemView.findViewById<ViewGroup>(R.id.image_layout)
+        val image = imageLayout.findViewById<ImageView>(R.id.image)
+        image.post {
+            image.layoutParams.width = configuration.widthInPx
+            image.layoutParams.height = configuration.heightInPx
+            image.requestLayout()
+        }
     }
 
-    override fun setMultipleImages(configuration: ImageLayoutConfiguration) {
+    override fun setMultipleImages(files: List<File>, configuration: ImageLayoutConfiguration) {
+        val imageGrid = itemView.findViewById<GridView>(R.id.image_grid)
+        imageGrid.columnWidth = configuration.widthInPx
+        //imageGrid.stretchMode = GridView.NO_STRETCH
+        imageGrid.adapter = PreviewImageGridAdapter(files, configuration)
     }
 }

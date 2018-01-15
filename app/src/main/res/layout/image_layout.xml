@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/yoba_default" />
+        android:background="@color/colorBackgroundDark" />
 
     <TextView
         android:id="@+id/summary"
@@ -19,6 +19,6 @@
         android:layout_below="@+id/image"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="1488*288\n666kb, JPG"
-        android:textSize="12sp" />
+        android:text="1488*228\n666kb, JPG"
+        android:textSize="10sp" />
 </RelativeLayout>
