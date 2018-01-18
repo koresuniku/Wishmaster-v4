@@ -42,15 +42,9 @@ class NetModule(val mBaseUrl: String) {
 
     @Provides
     @Singleton
-    fun provideHostSelectionInterceptor(): HostSelectionInterceptor = HostSelectionInterceptor()
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(cache: Cache, hostSelectionInterceptor: HostSelectionInterceptor): OkHttpClient {
-        //if (hostSelectionInterceptor.getHost().isNullOrEmpty()) hostSelectionInterceptor.setHost(Dvach.BASE_URL)
+    fun provideOkHttpClient(cache: Cache): OkHttpClient {
         val client = OkHttpClient.Builder()
         client.cache(cache)
-        //client.addInterceptor(hostSelectionInterceptor)
         return client.build()
     }
 

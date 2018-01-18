@@ -11,7 +11,7 @@ import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
  */
 
 interface ThreadItemView : IMvpView {
-    fun setSubject(subject: Spanned)
+    fun setSubject(subject: Spanned, hasImages: Boolean)
     fun setComment(comment: Spanned)
     fun setResumeInfo(resume: String)
     fun setSingleImage(file: File, configuration: ImageLayoutConfiguration)

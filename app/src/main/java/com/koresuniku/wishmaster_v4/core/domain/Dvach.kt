@@ -7,5 +7,6 @@ package com.koresuniku.wishmaster_v4.core.domain
 object Dvach {
 
     val BASE_URL = "https://2ch.hk"
-    val MIRRORS = arrayListOf("2ch.hk", "2ch.pm", "2ch.re", "2ch.tf", "2ch.wf", "2ch.yt", "2-ch.so")
+    val MIRRORS = arrayListOf("https://2ch.hk", "https://2ch.pm", "https://2ch.re",
+            "https://2ch.tf", "https://2ch.wf", "https://2ch.yt", "https://2-ch.so")
 }

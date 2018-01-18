@@ -7,6 +7,7 @@
     app:cardBackgroundColor="@color/colorBackgroundLight">
 
     <RelativeLayout
+        android:id="@+id/thread_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="5dp"
@@ -31,10 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/subject"
-            android:fadingEdge="none"
             android:horizontalSpacing="@dimen/thread_post_side_margin_default"
             android:numColumns="auto_fit"
-            android:stretchMode="columnWidth">
+            android:scrollbars="none"
+            android:stretchMode="spacingWidth">
 
         </GridView>
 

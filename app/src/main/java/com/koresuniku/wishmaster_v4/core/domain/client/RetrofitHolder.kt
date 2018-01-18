@@ -34,4 +34,7 @@ class RetrofitHolder @Inject constructor(val gson: Gson, val okHttpClient: OkHtt
                 .client(okHttpClient)
                 .build()
     }
+
+    fun getBaseUrl(): String = mRetrofit.baseUrl().let { return@let "${it.scheme()}://${it.host()}"}
+
 }

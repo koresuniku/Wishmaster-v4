@@ -14,6 +14,7 @@ import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Retrofit
 import javax.inject.Inject
 
 /**
@@ -113,7 +114,9 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         mActualThreadListData?.getThreadList()?.let {
             val thread = it[position]
             mView?.let {
-                threadItemView.setSubject(WishmasterTextUtils.getSubjectSpanned(thread.subject ?: "", it.getBoardId()))
+                threadItemView.setSubject(WishmasterTextUtils.getSubjectSpanned(
+                        thread.subject ?: "", it.getBoardId()),
+                        thread.files?.isNotEmpty() ?: false)
                 threadItemView.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
                 threadItemView.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
                 thread.files?.let {
