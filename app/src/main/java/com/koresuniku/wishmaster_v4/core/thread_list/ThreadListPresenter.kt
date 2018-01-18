@@ -14,7 +14,6 @@ import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 /**
@@ -123,16 +122,16 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
                     when (getThreadItemType(position)) {
                         SINGLE_IMAGE_CODE ->
                             compositeDisposable.add(WishmasterImageUtils
-                                    .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
+                                    .getImageItemData(it[0], sharedPreferencesStorage, compositeDisposable)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe({config -> threadItemView.setSingleImage(it[0], config)}))
+                                    .subscribe(threadItemView::setSingleImage))
                         MULTIPLE_IMAGES_CODE ->
                             compositeDisposable.add(WishmasterImageUtils
-                                    .getImageLayoutConfiguration(it[0], sharedPreferencesStorage, compositeDisposable)
+                                    .getImageItemData(it, sharedPreferencesStorage, compositeDisposable)
                                     .subscribeOn(Schedulers.computation())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe({config -> threadItemView.setMultipleImages(it, config)}))
+                                    .subscribe(threadItemView::setMultipleImages))
                         else -> {}
                     }
                     }

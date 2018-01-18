@@ -9,6 +9,7 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.data.threads.File
+import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.util.UiUtils
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -21,13 +22,37 @@ import io.reactivex.schedulers.Schedulers
 
 object WishmasterImageUtils {
 
-    fun getImageLayoutConfiguration(file: File,
-                                    sharedPreferencesStorage: SharedPreferencesStorage,
-                                    compositeDisposable: CompositeDisposable): Single<ImageLayoutConfiguration> {
+    fun getImageItemData(file: File,
+                         sharedPreferencesStorage: SharedPreferencesStorage,
+                         compositeDisposable: CompositeDisposable): Single<ImageItemData> {
         return Single.create({ e ->
             compositeDisposable.add(getImageConfigurationFromSharedPreferences(
                     sharedPreferencesStorage, compositeDisposable)
-                    .subscribe({ config -> e.onSuccess(computeImageLayoutConfiguration(file, config)) }))
+                    .subscribe({ config -> e.onSuccess(ImageItemData(
+                            file,
+                            computeImageLayoutConfiguration(file, config),
+                            WishmasterTextUtils.obtainImageResume(file)))
+                    }))
+        })
+    }
+
+    fun getImageItemData(files: List<File>,
+                         sharedPreferencesStorage: SharedPreferencesStorage,
+                         compositeDisposable: CompositeDisposable): Single<List<ImageItemData>> {
+        return Single.create({ e ->
+            compositeDisposable.add(getImageConfigurationFromSharedPreferences(
+                    sharedPreferencesStorage, compositeDisposable)
+                    .subscribe({ config -> run {
+                        val configs: MutableList<ImageLayoutConfiguration> = ArrayList()
+                        val summaries: MutableList<String> = ArrayList()
+                        val imageItemDataList: MutableList<ImageItemData> = ArrayList()
+                        files.mapTo(configs) { computeImageLayoutConfiguration(it, config) }
+                        files.mapTo(summaries) { WishmasterTextUtils.obtainImageResume(it) }
+
+                        files.mapIndexed{ index, file ->
+                            imageItemDataList.add(ImageItemData(file, configs[index], summaries[index]))}
+                        e.onSuccess(imageItemDataList)
+                    } }))
         })
     }
 
@@ -37,10 +62,8 @@ object WishmasterImageUtils {
         val fileHeight = file.height.toInt()
         val aspectRatio: Float = fileWidth.toFloat() / fileHeight.toFloat()
 
-        Log.d("WIU", "aspectRatio: $aspectRatio")
-
         val actualWidth = imageSharedPreferencesConfiguration.width
-        var actualHeight = (actualWidth / aspectRatio).toInt()
+        var actualHeight = Math.ceil((actualWidth/ aspectRatio).toDouble()).toInt()
         val min = imageSharedPreferencesConfiguration.min
         val max = imageSharedPreferencesConfiguration.max
 

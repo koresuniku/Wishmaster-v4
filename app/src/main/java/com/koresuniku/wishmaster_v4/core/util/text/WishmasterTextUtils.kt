@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.core.util.text
 import android.text.Html
 import android.text.Spanned
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
+import com.koresuniku.wishmaster_v4.core.data.threads.File
 
 /**
  * Created by koresuniku on 04.01.18.
@@ -16,6 +17,16 @@ object WishmasterTextUtils {
 
     fun obtainBoardIdDashName(boardId: String, boardName: String): String {
         return "/$boardId/ - $boardName"
+    }
+
+    fun obtainImageResume(file: File): String {
+        val width = file.width
+        val height = file.height
+        val size = file.size
+        val format = file.thumbnail
+                .removePrefix(file.thumbnail.subSequence(0, file.thumbnail.indexOf(".") + 1))
+                .toUpperCase()
+        return "$width * $height\n$size, $format"
     }
 
     fun getSpannedFromHtml(input: String): Spanned { return Html.fromHtml(input) }

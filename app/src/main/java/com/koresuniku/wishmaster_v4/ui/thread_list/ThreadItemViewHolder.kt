@@ -17,10 +17,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
+import com.koresuniku.wishmaster_v4.core.gallery.ImageItemData
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadItemView
+import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.dashboard.gallery.preview.PreviewImageGridAdapter
 import com.koresuniku.wishmaster_v4.ui.util.UiUtils
+import org.w3c.dom.Text
 
 /**
  * Created by koresuniku on 07.01.18.
@@ -51,41 +54,44 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
     override fun setComment(comment: Spanned) { mComment.text = comment }
     override fun setResumeInfo(resume: String) { mResume.text = resume }
 
-    override fun setSingleImage(file: File, configuration: ImageLayoutConfiguration) {
-        Log.d(LOG_TAG, configuration.toString())
+    override fun setSingleImage(imageItemData: ImageItemData) {
         val imageLayout = itemView.findViewById<ViewGroup>(R.id.image_layout)
         val image = imageLayout.findViewById<ImageView>(R.id.image)
         val imageCommentContainer = itemView.findViewById<ViewGroup>(R.id.image_comment_container)
+        val imageSummary = itemView.findViewById<TextView>(R.id.summary)
+
         (imageCommentContainer.layoutParams as RelativeLayout.LayoutParams).topMargin =
                if (mSubjectString.isEmpty())
                    itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
                else itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
-        image.post {
-            image.layoutParams.width = configuration.widthInPx
-            image.layoutParams.height = configuration.heightInPx
-            image.requestLayout()
-        }
-        Log.d(LOG_TAG, "mBaseUrl $mBaseUrl")
+
+        imageSummary.text = imageItemData.summary
+
+        image.layoutParams.width = imageItemData.configuration.widthInPx
+        image.layoutParams.height = imageItemData.configuration.heightInPx
         image.setImageBitmap(null)
         image.animation?.cancel()
         image.setBackgroundColor(itemView.context.resources.getColor(R.color.colorBackgroundDark))
 
         Glide.with(itemView.context)
-                .load(Uri.parse(mBaseUrl + file.thumbnail))
+                .load(Uri.parse(mBaseUrl + imageItemData.file.thumbnail))
                 .crossFade(200)
                 .placeholder(image.drawable)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(image)
+
+        itemView.requestLayout()
     }
 
-    override fun setMultipleImages(files: List<File>, configuration: ImageLayoutConfiguration) {
+    override fun setMultipleImages(imageItemDataList: List<ImageItemData>) {
         val imageGrid = itemView.findViewById<GridView>(R.id.image_grid)
         (imageGrid.layoutParams as RelativeLayout.LayoutParams).topMargin =
                 if (mSubjectString.isEmpty())
                     itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
                 else itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
-        imageGrid.columnWidth = configuration.widthInPx
-        imageGrid.adapter = PreviewImageGridAdapter(files, configuration, mBaseUrl)
+        imageGrid.columnWidth = imageItemDataList[0].configuration.widthInPx
+        imageGrid.adapter = PreviewImageGridAdapter(imageItemDataList, mBaseUrl)
+        imageGrid.requestLayout()
     }
 }
