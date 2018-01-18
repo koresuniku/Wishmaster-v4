@@ -4,6 +4,7 @@ import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.text.Spanned
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
@@ -23,6 +24,9 @@ import com.koresuniku.wishmaster_v4.core.thread_list.ThreadItemView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.dashboard.gallery.preview.PreviewImageGridAdapter
 import com.koresuniku.wishmaster_v4.ui.util.UiUtils
+import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
+import com.koresuniku.wishmaster_v4.ui.view.LayoutWrapContentUpdater
+import com.koresuniku.wishmaster_v4.ui.view.widget.ExpandableHeightGridView
 import org.w3c.dom.Text
 
 /**
@@ -69,7 +73,8 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
 
         image.layoutParams.width = imageItemData.configuration.widthInPx
         image.layoutParams.height = imageItemData.configuration.heightInPx
-        image.setImageBitmap(null)
+        image.requestLayout()
+        image.setImageDrawable(null)
         image.animation?.cancel()
         image.setBackgroundColor(itemView.context.resources.getColor(R.color.colorBackgroundDark))
 
@@ -81,17 +86,22 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
                 .skipMemoryCache(true)
                 .into(image)
 
-        itemView.requestLayout()
+        imageLayout.requestLayout()
     }
 
     override fun setMultipleImages(imageItemDataList: List<ImageItemData>) {
-        val imageGrid = itemView.findViewById<GridView>(R.id.image_grid)
+        val imageGrid = itemView.findViewById<ExpandableHeightGridView>(R.id.image_grid)
         (imageGrid.layoutParams as RelativeLayout.LayoutParams).topMargin =
                 if (mSubjectString.isEmpty())
                     itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
                 else itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
         imageGrid.columnWidth = imageItemDataList[0].configuration.widthInPx
         imageGrid.adapter = PreviewImageGridAdapter(imageItemDataList, mBaseUrl)
-        imageGrid.requestLayout()
+
+        val summaryTextView = imageGrid.adapter.getView(0, null, imageGrid).findViewById<TextView>(R.id.summary)
+        ViewUtils.measureView(summaryTextView)
+        ViewUtils.setGridViewHeight(
+                imageGrid, imageItemDataList, imageItemDataList[0].configuration.widthInPx, summaryTextView.measuredHeight)
+
     }
 }

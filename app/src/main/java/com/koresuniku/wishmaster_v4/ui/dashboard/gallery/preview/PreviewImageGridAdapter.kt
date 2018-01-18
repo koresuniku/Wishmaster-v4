@@ -1,10 +1,12 @@
 package com.koresuniku.wishmaster_v4.ui.dashboard.gallery.preview
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -14,6 +16,10 @@ import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.gallery.ImageItemData
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
+import com.koresuniku.wishmaster_v4.ui.util.UiUtils
+import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
+import com.koresuniku.wishmaster_v4.ui.view.LayoutWrapContentUpdater
+import com.koresuniku.wishmaster_v4.ui.view.widget.ExpandableHeightGridView
 
 /**
  * Created by koresuniku on 15.01.18.
@@ -21,6 +27,8 @@ import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 
 class PreviewImageGridAdapter(private val imageItemDataList: List<ImageItemData>,
                               private val baseUrl: String) : BaseAdapter() {
+
+
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var returnView: View? = convertView
@@ -35,12 +43,12 @@ class PreviewImageGridAdapter(private val imageItemDataList: List<ImageItemData>
                 val image = it.findViewById<ImageView>(R.id.image)
                 val imageSummary = it.findViewById<TextView>(R.id.summary)
 
-                imageSummary.text = WishmasterTextUtils.obtainImageResume(imageItemData.file)
+                imageSummary.text = imageItemData.summary
 
                 image.layoutParams.width = imageItemData.configuration.widthInPx
                 image.layoutParams.height = imageItemData.configuration.heightInPx
                 image.requestLayout()
-                image.setImageBitmap(null)
+                image.setImageDrawable(null)
                 image.animation?.cancel()
                 image.setBackgroundColor(it.context.resources.getColor(R.color.colorBackgroundDark))
 
@@ -51,12 +59,27 @@ class PreviewImageGridAdapter(private val imageItemDataList: List<ImageItemData>
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(image)
-
-                parent.requestLayout()
             }
         }
         return returnView ?: View(parent?.context)
     }
+
+//    private fun adjustHeight(gridView: ExpandableHeightGridView, position: Int, itemHeight: Int) {
+//        if (position == 0 || (position >= gridView.numColumns && gridView.numColumns % position == 0)) {
+//            if (position != 0) lastRowHeight = finalHeight
+//            finalHeight += itemHeight
+//        } else if (lastRowHeight + itemHeight > finalHeight) {
+//            finalHeight = lastRowHeight + itemHeight
+//        }
+//        if (lastItemCounted) run {
+//            Log.d("EHGV", "finalHeight: $finalHeight")
+//            finalHeight = 0
+//            lastRowHeight = 0
+//            lastItemCounted = !lastItemCounted
+//            //gridView.layoutParams.height = finalHeight
+//            //measure(layoutParams.width, layoutParams.height)
+//        }
+//    }
 
     override fun getItem(position: Int): Any = imageItemDataList[position].file
     override fun getItemId(position: Int): Long = position.toLong()

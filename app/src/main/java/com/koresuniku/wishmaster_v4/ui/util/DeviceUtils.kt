@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.ViewConfiguration
+import android.view.WindowManager
 
 /**
  * Created by koresuniku on 03.10.17.
@@ -27,15 +29,20 @@ object DeviceUtils {
 
     fun sdkIsMarshmallowOrHigher(): Boolean = Build.VERSION.SDK_INT >= 23
 
-    fun getDisplayWidthInDp(activity: Activity): Float {
-        val display = activity.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        var width = size.x
-        if (activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            width = size.y
-        }
-        return UiUtils.convertPixelsToDp(width.toFloat())
+    fun getDisplayWidth(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        val metrics = DisplayMetrics()
+        display.getMetrics(metrics)
+        return metrics.widthPixels
+    }
+
+    fun getDisplayHeight(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        val metrics = DisplayMetrics()
+        display.getMetrics(metrics)
+        return metrics.heightPixels
     }
 
     fun getMaximumDisplayWidthInPx(activity: Activity): Int {
