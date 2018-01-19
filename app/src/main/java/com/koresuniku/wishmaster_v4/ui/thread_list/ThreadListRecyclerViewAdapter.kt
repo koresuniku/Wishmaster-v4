@@ -24,7 +24,7 @@ import javax.inject.Inject
 class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolder>(), ThreadListAdapterView {
     private val LOG_TAG = ThreadListRecyclerViewAdapter::class.java.simpleName
 
-    @Inject lateinit var retrofitHolder: RetrofitHolder
+   // @Inject lateinit var retrofitHolder: RetrofitHolder
 
     private lateinit var activity: WeakReference<Activity>
     private lateinit var presenter: ThreadListPresenter

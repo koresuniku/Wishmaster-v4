@@ -4,12 +4,8 @@ import android.app.Application
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
-import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerApplicationComponent
-import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerDashboardComponent
-import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerSharedPreferencesComponent
-import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerThreadListComponent
+import com.koresuniku.wishmaster_v4.core.dagger.component.*
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
-import com.koresuniku.wishmaster_v4.core.domain.Dvach
 import com.koresuniku.wishmaster_v4.core.domain.client.RetrofitHolder
 import com.squareup.leakcanary.LeakCanary
 import okhttp3.OkHttpClient
@@ -29,62 +25,56 @@ import javax.inject.Inject
 
 class WishmasterApplication : Application() {
 
-    private lateinit var mDaggerDashboardComponent: DaggerDashboardComponent
-    private lateinit var mDaggerThreadListComponent: DaggerThreadListComponent
-    private lateinit var mDaggerApplicationComponent: DaggerApplicationComponent
-    private lateinit var mSharedPreferencesComponent: DaggerSharedPreferencesComponent
+    lateinit var daggerDashboardComponent: DaggerDashboardComponent
+    lateinit var daggerThreadListComponent: DaggerThreadListComponent
+    lateinit var daggerSharedPreferencesComponent: DaggerSharedPreferencesComponent
+    lateinit var daggerDatabaseComponent: DaggerDatabaseComponent
+    lateinit var daggerNetComponent: DaggerNetComponent
 
-    private lateinit var mAppModule: AppModule
     private lateinit var mNetModule: NetModule
     private lateinit var mDatabaseModule: DatabaseModule
     private lateinit var mSharedPreferencesModule: SharedPreferencesModule
     private lateinit var mSharedPreferencesUIParamsModule: SharedPreferencesUIParamsModule
 
-    //@Inject lateinit var okHttpClient: OkHttpClient
-    //@Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
-    //@Inject lateinit var retrofitHolder: RetrofitHolder
-    //@Inject lateinit var sharedPreferencesUIParams: SharedPreferencesUIParams
+    @Inject lateinit var okHttpClient: OkHttpClient
+    @Inject lateinit var retrofitHolder: RetrofitHolder
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    @Inject lateinit var sharedPreferencesUIParams: SharedPreferencesUIParams
 
     override fun onCreate() {
         super.onCreate()
 
         if (!LeakCanary.isInAnalyzerProcess(this)) LeakCanary.install(this)
 
-        mAppModule = AppModule(this)
         mNetModule = NetModule(this)
         mDatabaseModule = DatabaseModule(this)
         mSharedPreferencesModule = SharedPreferencesModule(this)
         mSharedPreferencesUIParamsModule = SharedPreferencesUIParamsModule()
 
-        mDaggerApplicationComponent = DaggerApplicationComponent.builder()
-                .appModule(mAppModule)
+        daggerNetComponent = DaggerNetComponent.builder()
                 .netModule(mNetModule)
-                .build() as DaggerApplicationComponent
-        mDaggerApplicationComponent.inject(this)
-
-        mSharedPreferencesComponent = DaggerSharedPreferencesComponent.builder()
+                .build() as DaggerNetComponent
+        daggerDatabaseComponent = DaggerDatabaseComponent.builder()
+                .databaseModule(mDatabaseModule)
+                .build() as DaggerDatabaseComponent
+        daggerSharedPreferencesComponent = DaggerSharedPreferencesComponent.builder()
                 .sharedPreferencesModule(mSharedPreferencesModule)
                 .sharedPreferencesUIParamsModule(mSharedPreferencesUIParamsModule)
                 .build() as DaggerSharedPreferencesComponent
 
+        daggerNetComponent.inject(this)
+        daggerSharedPreferencesComponent.inject(this)
+
         SharedPreferencesInteractor.onApplicationCreate(this,
                 sharedPreferencesStorage, retrofitHolder, sharedPreferencesUIParams)
 
-        mDaggerDashboardComponent = DaggerDashboardComponent.builder()
-                .appModule(mAppModule)
+
+        daggerDashboardComponent = DaggerDashboardComponent.builder()
                 .dashboardModule(DashboardModule())
-                .databaseModule(mDatabaseModule)
-                .netModule(mNetModule)
                 .build() as DaggerDashboardComponent
-
-        mDaggerThreadListComponent = DaggerThreadListComponent.builder()
-                .appModule(mAppModule)
+        daggerThreadListComponent = DaggerThreadListComponent.builder()
                 .threadListModule(ThreadListModule())
-                .databaseModule(mDatabaseModule)
-                .netModule(mNetModule)
                 .build() as DaggerThreadListComponent
-
-
 
         Glide.get(this).register(
                 GlideUrl::class.java,
@@ -92,7 +82,4 @@ class WishmasterApplication : Application() {
                 OkHttpUrlLoader.Factory(okHttpClient))
 
     }
-
-    fun getDashBoardComponent() = mDaggerDashboardComponent
-    fun getThreadListComponent() = mDaggerThreadListComponent
 }

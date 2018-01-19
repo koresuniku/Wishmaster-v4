@@ -17,10 +17,7 @@ import javax.inject.Singleton
 interface DashboardComponent {
 
     fun inject(activity: DashboardActivity)
-
-    fun inject(dashboardPresenter: DashboardPresenter)
-
     fun inject(boardListFragment: BoardListFragment)
-
     fun inject(favouriteBoardsFragment: FavouriteBoardsFragment)
+
 }

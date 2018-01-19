@@ -16,6 +16,7 @@ import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListData
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardListsObject
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardsMapper
+import com.koresuniku.wishmaster_v4.ui.base.BaseWishmasterActivity
 import com.koresuniku.wishmaster_v4.ui.dashboard.DashboardActivity
 import com.koresuniku.wishmaster_v4.ui.thread_list.ThreadListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -41,9 +42,9 @@ class BoardListFragment : Fragment(), BoardListView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = inflater.inflate(R.layout.fragment_board_list, container, false)
         ButterKnife.bind(this, mRootView)
-        (activity as DashboardActivity)
+        (activity as BaseWishmasterActivity)
                 .getWishmasterApplication()
-                .getDashBoardComponent()
+                .daggerDashboardComponent
                 .inject(this)
         presenter.bindDashboardBoardListView(this)
 

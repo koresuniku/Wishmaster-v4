@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster_v4.core.dagger.component
 
 import com.koresuniku.wishmaster_v4.core.dagger.module.DatabaseModule
+import com.koresuniku.wishmaster_v4.core.dashboard.DashboardPresenter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -10,5 +11,6 @@ import javax.inject.Singleton
 
 @Singleton
 @Component (modules = [(DatabaseModule::class)])
-class DatabaseComponent {
+interface DatabaseComponent {
+    fun inject(presenter: DashboardPresenter)
 }

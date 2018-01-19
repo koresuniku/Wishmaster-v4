@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster_v4.core.dashboard
 
 import android.util.Log
 import com.koresuniku.wishmaster.domain.boards_api.BoardsApiService
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.boards.*
@@ -21,7 +22,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     @Inject lateinit var boardsApiService: BoardsApiService
     @Inject lateinit var databaseHelper: DatabaseHelper
-   // @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     private lateinit var mLoadBoardObservable: Observable<BoardListData>
 
@@ -30,7 +31,9 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     override fun bindView(mvpView: DashboardView) {
         super.bindView(mvpView)
-        mvpView.getWishmasterApplication().getDashBoardComponent().inject(this)
+        mvpView.getWishmasterApplication().daggerNetComponent.inject(this)
+        mvpView.getWishmasterApplication().daggerDatabaseComponent.inject(this)
+        mvpView.getWishmasterApplication().daggerSharedPreferencesComponent.inject(this)
 
         mLoadBoardObservable = getNewLoadBoardsObservable()
         mLoadBoardObservable = mLoadBoardObservable.cache()
@@ -103,6 +106,16 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
             BoardsRepository.reorderBoardList(databaseHelper.writableDatabase, boardList)
             e.onComplete()
         }})
+    }
+
+    fun getPreferredTabPosition(): Single<Int> {
+        return Single.create({ e ->
+            compositeDisposable.add(sharedPreferencesStorage.readInt(
+                    SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_KEY,
+                    SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(e::onSuccess))
+        })
     }
 
     fun processSearchInput(input: String) {

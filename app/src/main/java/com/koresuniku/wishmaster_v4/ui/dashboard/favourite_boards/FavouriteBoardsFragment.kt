@@ -45,7 +45,7 @@ class FavouriteBoardsFragment : Fragment(), OnStartDragListener, FavouriteBoards
         ButterKnife.bind(this, mRootView)
         (activity as DashboardActivity)
                 .getWishmasterApplication()
-                .getDashBoardComponent()
+                .daggerDashboardComponent
                 .inject(this)
         presenter.bindFavouriteBoardsView(this)
 

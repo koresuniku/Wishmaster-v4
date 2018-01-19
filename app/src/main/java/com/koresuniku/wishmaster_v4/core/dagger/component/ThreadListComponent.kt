@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Component(modules = [(ThreadListModule::class)])
 interface ThreadListComponent {
 
-    fun inject(presenter: ThreadListPresenter)
     fun inject(activity: ThreadListActivity)
     fun inject(threadListAdapterView: ThreadListRecyclerViewAdapter)
+
 }
