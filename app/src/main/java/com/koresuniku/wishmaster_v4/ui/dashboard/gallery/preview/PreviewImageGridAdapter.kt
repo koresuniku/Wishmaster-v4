@@ -15,6 +15,7 @@ import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.gallery.ImageItemData
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
+import com.koresuniku.wishmaster_v4.core.gallery.WishmasterImageUtils
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.util.UiUtils
 import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
@@ -44,21 +45,8 @@ class PreviewImageGridAdapter(private val imageItemDataList: List<ImageItemData>
                 val imageSummary = it.findViewById<TextView>(R.id.summary)
 
                 imageSummary.text = imageItemData.summary
+                WishmasterImageUtils.loadImageThumbnail(imageItemData, image, baseUrl)
 
-                image.layoutParams.width = imageItemData.configuration.widthInPx
-                image.layoutParams.height = imageItemData.configuration.heightInPx
-                image.requestLayout()
-                image.setImageDrawable(null)
-                image.animation?.cancel()
-                image.setBackgroundColor(it.context.resources.getColor(R.color.colorBackgroundDark))
-
-                Glide.with(it.context)
-                        .load(Uri.parse(baseUrl + imageItemData.file.thumbnail))
-                        .crossFade(200)
-                        .placeholder(image.drawable)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(image)
             }
         }
         return returnView ?: View(parent?.context)

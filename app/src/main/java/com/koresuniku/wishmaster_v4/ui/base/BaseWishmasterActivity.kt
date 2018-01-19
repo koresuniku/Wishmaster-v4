@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster_v4.ui.base
 
 import android.content.Intent
+import android.os.Bundle
 import android.support.annotation.LayoutRes
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.WishmasterApplication
@@ -12,9 +13,16 @@ import com.koresuniku.wishmaster_v4.core.base.IActivityMvpView
 
 abstract class BaseWishmasterActivity : BaseDrawerActivity(), IActivityMvpView {
 
+    protected var isActivityDestroyed = false
+
     @LayoutRes override abstract fun provideContentLayoutResource(): Int
 
     override fun getWishmasterApplication(): WishmasterApplication = application as WishmasterApplication
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isActivityDestroyed = false
+    }
 
     override fun finish() {
         super.finish()
@@ -32,5 +40,10 @@ abstract class BaseWishmasterActivity : BaseDrawerActivity(), IActivityMvpView {
 
     protected fun overridePendingTransitionExit() {
         overridePendingTransition(R.anim.slide_in_back, R.anim.slide_out_back)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isActivityDestroyed = true
     }
 }

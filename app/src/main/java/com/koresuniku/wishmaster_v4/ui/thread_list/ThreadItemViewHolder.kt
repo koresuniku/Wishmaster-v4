@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.koresuniku.wishmaster_v4.core.data.threads.File
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
 import com.koresuniku.wishmaster_v4.core.gallery.ImageItemData
 import com.koresuniku.wishmaster_v4.core.gallery.ImageLayoutConfiguration
+import com.koresuniku.wishmaster_v4.core.gallery.WishmasterImageUtils
 import com.koresuniku.wishmaster_v4.core.thread_list.ThreadItemView
 import com.koresuniku.wishmaster_v4.core.util.text.WishmasterTextUtils
 import com.koresuniku.wishmaster_v4.ui.dashboard.gallery.preview.PreviewImageGridAdapter
@@ -27,6 +29,7 @@ import com.koresuniku.wishmaster_v4.ui.util.UiUtils
 import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
 import com.koresuniku.wishmaster_v4.ui.view.LayoutWrapContentUpdater
 import com.koresuniku.wishmaster_v4.ui.view.widget.ExpandableHeightGridView
+import com.pixplicity.htmlcompat.HtmlCompat
 import org.w3c.dom.Text
 
 /**
@@ -55,7 +58,10 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
         }
     }
 
-    override fun setComment(comment: Spanned) { mComment.text = comment }
+    override fun setComment(comment: Spanned) {
+        mComment.text = comment
+       // mComment.text = WishmasterTextUtils.cutComment(comment, mComment)
+    }
     override fun setResumeInfo(resume: String) { mResume.text = resume }
 
     override fun setSingleImage(imageItemData: ImageItemData) {
@@ -70,23 +76,7 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
                else itemView.context.resources.getDimension(R.dimen.thread_item_image_comment_no_subject_top_margin).toInt()
 
         imageSummary.text = imageItemData.summary
-
-        image.layoutParams.width = imageItemData.configuration.widthInPx
-        image.layoutParams.height = imageItemData.configuration.heightInPx
-        image.requestLayout()
-        image.setImageDrawable(null)
-        image.animation?.cancel()
-        image.setBackgroundColor(itemView.context.resources.getColor(R.color.colorBackgroundDark))
-
-        Glide.with(itemView.context)
-                .load(Uri.parse(mBaseUrl + imageItemData.file.thumbnail))
-                .crossFade(200)
-                .placeholder(image.drawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(image)
-
-        imageLayout.requestLayout()
+        WishmasterImageUtils.loadImageThumbnail(imageItemData, image, mBaseUrl)
     }
 
     override fun setMultipleImages(imageItemDataList: List<ImageItemData>) {
@@ -102,6 +92,5 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
         ViewUtils.measureView(summaryTextView)
         ViewUtils.setGridViewHeight(
                 imageGrid, imageItemDataList, imageItemDataList[0].configuration.widthInPx, summaryTextView.measuredHeight)
-
     }
 }

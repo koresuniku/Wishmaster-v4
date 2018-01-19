@@ -10,6 +10,7 @@ import com.koresuniku.wishmaster_v4.core.dagger.component.DaggerThreadListCompon
 import com.koresuniku.wishmaster_v4.core.dagger.module.*
 import com.koresuniku.wishmaster_v4.core.domain.Dvach
 import com.koresuniku.wishmaster_v4.core.domain.client.RetrofitHolder
+import com.squareup.leakcanary.LeakCanary
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import javax.inject.Inject
@@ -42,6 +43,8 @@ class WishmasterApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (!LeakCanary.isInAnalyzerProcess(this)) LeakCanary.install(this)
 
         mAppModule = AppModule(this)
         mNetModule = NetModule(Dvach.BASE_URL)

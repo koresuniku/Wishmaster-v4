@@ -10,13 +10,16 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.AbsListView
 import android.widget.Button
 import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.bumptech.glide.Glide
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.application.IntentKeystore
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
@@ -103,6 +106,27 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
         mThreadListRecyclerView.layoutManager = LinearLayoutManagerWrapper(
                 this, LinearLayoutManager.VERTICAL, false)
         mThreadListRecyclerView.addItemDecoration(ThreadItemDividerDecoration(this))
+//        mThreadListRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                mThreadListRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                mThreadListRecyclerView.scrollToPosition(0)
+//            }
+//        })
+        mThreadListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!isActivityDestroyed) {
+                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                        Glide.with(this@ThreadListActivity).pauseRequests()
+                    } else {
+                        Glide.with(this@ThreadListActivity).resumeRequests()
+                    }
+                }
+            }
+        })
+//        mThreadListRecyclerView.setItemViewCacheSize(1024)
+//        mThreadListRecyclerView.isDrawingCacheEnabled = true
+//        mThreadListRecyclerView.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
         presenter.bindThreadListAdapterView(mThreadListRecyclerViewAdapter)
     }
 
@@ -113,7 +137,7 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { threadListData ->
-                            Log.d(LOG_TAG, "data size: ${threadListData.getThreadList()?.size}")
+                            Log.d(LOG_TAG, "data size: ${threadListData.getThreadList().size}")
                             //Log.d(LOG_TAG, "first thread: ${threadListData.getThreadList()[0]}")
                             hideLoading()
                             setupTitle(threadListData.getBoardName())

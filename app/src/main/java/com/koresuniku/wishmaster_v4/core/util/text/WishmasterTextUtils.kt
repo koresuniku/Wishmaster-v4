@@ -1,9 +1,12 @@
 package com.koresuniku.wishmaster_v4.core.util.text
 
-import android.text.Html
-import android.text.Spanned
+import android.text.*
+import android.util.Log
+import android.widget.TextView
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.threads.File
+import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
+import org.w3c.dom.Comment
 
 /**
  * Created by koresuniku on 04.01.18.
@@ -33,6 +36,16 @@ object WishmasterTextUtils {
 
     fun getSubjectSpanned(subject: String, boardId: String): Spanned {
         return getSpannedFromHtml(if (boardId == "b") "" else subject)
+    }
+
+    fun cutComment(comment: Spanned, textView: TextView): Spannable {
+        ViewUtils.measureView(textView)
+        val staticLayout = StaticLayout(comment, textView.paint, textView.measuredWidth,
+                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+        Log.d("WTU", "static layout lines: ${staticLayout.lineCount}")
+
+        return SpannableString(comment.subSequence(
+                0, if (staticLayout.lineCount > 6) staticLayout.getLineEnd(5) else comment.length))
     }
 
     fun getResumeInfo(postCount: Int, fileCount: Int): String {
