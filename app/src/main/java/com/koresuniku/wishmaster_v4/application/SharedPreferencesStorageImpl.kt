@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster_v4.application
 
 import android.content.Context
 import io.reactivex.Observable
+import io.reactivex.Single
 import javax.inject.Inject
 
 /**
@@ -10,31 +11,45 @@ import javax.inject.Inject
 
 class SharedPreferencesStorageImpl @Inject constructor(val context: Context) : SharedPreferencesStorage {
 
-    override fun writeString(key: String, value: String) {
+    override fun writeStringBackground(key: String, value: String) {
         context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .edit()
                 .putString(key, value)
                 .apply()
     }
 
-    override fun readString(key: String, defaultValue: String): Observable<String> {
-        return Observable.fromCallable {
+    override fun readString(key: String, defaultValue: String): Single<String> {
+        return Single.fromCallable {
             context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                     .getString(key, defaultValue)
         }
     }
 
-    override fun writeInt(key: String, value: Int) {
+    override fun writeIntBackground(key: String, value: Int) {
         context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .edit()
                 .putInt(key, value)
                 .apply()
     }
 
-    override fun readInt(key: String, defaultValue: Int): Observable<Int> {
-        return Observable.fromCallable {
+    override fun readInt(key: String, defaultValue: Int): Single<Int> {
+        return Single.fromCallable {
             context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
                     .getInt(key, defaultValue)
         }
+    }
+
+    override fun writeStringSameThread(key: String, value: String): Boolean {
+        return context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putString(key, value)
+                .commit()
+    }
+
+    override fun writeIntSameThread(key: String, value: Int): Boolean {
+        return context.getSharedPreferences(SharedPreferencesKeystore.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putInt(key, value)
+                .commit()
     }
 }

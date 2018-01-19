@@ -88,7 +88,9 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     override fun provideContentLayoutResource(): Int = R.layout.activity_thread_list
 
     private fun setupBackground() {
-        BoardsBackgrounds.backgrounds[getBoardId()]?.let { mBackground.setImageResource(it) }
+        if (BoardsBackgrounds.backgrounds.containsKey(getBoardId())) {
+            BoardsBackgrounds.backgrounds[getBoardId()]?.let { mBackground.setImageResource(it) }
+        } else mBackground.setImageResource(R.color.colorBackground)
     }
 
     private fun setupToolbar() {

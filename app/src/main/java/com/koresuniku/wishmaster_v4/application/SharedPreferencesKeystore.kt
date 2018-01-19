@@ -31,4 +31,12 @@ object SharedPreferencesKeystore {
     val MAXIMUM_IMAGE_HEIGHT_IN_DP_KEY = "maximum_image_height_in_dp"
     val MAXIMUM_IMAGE_HEIGHT_IN_DP_DEFAULT = 150
 
+    //Text
+    val THREAD_POST_ITEM_WIDTH_HORIZONTAL_IN_PX_KEY = "thread_post_item_width_horizontal_in_px"
+    val THREAD_POST_ITEM_WIDTH_VERTICAL_IN_PX_KEY = "thread_post_item_width_vertical_in_px"
+    val THREAD_POST_ITEM_WIDTH_DEFAULT = 0
+
+    val THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_HORIZONTAL_IN_PX_KEY = "thread_post_item_width_single_image_horizontal_in_px"
+    val THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_VERTICAL_IN_PX_KEY = "thread_post_item_width_single_image_horizontal_in_px"
+    val THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_DEFAULT = 0
 }
