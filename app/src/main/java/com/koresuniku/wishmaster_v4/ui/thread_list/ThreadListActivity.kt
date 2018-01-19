@@ -40,7 +40,7 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
     private val LOG_TAG = ThreadListActivity::class.java.simpleName
 
     @Inject lateinit var presenter: ThreadListPresenter
-    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    //@Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.loading_layout) lateinit var mLoadingLayout: ViewGroup
@@ -108,12 +108,6 @@ class ThreadListActivity : BaseWishmasterActivity(), ThreadListView {
         mThreadListRecyclerView.layoutManager = LinearLayoutManagerWrapper(
                 this, LinearLayoutManager.VERTICAL, false)
         mThreadListRecyclerView.addItemDecoration(ThreadItemDividerDecoration(this))
-//        mThreadListRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//                mThreadListRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                mThreadListRecyclerView.scrollToPosition(0)
-//            }
-//        })
         mThreadListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)

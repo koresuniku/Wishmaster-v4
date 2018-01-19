@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster_v4.ui.thread_list
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.text.Html
+import android.text.Spannable
 import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
@@ -58,7 +59,7 @@ class ThreadItemViewHolder(itemView: View, private val mBaseUrl: String) :
         }
     }
 
-    override fun setComment(comment: Spanned) {
+    override fun setComment(comment: Spannable) {
         mComment.text = comment
        // mComment.text = WishmasterTextUtils.cutComment(comment, mComment)
     }

@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster_v4.application
 
 import android.content.Context
+import android.util.Log
 import com.koresuniku.wishmaster_v4.R
 import com.koresuniku.wishmaster_v4.core.domain.client.RetrofitHolder
 import com.koresuniku.wishmaster_v4.ui.util.DeviceUtils
@@ -18,8 +19,9 @@ object SharedPreferencesInteractor {
 
     fun onApplicationCreate(context: Context,
                             sharedPreferencesStorage: SharedPreferencesStorage,
-                            retrofitHolder: RetrofitHolder) {
-        setDefaultImageWidth(context, sharedPreferencesStorage)
+                            retrofitHolder: RetrofitHolder,
+                            sharedPreferencesUIParams: SharedPreferencesUIParams) {
+        setDefaultImageWidth(context, sharedPreferencesStorage, sharedPreferencesUIParams)
         setRetrofitBaseUrl(sharedPreferencesStorage, retrofitHolder)
     }
 
@@ -43,30 +45,42 @@ object SharedPreferencesInteractor {
 //    }
 
     private fun setDefaultImageWidth(context: Context,
-                                     sharedPreferencesStorage: SharedPreferencesStorage) {
+                                     sharedPreferencesStorage: SharedPreferencesStorage,
+                                     sharedPreferencesUIParams: SharedPreferencesUIParams) {
         readDefaultImageWidthDependentValues(sharedPreferencesStorage)
                 .subscribeOn(Schedulers.io())
                 .subscribe( { values ->
                     if (values.imageWidth == SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_DEFAULT) {
+                        val newImageWidth = UiUtils.getDefaultImageWidthInDp(
+                                DeviceUtils.getMaximumDisplayWidthInPx(context), context)
+                        values.imageWidth = newImageWidth
                         if (sharedPreferencesStorage.writeIntSameThread(
-                                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_KEY,
-                                UiUtils.getDefaultImageWidthInDp(
-                                        DeviceUtils.getMaximumDisplayWidthInPx(context), context))) {
-                            computeThreadPostItemWidth(context, sharedPreferencesStorage)
+                                SharedPreferencesKeystore.DEFAULT_IMAGE_WIDTH_IN_DP_KEY, newImageWidth)) {
+                            computeThreadPostItemWidth(context, sharedPreferencesStorage, sharedPreferencesUIParams)
                                     .subscribeOn(Schedulers.computation())
                                     .subscribe()
                         }
-                    } else {
-                        computeThreadPostItemWidth(context, sharedPreferencesStorage)
+                    } else if (values.threadPostItemHorizontalWidth == SharedPreferencesKeystore.THREAD_POST_ITEM_WIDTH_DEFAULT
+                            || values.threadPostItemVerticalWidth == SharedPreferencesKeystore.THREAD_POST_ITEM_WIDTH_DEFAULT
+                            || values.threadPostItemSingleImageHorizontalWidth == SharedPreferencesKeystore.THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_DEFAULT
+                            || values.threadPostItemSingleImageVerticalWidth == SharedPreferencesKeystore.THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_DEFAULT) {
+                        computeThreadPostItemWidth(context, sharedPreferencesStorage, sharedPreferencesUIParams)
                                 .subscribeOn(Schedulers.computation())
                                 .subscribe()
+                    } else {
+                        Log.d("SPI", values.imageWidth.toString())
+                        sharedPreferencesUIParams.imageWidth = values.imageWidth
+                        sharedPreferencesUIParams.threadPostItemHorizontalWidth = values.threadPostItemHorizontalWidth
+                        sharedPreferencesUIParams.threadPostItemVerticalWidth = values.threadPostItemVerticalWidth
+                        sharedPreferencesUIParams.threadPostItemSingleImageHorizontalWidth = values.threadPostItemSingleImageHorizontalWidth
+                        sharedPreferencesUIParams.threadPostItemSingleImageVerticalWidth = values.threadPostItemSingleImageVerticalWidth
                     }
                 })
     }
 
     private fun readDefaultImageWidthDependentValues(
             sharedPreferencesStorage: SharedPreferencesStorage) :
-            Single<DefaultImageWidthDependentValues> {
+            Single<SharedPreferencesUIParams> {
         return Single.zip(
                 readDefaultImageWidth(sharedPreferencesStorage),
                 readThreadPostItemHorizontalWidth(sharedPreferencesStorage),
@@ -74,7 +88,7 @@ object SharedPreferencesInteractor {
                 readThreadPostItemSingleImageHorizontalWidth(sharedPreferencesStorage),
                 readThreadPostItemSingleImageVerticalWidth(sharedPreferencesStorage),
                 Function5({ imageWidth, hw, vw, sihw, sivw ->
-                    DefaultImageWidthDependentValues(imageWidth, hw, vw, sihw, sivw)
+                    SharedPreferencesUIParams(imageWidth, hw, vw, sihw, sivw)
                 }))
     }
 
@@ -89,7 +103,8 @@ object SharedPreferencesInteractor {
     }
 
     private fun computeThreadPostItemWidth(context: Context,
-                                           sharedPreferencesStorage: SharedPreferencesStorage): Completable {
+                                           sharedPreferencesStorage: SharedPreferencesStorage,
+                                           sharedPreferencesUIParams: SharedPreferencesUIParams): Completable {
         return Completable.create({ e -> kotlin.run {
             var displayWidth = DeviceUtils.getDisplayWidth(context)
             var displayHeight = DeviceUtils.getDisplayHeight(context)
@@ -124,6 +139,11 @@ object SharedPreferencesInteractor {
                         sharedPreferencesStorage.writeIntBackground(
                                 SharedPreferencesKeystore.THREAD_POST_ITEM_WIDTH_SINGLE_IMAGE_VERTICAL_IN_PX_KEY,
                                 threadPostItemSingleImageVertical)
+
+                        sharedPreferencesUIParams.threadPostItemHorizontalWidth = threadPostItemHorizontalWidth
+                        sharedPreferencesUIParams.threadPostItemVerticalWidth = threadPostItemVerticalWidth
+                        sharedPreferencesUIParams.threadPostItemSingleImageHorizontalWidth = threadPostItemSingleImageHorizontal
+                        sharedPreferencesUIParams.threadPostItemSingleImageVerticalWidth = threadPostItemSingleImageVertical
 
                         e.onComplete()
                     }})
@@ -180,9 +200,9 @@ object SharedPreferencesInteractor {
         })
     }
 
-    private data class DefaultImageWidthDependentValues(val imageWidth: Int,
-                                                        val threadPostItemHorizontalWidth: Int,
-                                                        val threadPostItemVerticalWidth: Int,
-                                                        val threadPostItemSingleImageHorizontalWidth: Int,
-                                                        val threadPostItemSingleImageVerticalWidth: Int)
+//    private data class SharedPreferencesUIParams(val imageWidth: Int,
+//                                                        val threadPostItemHorizontalWidth: Int,
+//                                                        val threadPostItemVerticalWidth: Int,
+//                                                        val threadPostItemSingleImageHorizontalWidth: Int,
+//                                                        val threadPostItemSingleImageVerticalWidth: Int)
 }

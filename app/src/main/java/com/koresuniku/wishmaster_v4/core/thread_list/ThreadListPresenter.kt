@@ -1,6 +1,8 @@
 package com.koresuniku.wishmaster_v4.core.thread_list
 
+import android.content.res.Configuration
 import android.util.Log
+import com.koresuniku.wishmaster_v4.application.SharedPreferencesUIParams
 import com.koresuniku.wishmaster_v4.application.SharedPreferencesStorage
 import com.koresuniku.wishmaster_v4.core.base.BaseRxPresenter
 import com.koresuniku.wishmaster_v4.core.data.database.DatabaseHelper
@@ -23,9 +25,10 @@ import javax.inject.Inject
 class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>() {
     private val LOG_TAG = ThreadListPresenter::class.java.simpleName
 
-    @Inject lateinit var threadListApiService: ThreadListApiService
-    @Inject lateinit var databaseHelper: DatabaseHelper
-    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    //@Inject lateinit var threadListApiService: ThreadListApiService
+    //@Inject lateinit var databaseHelper: DatabaseHelper
+    //@Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    //@Inject lateinit var sharedPreferencesUIParams: SharedPreferencesUIParams
 
     private lateinit var mLoadThreadListSingle: Single<ThreadListData>
     private var mActualThreadListData: ThreadListData? = null
@@ -39,6 +42,8 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
 
         mLoadThreadListSingle = getNewLoadThreadListSingle()
         mLoadThreadListSingle = mLoadThreadListSingle.cache()
+
+        Log.d(LOG_TAG, sharedPreferencesUIParams.toString())
     }
 
     fun bindThreadListAdapterView(threadListAdapterView: ThreadListAdapterView) {
@@ -109,14 +114,23 @@ class ThreadListPresenter @Inject constructor(): BaseRxPresenter<ThreadListView>
         }})
     }
 
-    fun bindThreadItemViewByPosition(threadItemView: ThreadItemView, position: Int) {
+    fun bindThreadItemViewByPosition(threadItemView: ThreadItemView, position: Int, configuration: Configuration) {
         mActualThreadListData?.getThreadList()?.let {
             val thread = it[position]
             mView?.let {
                 threadItemView.setSubject(WishmasterTextUtils.getSubjectSpanned(
-                        thread.subject ?: "", it.getBoardId()),
+                        thread.subject ?: String(), it.getBoardId()),
                         thread.files?.isNotEmpty() ?: false)
-                threadItemView.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
+                thread.comment?.let {
+                    compositeDisposable.addAll(WishmasterTextUtils.cutComment(it,
+                            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                                sharedPreferencesUIParams.threadPostItemHorizontalWidth
+                            else sharedPreferencesUIParams.threadPostItemVerticalWidth)
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(threadItemView::setComment))
+                }
+                //threadItemView.setComment(WishmasterTextUtils.getSpannedFromHtml(thread.comment ?: ""))
                 threadItemView.setResumeInfo(WishmasterTextUtils.getResumeInfo(thread.postsCount, thread.filesCount))
                 thread.files?.let {
                     when (getThreadItemType(position)) {

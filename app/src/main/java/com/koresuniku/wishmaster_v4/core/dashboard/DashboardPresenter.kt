@@ -21,7 +21,7 @@ class DashboardPresenter @Inject constructor(): BaseRxPresenter<DashboardView>()
 
     @Inject lateinit var boardsApiService: BoardsApiService
     @Inject lateinit var databaseHelper: DatabaseHelper
-    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+   // @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     private lateinit var mLoadBoardObservable: Observable<BoardListData>
 

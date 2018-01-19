@@ -13,7 +13,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component (modules = [(AppModule::class), (DashboardModule::class), (DatabaseModule::class), (NetModule::class)])
+@Component (modules = [(DashboardModule::class)])
 interface DashboardComponent {
 
     fun inject(activity: DashboardActivity)

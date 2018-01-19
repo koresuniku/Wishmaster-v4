@@ -37,7 +37,7 @@ class DashboardActivity : BaseWishmasterActivity(), DashboardView {
     private val LOG_TAG = DashboardActivity::class.java.simpleName
 
     @Inject lateinit var presenter: DashboardPresenter
-    @Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
+    //@Inject lateinit var sharedPreferencesStorage: SharedPreferencesStorage
 
     @BindView(R.id.toolbar) lateinit var mToolbar: Toolbar
     @BindView(R.id.tab_layout) lateinit var mTabLayout: TabLayout
@@ -161,12 +161,12 @@ class DashboardActivity : BaseWishmasterActivity(), DashboardView {
         mViewPagerAdapter = DashboardViewPagerAdapter(supportFragmentManager)
         mViewPager.adapter = mViewPagerAdapter
         mViewPager.offscreenPageLimit = 2
-        mCompositeDisposable.add(sharedPreferencesStorage.readInt(
-                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_KEY,
-                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe { value -> mViewPager.currentItem = value })
+//        mCompositeDisposable.add(sharedPreferencesStorage.readInt(
+//                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_KEY,
+//                SharedPreferencesKeystore.DASHBOARD_PREFERRED_TAB_POSITION_DEFAULT)
+//                .observeOn(Schedulers.io())
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe { value -> mViewPager.currentItem = value })
     }
 
     override fun launchThreadListActivity(boardId: String) {

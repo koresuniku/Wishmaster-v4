@@ -1,12 +1,9 @@
 package com.koresuniku.wishmaster_v4.core.util.text
 
 import android.text.*
-import android.util.Log
-import android.widget.TextView
 import com.koresuniku.wishmaster_v4.core.data.boards.BoardModel
 import com.koresuniku.wishmaster_v4.core.data.threads.File
-import com.koresuniku.wishmaster_v4.ui.util.ViewUtils
-import org.w3c.dom.Comment
+import io.reactivex.Single
 
 /**
  * Created by koresuniku on 04.01.18.
@@ -38,14 +35,21 @@ object WishmasterTextUtils {
         return getSpannedFromHtml(if (boardId == "b") "" else subject)
     }
 
-    fun cutComment(comment: Spanned, textView: TextView): Spannable {
-        ViewUtils.measureView(textView)
-        val staticLayout = StaticLayout(comment, textView.paint, textView.measuredWidth,
-                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
-        Log.d("WTU", "static layout lines: ${staticLayout.lineCount}")
-
-        return SpannableString(comment.subSequence(
-                0, if (staticLayout.lineCount > 6) staticLayout.getLineEnd(5) else comment.length))
+    fun cutComment(rawComment: String, textViewWidth: Int): Single<Spannable> {
+//        ViewUtils.measureView(textView)
+//        val staticLayout = StaticLayout(rawComment, textView.paint, textView.measuredWidth,
+//                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+//        Log.d("WTU", "static layout lines: ${staticLayout.lineCount}")
+//
+//        return SpannableString(rawComment.subSequence(
+//                0, if (staticLayout.lineCount > 6) staticLayout.getLineEnd(5) else rawComment.length))
+        return Single.create({ e -> kotlin.run {
+            val comment = getSpannedFromHtml(rawComment)
+            val staticLayout = StaticLayout(rawComment, TextPaint(), textViewWidth,
+                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+            e.onSuccess(SpannableString(comment.subSequence(
+                0, if (staticLayout.lineCount > 6) staticLayout.getLineEnd(5) else rawComment.length)))
+        }})
     }
 
     fun getResumeInfo(postCount: Int, fileCount: Int): String {

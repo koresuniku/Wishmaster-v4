@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster_v4.ui.thread_list
 
 import android.app.Activity
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,7 +36,12 @@ class ThreadListRecyclerViewAdapter() : RecyclerView.Adapter<ThreadItemViewHolde
     }
 
     override fun onBindViewHolder(holder: ThreadItemViewHolder?, position: Int) {
-        holder?.let { presenter.bindThreadItemViewByPosition(it, position) }
+        activity.get()?.let {
+            val tempContext: Context = it
+            holder?.let {
+                presenter.bindThreadItemViewByPosition(it, position, tempContext.resources.configuration)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ThreadItemViewHolder {
