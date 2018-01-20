@@ -11,11 +11,12 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 //apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'kotlin-kapt'
+//apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
     buildToolsVersion '26.0.2'
+    compileOptions.incremental = false
     defaultConfig {
         applicationId "com.koresuniku.wishmaster_v4"
         minSdkVersion 16
@@ -48,16 +49,17 @@ dependencies {
     compile 'com.android.support:design:27.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.10"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.10"
 
     //RxJava
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.4'
 
     //Dagger
-    kapt 'com.google.dagger:dagger-compiler:2.13'
-   // annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
-    compile 'com.google.dagger:dagger:2.13'
+    compile 'com.google.dagger:dagger-android:2.12'
+    kapt 'com.google.dagger:dagger-android-processor:2.12'
+    compileOnly 'com.google.dagger:dagger:2.12'
+    kapt 'com.google.dagger:dagger-compiler:2.12'
     compile "javax.annotation:javax.annotation-api:1.2"
 
     //Retrofit

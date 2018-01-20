@@ -27,7 +27,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <com.koresuniku.wishmasterV4.ui.view.widget.ExpandableHeightGridView
+        <com.koresuniku.wishmaster.ui.view.widget.ExpandableHeightGridView
             android:id="@+id/image_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:stretchMode="columnWidth"
             android:isScrollContainer="false">
 
-        </com.koresuniku.wishmasterV4.ui.view.widget.ExpandableHeightGridView>
+        </com.koresuniku.wishmaster.ui.view.widget.ExpandableHeightGridView>
 
         <!--<RelativeLayout-->
         <!--android:id="@+id/image_container_1"-->
